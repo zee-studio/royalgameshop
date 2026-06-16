@@ -204,7 +204,7 @@ main{
   margin-bottom:10px;
 }
 
-/* ===== AUTH MODAL (POPUP FORM) ===== */
+/* ===== AUTH & PROFILE MODAL ===== */
 .auth-overlay {
   position: fixed;
   inset: 0;
@@ -280,6 +280,10 @@ main{
   cursor: pointer;
   margin-top: 10px;
 }
+.logout-btn {
+  background: #ff4f4f;
+  color: #fff;
+}
 .switch-form {
   text-align: center;
   margin-top: 15px;
@@ -292,6 +296,26 @@ main{
   font-weight: 600;
 }
 .hidden { display: none; }
+
+/* ===== 🆕 PROFILE STYLES ===== */
+.profile-info {
+  text-align: center;
+  padding: 15px 0;
+}
+.profile-avatar {
+  font-size: 50px;
+  color: #bb86fc;
+  margin-bottom: 10px;
+}
+.user-email {
+  font-size: 16px;
+  color: #fff;
+  word-break: break-all;
+  background: rgba(255,255,255,0.05);
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 5px;
+}
 
 /* ===== TABLET ===== */
 @media(min-width:768px){
@@ -359,7 +383,7 @@ main{
 
 
 <div class="auth-overlay" id="authModal">
-  <div class="auth-card" id="loginCard">
+  <div class="auth-card hidden" id="loginCard">
     <span class="close-auth" onclick="closeAuthModal()">&times;</span>
     <h2>Login</h2>
     <div class="input-box">
@@ -388,6 +412,17 @@ main{
     <button class="auth-btn" id="btnRegister">Create Account</button>
     <p class="switch-form">အကောင့်ရှိပြီးသားလား? <a href="javascript:void(0)" onclick="toggleAuthForm()">Login ဝင်ရန်</a></p>
   </div>
+
+  <div class="auth-card hidden" id="profileCard">
+    <span class="close-auth" onclick="closeAuthModal()">&times;</span>
+    <h2>My Profile</h2>
+    <div class="profile-info">
+      <div class="profile-avatar"><i class="fa-solid fa-circle-user"></i></div>
+      <p style="color: rgba(255,255,255,0.6); font-size: 13px;">Logged in as</p>
+      <p class="user-email" id="profileEmail">user@example.com</p>
+    </div>
+    <button class="auth-btn logout-btn" id="btnLogout">Logout</button>
+  </div>
 </div>
 
 
@@ -398,6 +433,7 @@ const CATEGORY_SHEET =
 "https://opensheet.elk.sh/1TrqwnYbOqSF9ugfFfbKIPMnHPeWuuNbPBhbIUFFwAI4/categories";
 
 let index=0,timer=null,startX=0;
+let isLoggedIn = false; // User ဝင်ထား၊ မထား အခြေအနေ သိမ်းရန်
 
 function toggleMenu(){
   document.getElementById("sideMenu").classList.toggle("active");
@@ -406,11 +442,29 @@ function toggleMenu(){
 
 /* ===== MODAL FUNCTIONS ===== */
 function openAuthModal() {
-  document.getElementById('authModal').classList.add('active');
+  const modal = document.getElementById('authModal');
+  const loginCard = document.getElementById('loginCard');
+  const registerCard = document.getElementById('registerCard');
+  const profileCard = document.getElementById('profileCard');
+
+  modal.classList.add('active');
+
+  // Login ဝင်ထားရင် တန်းပြီး Profile ကိုပြမယ်၊ မဝင်ထားရင် Login Form ကိုပြမယ်
+  if (isLoggedIn) {
+    profileCard.classList.remove('hidden');
+    loginCard.classList.add('hidden');
+    registerCard.classList.add('hidden');
+  } else {
+    loginCard.classList.remove('hidden');
+    registerCard.classList.add('hidden');
+    profileCard.classList.add('hidden');
+  }
 }
+
 function closeAuthModal() {
   document.getElementById('authModal').classList.remove('active');
 }
+
 function toggleAuthForm() {
   document.getElementById('loginCard').classList.toggle('hidden');
   document.getElementById('registerCard').classList.toggle('hidden');
@@ -503,9 +557,9 @@ window.onload=()=>{
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-  // သင့်ရဲ့ သီးသန့် Firebase Config အချက်အလက်များ ထည့်သွင်းပြီးပါပြီ။
+  // API Key အသစ် အစားထိုးပြီးသား Firebase Config
   const firebaseConfig = {
-    apiKey: "AIzaSyAcpWduP5484b6AlQdQdx8RjnGqErUM1uA",
+    apiKey: "AIzaSyDNLBZM6kHuoQ4ZY-dP-6MeLNr1ZIwlmq4",
     authDomain: "royal-game-shop-1089f.firebaseapp.com",
     databaseURL: "https://royal-game-shop-1089f-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "royal-game-shop-1089f",
@@ -519,30 +573,34 @@ window.onload=()=>{
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // Monitor User State (Login ဝင်ထား၊ မထား စောင့်ကြည့်ခြင်း)
+  // Monitor User State (အကောင့်ဝင်/ထွက် စောင့်ကြည့်ပြီး UI ပြောင်းလဲခြင်း)
   onAuthStateChanged(auth, (user) => {
     const statusBtn = document.getElementById('userStatusBtn');
     const mobileBtn = document.getElementById('mobileLoginBtn');
+    const profileEmail = document.getElementById('profileEmail');
     
     if (user) {
-      statusBtn.innerText = "Logout";
-      statusBtn.style.background = "#ff4f4f";
-      statusBtn.onclick = () => {
-        signOut(auth).then(() => alert("Logout အောင်မြင်ပါသည်"));
-      };
+      isLoggedIn = true;
+      profileEmail.innerText = user.email; // Profile Card ထဲမှာ Email ပြပေးခြင်း
       
+      // Top Bar ခလုတ်ကို Profile ပုံစံပြောင်းပါမယ်
+      statusBtn.innerText = "Profile";
+      statusBtn.style.background = "#00cc66"; // စိမ်းရောင်ပြောင်းမယ်
+      statusBtn.style.color = "#fff";
+
       if(mobileBtn) {
-        mobileBtn.innerText = "Logout";
-        mobileBtn.onclick = () => { toggleMenu(); signOut(auth); };
+        mobileBtn.innerText = "My Profile";
       }
     } else {
+      isLoggedIn = false;
+      
+      // မူရင်းအတိုင်း Login ပြန်ပြောင်းပါမယ်
       statusBtn.innerText = "Login";
       statusBtn.style.background = "#bb86fc";
-      statusBtn.onclick = () => openAuthModal();
+      statusBtn.style.color = "#0c0b1a";
 
       if(mobileBtn) {
         mobileBtn.innerText = "Login / Register";
-        mobileBtn.onclick = () => { toggleMenu(); openAuthModal(); };
       }
     }
   });
@@ -578,7 +636,19 @@ window.onload=()=>{
       alert("Email သို့မဟုတ် Password မှားယွင်းနေပါသည်။");
     }
   });
+
+  // LOGOUT LOGIC
+  document.getElementById('btnLogout').addEventListener('click', async () => {
+    try {
+      await signOut(auth);
+      alert("Logout အောင်မြင်ပါသည်");
+      closeAuthModal();
+    } catch (error) {
+      alert("Error: " + error.message);
+    }
+  });
 </script>
 
 </body>
 </html>
+
