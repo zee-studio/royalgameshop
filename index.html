@@ -204,7 +204,7 @@ main{
   margin-bottom:10px;
 }
 
-/* ===== AUTH & PROFILE MODAL ===== */
+/* ===== AUTH, PROFILE & ADMIN MODALS ===== */
 .auth-overlay {
   position: fixed;
   inset: 0;
@@ -225,13 +225,15 @@ main{
 }
 .auth-card {
   width: 100%;
-  max-width: 380px;
-  background: rgba(20, 18, 42, 0.9);
+  max-width: 480px; /* Admin ရော သုံးရမှာမို့ နည်းနည်းချဲ့လိုက်ပါတယ် */
+  background: rgba(20, 18, 42, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 24px;
   padding: 25px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   position: relative;
+  max-height: 85vh;
+  overflow-y: auto;
 }
 .close-auth {
   position: absolute;
@@ -297,25 +299,28 @@ main{
 }
 .hidden { display: none; }
 
-/* ===== PROFILE STYLES ===== */
-.profile-info {
-  text-align: center;
-  padding: 15px 0;
-}
-.profile-avatar {
-  font-size: 50px;
-  color: #bb86fc;
-  margin-bottom: 10px;
-}
-.user-email {
-  font-size: 16px;
-  color: #fff;
-  word-break: break-all;
-  background: rgba(255,255,255,0.05);
-  padding: 10px;
-  border-radius: 10px;
-  margin-top: 5px;
-}
+/* ===== USER PROFILE & HISTORY ===== */
+.profile-info { text-align: center; padding: 10px 0; }
+.profile-avatar { font-size: 44px; color: #bb86fc; margin-bottom: 5px; }
+.user-email { font-size: 15px; color: #fff; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 10px; }
+.history-section, .admin-section { margin-top: 20px; text-align: left; }
+.history-section h3, .admin-section h3 { font-size: 16px; color: #d6c1ff; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
+.order-list { display: flex; flex-direction: column; gap: 10px; max-height: 200px; overflow-y: auto; }
+.order-item { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+
+/* Status Colors */
+.status-pending { color: #ffbb00; font-weight: bold; }
+.status-approved { color: #00ff66; font-weight: bold; }
+.status-rejected { color: #ff4f4f; font-weight: bold; }
+
+/* ===== ADMIN DASHBOARD STYLES ===== */
+.admin-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+.stat-box { background: rgba(187, 134, 252, 0.1); border: 1px solid rgba(187, 134, 252, 0.2); padding: 10px; border-radius: 12px; text-align: center; }
+.stat-box p { font-size: 12px; color: rgba(255,255,255,0.6); }
+.stat-box h4 { font-size: 18px; color: #bb86fc; margin-top: 5px; }
+.admin-actions button { padding: 4px 8px; margin-left: 5px; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; }
+.btn-approve { background: #00cc66; color: #fff; }
+.btn-reject { background: #ff4f4f; color: #fff; }
 
 /* ===== TABLET ===== */
 @media(min-width:768px){
@@ -326,14 +331,8 @@ main{
 
 /* ===== PC SIZE FIX ===== */
 @media(min-width:1100px){
-  main{
-    max-width:1200px;
-    margin:auto;
-  }
-  .game-grid{
-    grid-template-columns:repeat(5,1fr);
-    gap:16px;
-  }
+  main{ max-width:1200px; margin:auto; }
+  .game-grid{ grid-template-columns:repeat(5,1fr); gap:16px; }
   .game-card{padding:10px}
 }
 </style>
@@ -386,14 +385,8 @@ main{
   <div class="auth-card hidden" id="loginCard">
     <span class="close-auth" onclick="closeAuthModal()">&times;</span>
     <h2>Login</h2>
-    <div class="input-box">
-      <i class="fa-solid fa-envelope"></i>
-      <input type="email" id="loginEmail" placeholder="Email Address">
-    </div>
-    <div class="input-box">
-      <i class="fa-solid fa-lock"></i>
-      <input type="password" id="loginPassword" placeholder="Password">
-    </div>
+    <div class="input-box"><i class="fa-solid fa-envelope"></i><input type="email" id="loginEmail" placeholder="Email Address"></div>
+    <div class="input-box"><i class="fa-solid fa-lock"></i><input type="password" id="loginPassword" placeholder="Password"></div>
     <button class="auth-btn" id="btnLogin">Sign In</button>
     <p class="switch-form">အကောင့်မရှိသေးဘူးလား? <a href="javascript:void(0)" onclick="toggleAuthForm()">Register လုပ်ရန်</a></p>
   </div>
@@ -401,14 +394,8 @@ main{
   <div class="auth-card hidden" id="registerCard">
     <span class="close-auth" onclick="closeAuthModal()">&times;</span>
     <h2>Register</h2>
-    <div class="input-box">
-      <i class="fa-solid fa-envelope"></i>
-      <input type="email" id="regEmail" placeholder="Email Address">
-    </div>
-    <div class="input-box">
-      <i class="fa-solid fa-lock"></i>
-      <input type="password" id="regPassword" placeholder="Password (အနည်းဆုံး ၆ လုံး)">
-    </div>
+    <div class="input-box"><i class="fa-solid fa-envelope"></i><input type="email" id="regEmail" placeholder="Email Address"></div>
+    <div class="input-box"><i class="fa-solid fa-lock"></i><input type="password" id="regPassword" placeholder="Password"></div>
     <button class="auth-btn" id="btnRegister">Create Account</button>
     <p class="switch-form">အကောင့်ရှိပြီးသားလား? <a href="javascript:void(0)" onclick="toggleAuthForm()">Login ဝင်ရန်</a></p>
   </div>
@@ -418,145 +405,132 @@ main{
     <h2>My Profile</h2>
     <div class="profile-info">
       <div class="profile-avatar"><i class="fa-solid fa-circle-user"></i></div>
-      <p style="color: rgba(255,255,255,0.6); font-size: 13px;">Logged in as</p>
       <p class="user-email" id="profileEmail">user@example.com</p>
     </div>
-    <button class="auth-btn logout-btn" id="btnLogout">Logout</button>
+    
+    <div class="history-section">
+      <h3>ဝယ်ယူမှုမှတ်တမ်း (Order History)</h3>
+      <div class="order-list" id="userOrderList">
+        <p style="font-size:12px; color:rgba(255,255,255,0.4);">မှတ်တမ်းမရှိသေးပါ။</p>
+      </div>
+    </div>
+    
+    <button class="auth-btn logout-btn" id="btnLogout" style="margin-top:20px;">Logout</button>
+  </div>
+
+  <div class="auth-card hidden" id="adminCard">
+    <span class="close-auth" onclick="closeAuthModal()">&times;</span>
+    <h2>Admin Dashboard 👑</h2>
+    
+    <div class="admin-stats">
+      <div class="stat-box"><p>ဝင်ကြည့်သူ (Views)</p><h4 id="statViews">0</h4></div>
+      <div class="stat-box"><p>စုစုပေါင်းဝင်ငွေ (Revenue)</p><h4 id="statRevenue">0 Ks</h4></div>
+    </div>
+
+    <div class="admin-section">
+      <h3>ဂိမ်းအပ်နှံမှုဖောင်များ စီမံရန်</h3>
+      <div class="order-list" id="adminOrderList">
+        <p style="font-size:12px; color:rgba(255,255,255,0.4);">လောလောဆယ် ဖောင်တင်ထားသူမရှိပါ။</p>
+      </div>
+    </div>
+    
+    <button class="auth-btn logout-btn" id="btnAdminLogout" style="margin-top:20px;">Admin Logout</button>
   </div>
 </div>
 
 
 <script>
-const BANNER_SHEET =
-"https://opensheet.elk.sh/1TrqwnYbOqSF9ugfFfbKIPMnHPeWuuNbPBhbIUFFwAI4/banners";
-const CATEGORY_SHEET =
-"https://opensheet.elk.sh/1TrqwnYbOqSF9ugfFfbKIPMnHPeWuuNbPBhbIUFFwAI4/categories";
+const BANNER_SHEET = "https://opensheet.elk.sh/1TrqwnYbOqSF9ugfFfbKIPMnHPeWuuNbPBhbIUFFwAI4/banners";
+const CATEGORY_SHEET = "https://opensheet.elk.sh/1TrqwnYbOqSF9ugfFfbKIPMnHPeWuuNbPBhbIUFFwAI4/categories";
 
 let index=0,timer=null,startX=0;
 let isLoggedIn = false; 
+let isAdmin = false;
 
 function toggleMenu(){
   document.getElementById("sideMenu").classList.toggle("active");
   document.querySelector(".overlay").classList.toggle("active");
 }
 
-/* ===== MODAL FUNCTIONS ===== */
 function openAuthModal() {
   const modal = document.getElementById('authModal');
   const loginCard = document.getElementById('loginCard');
   const registerCard = document.getElementById('registerCard');
   const profileCard = document.getElementById('profileCard');
+  const adminCard = document.getElementById('adminCard');
 
   modal.classList.add('active');
 
   if (isLoggedIn) {
-    profileCard.classList.remove('hidden');
-    loginCard.classList.add('hidden');
-    registerCard.classList.add('hidden');
+    if (isAdmin) {
+      adminCard.classList.remove('hidden');
+      loginCard.classList.add('hidden'); registerCard.classList.add('hidden'); profileCard.classList.add('hidden');
+    } else {
+      profileCard.classList.remove('hidden');
+      loginCard.classList.add('hidden'); registerCard.classList.add('hidden'); adminCard.classList.add('hidden');
+    }
   } else {
     loginCard.classList.remove('hidden');
-    registerCard.classList.add('hidden');
-    profileCard.classList.add('hidden');
+    registerCard.classList.add('hidden'); profileCard.classList.add('hidden'); adminCard.classList.add('hidden');
   }
 }
 
-function closeAuthModal() {
-  document.getElementById('authModal').classList.remove('active');
-}
-
+function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
 function toggleAuthForm() {
   document.getElementById('loginCard').classList.toggle('hidden');
   document.getElementById('registerCard').classList.toggle('hidden');
 }
 
-/* ===== LOAD BANNERS ===== */
+/* BANNER & CATEGORIES LOADING */
 async function loadBanners(){
   const slider=document.querySelector(".banner-slider");
   const dots=document.querySelector(".dots");
-  const res=await fetch(BANNER_SHEET);
-  const data=(await res.json()).filter(b=>b.active==="yes");
-
-  slider.querySelectorAll("img").forEach(i=>i.remove());
-  dots.innerHTML="";
-
-  data.forEach((b,i)=>{
-    const img=document.createElement("img");
-    img.src=b.image;
-    if(i===0) img.classList.add("active");
-    slider.appendChild(img);
-
-    const dot=document.createElement("span");
-    if(i===0) dot.classList.add("active");
-    dots.appendChild(dot);
-  });
-
-  autoPlay();
-  swipe(slider);
+  try {
+    const res=await fetch(BANNER_SHEET);
+    const data=(await res.json()).filter(b=>b.active==="yes");
+    slider.querySelectorAll("img").forEach(i=>i.remove());
+    dots.innerHTML="";
+    data.forEach((b,i)=>{
+      const img=document.createElement("img"); img.src=b.image;
+      if(i===0) img.classList.add("active");
+      slider.appendChild(img);
+      const dot=document.createElement("span"); if(i===0) dot.classList.add("active");
+      dots.appendChild(dot);
+    });
+    autoPlay(); swipe(slider);
+  } catch(e){}
 }
-
 function showSlide(i){
-  const imgs=document.querySelectorAll(".banner-slider img");
-  const dots=document.querySelectorAll(".dots span");
+  const imgs=document.querySelectorAll(".banner-slider img"); const dots=document.querySelectorAll(".dots span");
   if(imgs.length === 0) return;
-  imgs.forEach(x=>x.classList.remove("active"));
-  dots.forEach(x=>x.classList.remove("active"));
-  imgs[i].classList.add("active");
-  dots[i].classList.add("active");
+  imgs.forEach(x=>x.classList.remove("active")); dots.forEach(x=>x.classList.remove("active"));
+  imgs[i].classList.add("active"); dots[i].classList.add("active");
 }
+function autoPlay(){ clearInterval(timer); const total=document.querySelectorAll(".banner-slider img").length; if(total<=1) return; timer=setInterval(()=>{ index=(index+1)%total; showSlide(index); },3500); }
+function swipe(el){ el.addEventListener("touchstart",e=>{ startX=e.touches[0].clientX; clearInterval(timer); }); el.addEventListener("touchend",e=>{ const diff=e.changedTouches[0].clientX-startX; const total=document.querySelectorAll(".banner-slider img").length; if(total<=1) return; if(diff>50) index=(index-1+total)%total; if(diff<-50) index=(index+1)%total; showSlide(index); autoPlay(); }); }
 
-function autoPlay(){
-  clearInterval(timer);
-  const total=document.querySelectorAll(".banner-slider img").length;
-  if(total<=1) return;
-  timer=setInterval(()=>{
-    index=(index+1)%total;
-    showSlide(index);
-  },3500);
-}
-
-function swipe(el){
-  el.addEventListener("touchstart",e=>{
-    startX=e.touches[0].clientX;
-    clearInterval(timer);
-  });
-  el.addEventListener("touchend",e=>{
-    const diff=e.changedTouches[0].clientX-startX;
-    const total=document.querySelectorAll(".banner-slider img").length;
-    if(total<=1) return;
-    if(diff>50) index=(index-1+total)%total;
-    if(diff<-50) index=(index+1)%total;
-    showSlide(index);
-    autoPlay();
-  });
-}
-
-/* ===== LOAD CATEGORIES ===== */
 async function loadCategories(){
   const grid=document.querySelector(".game-grid");
-  const res=await fetch(CATEGORY_SHEET);
-  const data=await res.json();
-  grid.innerHTML="";
-  data.forEach(c=>{
-    if(c.active!=="yes") return;
-    grid.innerHTML+=`
-      <a href="products.html?cat=${c.id}" class="game-card">
-        <img src="${c.image}">
-        <span>${c.name}</span>
-      </a>`;
-  });
+  try {
+    const res=await fetch(CATEGORY_SHEET);
+    const data=await res.json();
+    grid.innerHTML="";
+    data.forEach(c=>{
+      if(c.active!=="yes") return;
+      grid.innerHTML+=`<a href="products.html?cat=${c.id}" class="game-card"><img src="${c.image}"><span>${c.name}</span></a>`;
+    });
+  } catch(e){}
 }
 
-window.onload=()=>{
-  loadBanners();
-  loadCategories();
-};
+window.onload=()=>{ loadBanners(); loadCategories(); };
 </script>
+
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getDatabase, ref, set, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-  // သင့်ရဲ့ Google Cloud API Key အသစ်ဖြင့် ချိတ်ဆက်ထားသော Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyDNLBZM6kHuoQ4ZY-dP-6MeLNr1ZIwlmq4",
     authDomain: "royal-game-shop-1089f.firebaseapp.com",
@@ -568,83 +542,150 @@ window.onload=()=>{
     measurementId: "G-WRMHG3DPXQ"
   };
 
-  // Firebase Init
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getDatabase(app);
 
-  // Monitor User State (Login ဝင်ထားမှုကို စောင့်ကြည့်စစ်ဆေးခြင်း)
+  // 1. Website ဝင်ကြည့်သူ (Traffic Counter) ကို တစ်ပြားမှမကုန်ဘဲ Database မှာ တိုးပေးခြင်း
+  const viewsRef = ref(db, 'site_analytics/views');
+  onValue(viewsRef, (snapshot) => {
+    let currentViews = snapshot.val() || 0;
+    if(!sessionStorage.getItem('counted')) {
+      currentViews++;
+      set(viewsRef, currentViews);
+      sessionStorage.setItem('counted', 'true');
+    }
+    document.getElementById('statViews').innerText = currentViews;
+  }, { onlyOnce: true });
+
+
+  // 2. Auth State Monitoring
   onAuthStateChanged(auth, (user) => {
     const statusBtn = document.getElementById('userStatusBtn');
     const mobileBtn = document.getElementById('mobileLoginBtn');
-    const profileEmail = document.getElementById('profileEmail');
     
     if (user) {
       isLoggedIn = true;
-      profileEmail.innerText = user.email;
+      document.getElementById('profileEmail').innerText = user.email;
       
-      statusBtn.innerText = "Profile";
-      statusBtn.style.background = "#00cc66"; 
-      statusBtn.style.color = "#fff";
-
-      if(mobileBtn) {
-        mobileBtn.innerText = "My Profile";
+      // Admin စစ်ဆေးခြင်း
+      if(user.email === "royaladmin@gmail.com") {
+        isAdmin = true;
+        statusBtn.innerText = "Admin 👑";
+        statusBtn.style.background = "#bb86fc";
+        if(mobileBtn) mobileBtn.innerText = "Admin Dashboard";
+        loadAdminDashboard();
+      } else {
+        isAdmin = false;
+        statusBtn.innerText = "Profile";
+        statusBtn.style.background = "#00cc66"; 
+        if(mobileBtn) mobileBtn.innerText = "My Profile";
+        loadUserOrderHistory(user.uid);
       }
+      statusBtn.style.color = "#fff";
     } else {
-      isLoggedIn = false;
-      
+      isLoggedIn = false; isAdmin = false;
       statusBtn.innerText = "Login";
       statusBtn.style.background = "#bb86fc";
       statusBtn.style.color = "#0c0b1a";
-
-      if(mobileBtn) {
-        mobileBtn.innerText = "Login / Register";
-      }
+      if(mobileBtn) mobileBtn.innerText = "Login / Register";
     }
   });
 
-  // REGISTER LOGIC
+  // 3. Customer အတွက် ဝယ်ယူမှုမှတ်တမ်း ဆွဲထုတ်ပေးခြင်း
+  function loadUserOrderHistory(uid) {
+    const ordersRef = ref(db, 'orders');
+    onValue(ordersRef, (snapshot) => {
+      const userOrderList = document.getElementById('userOrderList');
+      userOrderList.innerHTML = "";
+      let hasOrders = false;
+      
+      snapshot.forEach((childSnapshot) => {
+        const order = childSnapshot.val();
+        if(order.userId === uid) {
+          hasOrders = true;
+          userOrderList.innerHTML += `
+            <div class="order-item">
+              <div>
+                <strong>${order.gameName}</strong> - ${order.amount} Ks<br>
+                <span style="font-size:11px; color:rgba(255,255,255,0.5);">${order.date || 'ယနေ့'}</span>
+              </div>
+              <span class="status-${order.status}">${order.status.toUpperCase()}</span>
+            </div>`;
+        }
+      });
+      if(!hasOrders) userOrderList.innerHTML = `<p style="font-size:12px; color:rgba(255,255,255,0.4);">မှတ်တမ်းမရှိသေးပါ။</p>`;
+    });
+  }
+
+  // 4. Admin အတွက် အပ်နှံထားသော ဖောင်များနှင့် ဝင်ငွေတွက်ချက်ပေးခြင်း
+  function loadAdminDashboard() {
+    const ordersRef = ref(db, 'orders');
+    onValue(ordersRef, (snapshot) => {
+      const adminOrderList = document.getElementById('adminOrderList');
+      adminOrderList.innerHTML = "";
+      let totalRevenue = 0;
+      let hasPending = false;
+
+      snapshot.forEach((childSnapshot) => {
+        const key = childSnapshot.key;
+        const order = childSnapshot.val();
+        
+        // ဝင်ငွေပေါင်းခြင်း (Approved ဖောင်များကိုသာ ပေါင်းမည်)
+        if(order.status === "approved") {
+          totalRevenue += parseInt(order.amount || 0);
+        }
+
+        if(order.status === "pending") {
+          hasPending = true;
+          adminOrderList.innerHTML += `
+            <div class="order-item" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+              <div><strong>User:</strong> ${order.userEmail}</div>
+              <div><strong>Game:</strong> ${order.gameName} (${order.amount} Ks)</div>
+              <div class="admin-actions" style="margin-top:5px; align-self: flex-end;">
+                <button class="btn-approve" data-id="${key}">Approve</button>
+                <button class="btn-reject" data-id="${key}">Reject</button>
+              </div>
+            </div>`;
+        }
+      });
+
+      document.getElementById('statRevenue').innerText = totalRevenue.toLocaleString() + " Ks";
+      if(!hasPending) adminOrderList.innerHTML = `<p style="font-size:12px; color:rgba(255,255,255,0.4);">လောလောဆယ် ဖောင်တင်ထားသူမရှိပါ။</p>`;
+      
+      // Approve/Reject Button Actions Listener
+      document.querySelectorAll('.btn-approve').forEach(btn => {
+        btn.addEventListener('click', (e) => updateOrderStatus(e.target.dataset.id, 'approved'));
+      });
+      document.querySelectorAll('.btn-reject').forEach(btn => {
+        btn.addEventListener('click', (e) => updateOrderStatus(e.target.dataset.id, 'rejected'));
+      });
+    });
+  }
+
+  function updateOrderStatus(orderId, newStatus) {
+    update(ref(db, `orders/${orderId}`), { status: newStatus })
+    .then(() => alert(`Order ကို ${newStatus} လုပ်ပေးလိုက်ပါပြီ။`));
+  }
+
+  // AUTH ACTIONS (LOGIN/REGISTER/LOGOUT)
   document.getElementById('btnRegister').addEventListener('click', async () => {
-    const email = document.getElementById('regEmail').value;
-    const password = document.getElementById('regPassword').value;
-
+    const email = document.getElementById('regEmail').value; const password = document.getElementById('regPassword').value;
     if(!email || !password) return alert("အချက်အလက်များ ဖြည့်စွက်ပါ");
-
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      alert("အကောင့်ဖွင့်ခြင်း အောင်မြင်ပါသည်။");
-      closeAuthModal();
-    } catch (error) {
-      alert("Error: " + error.message);
-    }
+    try { await createUserWithEmailAndPassword(auth, email, password); alert("အကောင့်ဖွင့်ခြင်း အောင်မြင်ပါသည်။"); closeAuthModal(); } catch (e) { alert(e.message); }
   });
 
-  // LOGIN LOGIC
   document.getElementById('btnLogin').addEventListener('click', async () => {
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-
-    if(!email || !password) return alert("Email နှင့် Password ဖြည့်ပါ");
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert("Login အောင်မြင်ပါသည်။");
-      closeAuthModal();
-    } catch (error) {
-      alert("Email သို့မဟုတ် Password မှားယွင်းနေပါသည်။");
-    }
+    const email = document.getElementById('loginEmail').value; const password = document.getElementById('loginPassword').value;
+    if(!email || !password) return alert("ဖြည့်စွက်ပေးပါ");
+    try { await signInWithEmailAndPassword(auth, email, password); alert("Login အောင်မြင်ပါသည်။"); closeAuthModal(); } catch (e) { alert("Email သို့မဟုတ် Password မှားယွင်းနေပါသည်။"); }
   });
 
-  // LOGOUT LOGIC
-  document.getElementById('btnLogout').addEventListener('click', async () => {
-    try {
-      await signOut(auth);
-      alert("Logout အောင်မြင်ပါသည်");
-      closeAuthModal();
-    } catch (error) {
-      alert("Error: " + error.message);
-    }
-  });
+  const doLogout = async () => { try { await signOut(auth); alert("Logout အောင်မြင်ပါသည်"); closeAuthModal(); } catch (e) {} };
+  document.getElementById('btnLogout').addEventListener('click', doLogout);
+  document.getElementById('btnAdminLogout').addEventListener('click', doLogout);
 </script>
 
 </body>
 </html>
+
