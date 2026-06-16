@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Royal Game Shop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* လူကြီးမင်းရဲ့ မူရင်း Style များကို အခြေခံထားပါသည် */
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body{
+            background:#0c0b1a; /* လူကြီးမင်းရဲ့ နောက်ခံအရောင် */
+            color:#fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== TOP BAR (ပင်မ Page နဲ့ တူအောင် ထားခြင်း) ===== */
+        .top-bar{
+            position:fixed;
+            top:0;left:0;
+            width:100%;
+            height:70px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:0 16px;
+            background:rgba(255,255,255,0.06);
+            backdrop-filter:blur(12px);
+            border-bottom:1px solid rgba(255,255,255,0.15);
+            z-index:1000;
+        }
+        .logo-box img{height:44px}
+
+        /* ===== AUTH CONTAINER ===== */
+        .auth-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin-top: 70px; /* Top bar အောက်ရောက်စေရန် */
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .auth-card h2 {
+            font-size: 28px;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #d6c1ff;
+        }
+
+        .auth-card p.subtitle {
+            text-align: center;
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 25px;
+        }
+
+        /* ===== INPUT STYLE ===== */
+        .input-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #bb86fc;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            color: #fff;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-box input:focus {
+            border-color: #bb86fc;
+            background: rgba(255,255,255,0.12);
+        }
+
+        /* ===== BUTTON STYLE ===== */
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background: #bb86fc;
+            border: none;
+            border-radius: 14px;
+            color: #0c0b1a;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .auth-btn:hover {
+            background: #d6c1ff;
+            transform: translateY(-2px);
+        }
+
+        .switch-form {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .switch-form a {
+            color: #bb86fc;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="logo-box">
+        <img src="https://i.ibb.co/pBCj40vb/Untitled33-20250505002056.png">
+    </div>
+</div>
+
+<div class="auth-wrapper">
+    <div class="auth-card" id="loginCard">
+        <h2>Welcome Back</h2>
+        <p class="subtitle">Royal Game Shop သို့ ပြန်လည်ကြိုဆိုပါတယ်</p>
+        
+        <div class="input-box">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" id="loginEmail" placeholder="Email Address">
+        </div>
+        
+        <div class="input-box">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="loginPassword" placeholder="Password">
+        </div>
+        
+        <button class="auth-btn" id="btnLogin">Login</button>
+        
+        <p class="switch-form">
+            အကောင့်မရှိသေးဘူးလား? <a href="javascript:void(0)" onclick="toggleAuth()">Register လုပ်မယ်</a>
+        </p>
+    </div>
+
+    <div class="auth-card hidden" id="registerCard">
+        <h2>Create Account</h2>
+        <p class="subtitle">အကောင့်အသစ်ဖွင့်ပြီး Game များဝယ်ယူပါ</p>
+        
+        <div class="input-group">
+             <div class="input-box">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="regName" placeholder="Full Name">
+            </div>
+            <div class="input-box">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="regEmail" placeholder="Email Address">
+            </div>
+            <div class="input-box">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="regPassword" placeholder="Password">
+            </div>
+        </div>
+        
+        <button class="auth-btn" id="btnRegister">Register Now</button>
+        
+        <p class="switch-form">
+            အကောင့်ရှိပြီးသားလား? <a href="javascript:void(0)" onclick="toggleAuth()">Login ပြန်ဝင်မယ်</a>
+        </p>
+    </div>
+</div>
+
+<!-- login.html ရဲ့ အောက်ခြေ Script နေရာမှာ ဒါကို အစားထိုးနိုင်ပါတယ် -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    // သင်၏ Firebase Config
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Register 
+    document.getElementById('btnRegister')?.addEventListener('click', async () => {
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            alert("အကောင့်ဖွင့်ခြင်း အောင်မြင်ပါသည်။");
+            window.location.href = "index.html";
+        } catch (error) {
+            alert("Error: " + error.message);
+        }
+    });
+
+    // Login
+    document.getElementById('btnLogin')?.addEventListener('click', async () => {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            alert("Login အောင်မြင်ပါသည်။");
+            window.location.href = "index.html";
+        } catch (error) {
+            alert("Email သို့မဟုတ် Password မှားယွင်းနေပါသည်။");
+        }
+    });
+</script>
+
+<script>
+    function toggleAuth() {
+        document.getElementById('loginCard').classList.toggle('hidden');
+        document.getElementById('registerCard').classList.toggle('hidden');
+    }
+</script>
+
+</body>
+</html>
