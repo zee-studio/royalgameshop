@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- လူကြီးမင်းရဲ့ မူရင်း head tag အတိုင်း သုံးပါ -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Game Shop</title>
+    <!-- Style များကို ဒီနေရာမှာ ထည့်ပါ -->
+    <style>
+        /* (လူကြီးမင်းရဲ့ CSS အဟောင်းများ) */
+        .user-auth { display: flex; gap: 10px; }
+        .hidden { display: none !important; }
+        .btn-auth { padding: 8px 16px; border-radius: 14px; text-decoration: none; font-weight: 600; }
+        .login-btn { background: #bb86fc; color: #000; }
+        .logout-btn { background: #ff5252; color: #fff; cursor: pointer; border: none; }
+    </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="left-box">
+    <div class="menu-btn" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    <div class="logo-box"><img src="https://i.ibb.co/pBCj40vb/Untitled33-20250505002056.png"></div>
+  </div>
+
+  <!-- AUTH BUTTONS (ဒီနေရာကို ပြင်ထားပါတယ်) -->
+  <div class="nav-links">
+    <div id="auth-nav">
+        <!-- Login မဝင်ရသေးရင် ပေါ်မယ့် ခလုတ် -->
+        <a href="login.html" class="btn-auth login-btn" id="loginLink">Login</a>
+    </div>
+    <div id="user-nav" class="hidden">
+        <!-- Login ဝင်ပြီးရင် ပေါ်မယ့် ခလုတ် -->
+        <span id="userEmail" style="margin-right: 10px;"></span>
+        <button class="btn-auth logout-btn" id="btnLogout">Logout</button>
+    </div>
+  </div>
+</div>
+
+<!-- ကျန်တဲ့ Body Content များကို ဒီအတိုင်းထားပါ -->
+<main>
+  <h2 class="center-title">Choose Game</h2>
+  <div class="game-grid"></div>
+</main>
+
+<!-- FIREBASE LOGIC (Login status စစ်ဆေးရန်) -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        // လူကြီးမင်းရဲ့ Firebase Config များကို ဒီနေရာမှာ ထည့်ပါ
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // User Login ဝင်/မဝင် စစ်ဆေးခြင်း
+    onAuthStateChanged(auth, (user) => {
+        const authNav = document.getElementById('auth-nav');
+        const userNav = document.getElementById('user-nav');
+        const userEmail = document.getElementById('userEmail');
+
+        if (user) {
+            // User ဝင်ထားလျှင်
+            authNav.classList.add('hidden');
+            userNav.classList.remove('hidden');
+            userEmail.innerText = user.email;
+        } else {
+            // User မဝင်ထားလျှင်
+            authNav.classList.remove('hidden');
+            userNav.classList.add('hidden');
+        }
+    });
+
+    // Logout လုပ်ဆောင်ချက်
+    document.getElementById('btnLogout').addEventListener('click', () => {
+        signOut(auth).then(() => {
+            window.location.reload(); // Logout လုပ်ပြီးရင် Page ကို Refresh လုပ်မယ်
+        });
+    });
+</script>
+
+</body>
+</html>
