@@ -36,33 +36,15 @@ body{
   z-index:1000;
 }
 
-.left-box{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
+.left-box{ display:flex; align-items:center; gap:12px; }
 .logo-box img{height:44px}
 
 /* ===== HAMBURGER ===== */
-.menu-btn{
-  width:28px;
-  display:flex;
-  flex-direction:column;
-  gap:5px;
-  cursor:pointer;
-}
-.menu-btn span{
-  height:3px;
-  background:#fff;
-  border-radius:2px;
-}
+.menu-btn{ width:28px; display:flex; flex-direction:column; gap:5px; cursor:pointer; }
+.menu-btn span{ height:3px; background:#fff; border-radius:2px; }
 
 /* ===== NAV (PC & RIGHT SIDE) ===== */
-.nav-links{
-  display: flex;
-  align-items: center;
-}
+.nav-links{ display: flex; align-items: center; }
 .nav-links a, .login-trigger-btn{
   padding:8px 16px;
   border-radius:14px;
@@ -75,244 +57,144 @@ body{
   cursor: pointer;
   transition: 0.3s;
 }
-.login-trigger-btn{
-  background: #bb86fc;
-  color: #0c0b1a;
-  border-color: #bb86fc;
-}
-.login-trigger-btn:hover{
-  background: #d6c1ff;
-}
+.login-trigger-btn{ background: #bb86fc; color: #0c0b1a; border-color: #bb86fc; }
+.login-trigger-btn:hover{ background: #d6c1ff; }
 .pc-only{display:none}
 
 /* ===== SIDE MENU ===== */
 .side-menu{
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:240px;
-  height:100vh;
-  background:#121028;
-  padding:90px 18px;
-  transition:.35s ease;
-  z-index:1100;
+  position:fixed; top:0; left:-260px; width:240px; height:100vh;
+  background:#121028; padding:90px 18px; transition:.35s ease; z-index:1100;
 }
 .side-menu a{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:14px;
-  margin-bottom:12px;
-  border-radius:14px;
-  background:rgba(255,255,255,.08);
-  color:#fff;
-  text-decoration:none;
-  font-weight:600;
+  display:flex; align-items:center; gap:12px; padding:14px; margin-bottom:12px;
+  border-radius:14px; background:rgba(255,255,255,.08); color:#fff; text-decoration:none; font-weight:600;
 }
 .side-menu a:hover{background:rgba(255,255,255,.15)}
 
 /* ===== OVERLAY ===== */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.45);
-  opacity:0;
-  pointer-events:none;
-  transition:.3s;
-  z-index:1050;
-}
+.overlay{ position:fixed; inset:0; background:rgba(0,0,0,.45); opacity:0; pointer-events:none; transition:.3s; z-index:1050; }
 .side-menu.active{left:0}
-.overlay.active{
-  opacity:1;
-  pointer-events:auto;
-}
+.overlay.active{ opacity:1; pointer-events:auto; }
 
 /* ===== BANNER ===== */
 .banner-wrapper{padding:0 14px}
 .banner-slider{
-  position:relative;
-  width:100%;
-  height:180px;
-  border-radius:20px;
-  overflow:hidden;
-  margin:18px auto;
-  background:#000;
+  position:relative; width:100%; height:180px; border-radius:20px; overflow:hidden; margin:18px auto; background:#000;
 }
-@media(min-width:768px){
-  .banner-slider{height:320px}
-}
+@media(min-width:768px){ .banner-slider{height:320px} }
 .banner-slider img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  background:#000;
-  position:absolute;
-  inset:0;
-  opacity:0;
-  transition:opacity .7s ease;
+  width:100%; height:100%; object-fit:contain; background:#000; position:absolute; inset:0; opacity:0; transition:opacity .7s ease;
 }
 .banner-slider img.active{opacity:1}
-
-/* ===== DOTS ===== */
-.dots{
-  position:absolute;
-  bottom:12px;
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  gap:8px;
-}
-.dots span{
-  width:8px;height:8px;
-  border-radius:50%;
-  background:rgba(255,255,255,.4);
-}
+.dots{ position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:8px; }
+.dots span{ width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.4); }
 .dots span.active{background:#bb86fc}
 
 /* ===== MAIN ===== */
-main{
-  padding:20px;
-  text-align:center;
-}
-
-.center-title{
-  font-size:26px;
-  color:#d6c1ff;
-  margin-bottom:22px;
-}
-
-.game-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:18px;
-}
+main{ padding:20px; text-align:center; }
+.center-title{ font-size:26px; color:#d6c1ff; margin-bottom:22px; }
+.game-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
 
 .game-card{
-  background:rgba(255,255,255,0.07);
-  border-radius:20px;
-  padding:12px;
-  text-decoration:none;
-  color:#fff;
-  transition:.3s;
-  position: relative;
+  background:rgba(255,255,255,0.07); border-radius:20px; padding:12px; text-decoration:none; color:#fff; transition:.3s; position: relative;
 }
 .game-card:hover{transform:translateY(-6px)}
-.game-card img{
-  width:100%;
-  aspect-ratio:1/1;
-  object-fit:cover;
-  border-radius:14px;
-  margin-bottom:10px;
-}
+.game-card img{ width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:14px; margin-bottom:10px; }
 
-/* ===== AUTH, PROFILE & ADMIN MODALS ===== */
+/* ===== AUTH MODALS (FOR USER & LOGIN) ===== */
 .auth-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: 0.3s ease;
-  z-index: 2000;
-  padding: 20px;
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
+  display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s ease; z-index: 2000; padding: 20px;
 }
-.auth-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
-}
+.auth-overlay.active { opacity: 1; pointer-events: auto; }
 .auth-card {
-  width: 100%;
-  max-width: 500px; 
-  background: rgba(20, 18, 42, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 24px;
-  padding: 25px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  position: relative;
-  max-height: 85vh;
-  overflow-y: auto;
+  width: 100%; max-width: 400px; background: rgba(20, 18, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
 }
-.close-auth {
-  position: absolute;
-  top: 15px; right: 20px;
-  font-size: 20px;
-  cursor: pointer;
-  color: rgba(255,255,255,0.6);
+.close-auth { position: absolute; top: 15px; right: 20px; font-size: 20px; cursor: pointer; color: rgba(255,255,255,0.6); }
+.auth-card h2 { font-size: 24px; text-align: center; margin-bottom: 20px; color: #d6c1ff; }
+.input-box { position: relative; margin-bottom: 15px; }
+.input-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #bb86fc; }
+.input-box input, .input-box select {
+  width: 100%; padding: 12px 15px 12px 42px; background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #fff; outline: none;
 }
-.auth-card h2 {
-  font-size: 24px;
-  text-align: center;
-  margin-bottom: 20px;
-  color: #d6c1ff;
-}
-.input-box {
-  position: relative;
-  margin-bottom: 15px;
-}
-.input-box i {
-  position: absolute;
-  left: 15px; top: 50%;
-  transform: translateY(-50%);
-  color: #bb86fc;
-}
-.input-box input {
-  width: 100%;
-  padding: 12px 15px 12px 42px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  color: #fff;
-  outline: none;
-}
-.input-box input:focus { border-color: #bb86fc; }
-
+.input-box select { appearance: none; background-color: #1a1833; color: #fff;}
 .auth-btn {
-  width: 100%;
-  padding: 12px;
-  background: #bb86fc;
-  border: none;
-  border-radius: 12px;
-  color: #0c0b1a;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 10px;
+  width: 100%; padding: 12px; background: #bb86fc; border: none; border-radius: 12px;
+  color: #0c0b1a; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px;
 }
 .logout-btn { background: #ff4f4f; color: #fff; }
 .switch-form { text-align: center; margin-top: 15px; font-size: 13px; color: rgba(255,255,255,0.6); }
 .switch-form a { color: #bb86fc; text-decoration: none; font-weight: 600; }
 .hidden { display: none; }
 
-/* ===== HISTORY & ADMIN SECTIONS ===== */
-.history-section, .admin-section { margin-top: 20px; text-align: left; }
-.history-section h3, .admin-section h3 { font-size: 16px; color: #d6c1ff; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
-.order-list { display: flex; flex-direction: column; gap: 10px; max-height: 180px; overflow-y: auto; }
+.user-email { font-size: 15px; color: #fff; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 10px; text-align: center;}
+.history-section { margin-top: 20px; text-align: left; }
+.history-section h3 { font-size: 16px; color: #d6c1ff; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
+.order-list { display: flex; flex-direction: column; gap: 10px; max-height: 200px; overflow-y: auto; }
 .order-item { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
-
 .status-pending { color: #ffbb00; font-weight: bold; }
 .status-approved { color: #00ff66; font-weight: bold; }
 .status-rejected { color: #ff4f4f; font-weight: bold; }
 
-/* ===== ADMIN DASHBOARD STYLES ===== */
-.admin-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
-.stat-box { background: rgba(187, 134, 252, 0.1); border: 1px solid rgba(187, 134, 252, 0.2); padding: 10px; border-radius: 12px; text-align: center; }
-.stat-box h4 { font-size: 18px; color: #bb86fc; margin-top: 5px; }
-.admin-actions button { padding: 4px 8px; margin-left: 5px; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; }
+/* ===================================================
+   👑 NEW SATELLITE DESIGN: REAL ADMIN PANEL (PRO)
+=================================================== */
+.admin-panel-container {
+  max-width: 1200px; margin: 40px auto; padding: 20px; background: #121026;
+  border-radius: 28px; border: 1px solid rgba(187, 134, 252, 0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+}
+.admin-header {
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 2px solid rgba(255,255,255,0.05); padding-bottom: 15px; margin-bottom: 25px;
+}
+.admin-header h2 { color: #bb86fc; font-size: 24px; display: flex; align-items: center; gap: 10px; }
+
+/* Dashboard Analytics Grid */
+.admin-dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+.dashboard-card {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 20px; border-radius: 20px;
+  text-align: center; transition: 0.3s;
+}
+.dashboard-card:hover { border-color: #bb86fc; background: rgba(187, 134, 252, 0.03); }
+.dashboard-card p { font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+.dashboard-card h3 { font-size: 26px; color: #fff; }
+.dashboard-card.revenue h3 { color: #00ff66; }
+
+/* Split Management Sections (သီးသန့်အပိုင်းများ) */
+.management-sections-wrapper { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 25px; }
+.management-box {
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 20px;
+  max-height: 500px; overflow-y: auto;
+}
+.management-box h3 { font-size: 18px; color: #d6c1ff; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+/* Forms Style inside Panels */
+.panel-form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
+.panel-form input, .panel-form select {
+  width: 100%; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; outline: none;
+}
+.panel-form input:focus { border-color: #bb86fc; }
+.panel-btn {
+  padding: 10px; background: #bb86fc; color: #0c0b1a; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s;
+}
+.panel-btn:hover { background: #d6c1ff; }
+
+/* Tables/Lists Inside Panels */
+.panel-item-list { display: flex; flex-direction: column; gap: 10px; }
+.panel-item {
+  background: rgba(255,255,255,0.04); padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 13px;
+}
+.panel-actions button { padding: 4px 8px; margin-left: 5px; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; }
 .btn-approve { background: #00cc66; color: #fff; }
 .btn-reject { background: #ff4f4f; color: #fff; }
-.btn-delete { background: #ff3333; color: #fff; padding: 2px 6px; border-radius: 4px; border:none; cursor:pointer; font-size:11px; }
+.btn-delete { background: #ff3333; color: #fff; padding: 4px 8px; border-radius: 6px; border:none; cursor:pointer; font-size:11px; }
 
-/* ===== ADMIN CONTROL FORM ===== */
-.admin-form { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; margin-bottom: 15px; border: 1px dashed rgba(255,255,255,0.1); }
-.admin-form input { width: 100%; padding: 8px; margin-bottom: 8px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 6px; }
-
-/* ===== TABLET & PC ===== */
+/* Responsive Adjustments */
 @media(min-width:768px){ .game-grid{grid-template-columns:repeat(3,1fr)} .menu-btn{display:none} .pc-only{display:flex} }
-@media(min-width:1100px){ main{ max-width:1200px; margin:auto; } .game-grid{ grid-template-columns:repeat(5,1fr); gap:16px; } .game-card{padding:10px} }
+@media(min-width:1100px){ main{ max-width:1200px; margin:auto; } .game-grid{ grid-template-columns:repeat(5,1fr); gap:16px; } }
 </style>
 </head>
 
@@ -333,12 +215,8 @@ main{
 </div>
 
 <div class="side-menu" id="sideMenu">
-  <a href="about.html">About</a>
-  <a href="promo.html">Promo</a>
+  <a href="about.html">About</a> <a href="promo.html">Promo</a>
   <a href="javascript:void(0)" onclick="toggleMenu(); openAuthModal();" id="mobileLoginBtn">Login / Register</a>
-  <a href="https://www.facebook.com/share/1DVMKr6vKX/?mibextid=wwXIfr" target="_blank">Facebook Page</a>
-  <a href="www.tiktok.com/@royalgameshopmm" target="_blank">TikTok</a>
-  <a href="https://t.me/royalgameshoptgmm" target="_blank">Telegram</a>
 </div>
 <div class="overlay" onclick="toggleMenu()"></div>
 
@@ -350,6 +228,72 @@ main{
   <h2 class="center-title">Choose Game</h2>
   <div class="game-grid" id="gameGrid"></div>
 </main>
+
+
+<div class="admin-panel-container hidden" id="realAdminPanel">
+  <div class="admin-header">
+    <h2><i class="fa-solid fa-gauge-high"></i> Royal Game Shop - Control Panel 👑</h2>
+    <button class="panel-btn" id="btnAdminPanelLogout" style="background:#ff4f4f; color:#fff; padding:6px 12px;">Admin Logout</button>
+  </div>
+
+  <div class="admin-dashboard-grid">
+    <div class="dashboard-card">
+      <p><i class="fa-solid fa-eye"></i> ယနေ့ ဝင်ကြည့်သူဦးရေ (Views)</p>
+      <h3 id="statViews">0</h3>
+    </div>
+    <div class="dashboard-card revenue">
+      <p><i class="fa-solid fa-wallet"></i> စုစုပေါင်း ဝင်ငွေ (Total Revenue)</p>
+      <h3 id="statRevenue">0 Ks</h3>
+    </div>
+    <div class="dashboard-card" style="border-color: #ffbb00;">
+      <p><i class="fa-solid fa-clock"></i> စောင့်ဆိုင်းဆဲဖောင် (Pending)</p>
+      <h3 id="statPendingCount" style="color: #ffbb00;">0</h3>
+    </div>
+  </div>
+
+  <div class="management-sections-wrapper">
+    
+    <div class="management-box">
+      <h3><i class="fa-solid fa-file-invoice-dollar"></i> Deposit ဖောင်များ စီမံရန်</h3>
+      <div class="panel-item-list" id="adminOrderList">
+        <p style="font-size:12px; color:rgba(255,255,255,0.4); text-align:center;">လောလောဆယ် ဖောင်တင်ထားသူမရှိပါ။</p>
+      </div>
+    </div>
+
+    <div class="management-box">
+      <h3><i class="fa-solid fa-tags"></i> Products ဈေးနှုန်းများ စီမံရန်</h3>
+      <div class="panel-form">
+        <select id="priceGameSelect">
+          <option value="">-- ဂိမ်းအမျိုးအစား ရွေးပါ --</option>
+        </select>
+        <input type="text" id="priceItemName" placeholder="အိုင်တမ်အမည် (ဥပမာ - 💎 100 Diamonds)">
+        <input type="number" id="priceItemCost" placeholder="ဈေးနှုန်း Ks (ဥပမာ - 2500)">
+        <button class="panel-btn" id="btnSavePrice"><i class="fa-solid fa-plus"></i> ဈေးနှုန်း အသစ်ထည့်/ပြင်မည်</button>
+      </div>
+      <div class="panel-item-list" id="adminPriceList">
+        <p style="font-size:12px; color:rgba(255,255,255,0.4); text-align:center;">ဂိမ်းတစ်ခုရွေးပြီး ဈေးနှုန်းများ ကြည့်ရှုပါ။</p>
+      </div>
+    </div>
+
+    <div class="management-box">
+      <h3><i class="fa-solid fa-folder-plus"></i> ဂိမ်း နှင့် Banner အသစ်ထည့်ရန်</h3>
+      
+      <p style="font-size:12px; color:#bb86fc; margin-bottom:5px;">[+ ဂိမ်းအမျိုးအစားသစ်]</p>
+      <div class="panel-form" style="margin-bottom:20px;">
+        <input type="text" id="newGameName" placeholder="ဂိမ်းနာမည် (ဥပမာ - PUBG Mobile)">
+        <input type="text" id="newGameImg" placeholder="ပုံ Link (Direct URL)">
+        <button class="panel-btn" id="btnAddGame">ဂိမ်းအသစ်သိမ်းမည်</button>
+      </div>
+
+      <p style="font-size:12px; color:#bb86fc; margin-bottom:5px;">[+ Banner ပုံအသစ်]</p>
+      <div class="panel-form">
+        <input type="text" id="newBannerImg" placeholder="Banner ပုံ Link (Direct URL)">
+        <button class="panel-btn" id="btnAddBanner" style="background:#00cc66; color:#fff;">Banner သိမ်းမည်</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 
 <div class="auth-overlay" id="authModal">
@@ -375,46 +319,11 @@ main{
     <span class="close-auth" onclick="closeAuthModal()">&times;</span>
     <h2>My Profile</h2>
     <div style="text-align: center;"><p class="user-email" id="profileEmail">user@example.com</p></div>
-    
     <div class="history-section">
       <h3>ဝယ်ယူမှုမှတ်တမ်း (Order History)</h3>
       <div class="order-list" id="userOrderList"><p style="font-size:12px; color:rgba(255,255,255,0.4);">မှတ်တမ်းမရှိသေးပါ။</p></div>
     </div>
     <button class="auth-btn logout-btn" id="btnLogout" style="margin-top:20px;">Logout</button>
-  </div>
-
-  <div class="auth-card hidden" id="adminCard">
-    <span class="close-auth" onclick="closeAuthModal()">&times;</span>
-    <h2>Admin Dashboard 👑</h2>
-    
-    <div class="admin-stats">
-      <div class="stat-box"><p>ဝင်ကြည့်သူ (Views)</p><h4 id="statViews">0</h4></div>
-      <div class="stat-box"><p>စုစုပေါင်းဝင်ငွေ</p><h4 id="statRevenue">0 Ks</h4></div>
-    </div>
-
-    <div class="admin-section">
-      <h3>+ Game အသစ်ထည့်ရန်</h3>
-      <div class="admin-form">
-        <input type="text" id="newGameName" placeholder="ဂိမ်းနာမည် (ဥပမာ - PUBG Mobile)">
-        <input type="text" id="newGameImg" placeholder="ပုံ Link (Direct Image URL)">
-        <button class="auth-btn" id="btnAddGame" style="padding:6px; font-size:13px; margin:0;">ဂိမ်းအသစ်သိမ်းမည်</button>
-      </div>
-    </div>
-
-    <div class="admin-section">
-      <h3>+ Banner ပုံအသစ်ထည့်ရန်</h3>
-      <div class="admin-form">
-        <input type="text" id="newBannerImg" placeholder="Banner ပုံ Link (Direct Image URL)">
-        <button class="auth-btn" id="btnAddBanner" style="padding:6px; font-size:13px; margin:0;">Banner သိမ်းမည်</button>
-      </div>
-    </div>
-
-    <div class="admin-section">
-      <h3>ဂိမ်းအပ်နှံမှုဖောင်များ စီမံရန်</h3>
-      <div class="order-list" id="adminOrderList"><p style="font-size:12px; color:rgba(255,255,255,0.4);">ဖောင်တင်ထားသူမရှိပါ။</p></div>
-    </div>
-    
-    <button class="auth-btn logout-btn" id="btnAdminLogout" style="margin-top:20px;">Admin Logout</button>
   </div>
 </div>
 
@@ -431,25 +340,31 @@ function toggleMenu(){
 function openAuthModal() {
   const modal = document.getElementById('authModal');
   const loginCard = document.getElementById('loginCard'); const registerCard = document.getElementById('registerCard');
-  const profileCard = document.getElementById('profileCard'); const adminCard = document.getElementById('adminCard');
+  const profileCard = document.getElementById('profileCard');
+  
+  // Admin ဖြစ်နေရင် popup modal မပွင့်ဘဲ အောက်က Admin Panel ဆီ စာမျက်နှာကို Scroll ဆွဲချပေးမည်
+  if(isLoggedIn && isAdmin) {
+    document.getElementById('realAdminPanel').scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+  
   modal.classList.add('active');
   if (isLoggedIn) {
-    if (isAdmin) { adminCard.classList.remove('hidden'); loginCard.classList.add('hidden'); registerCard.classList.add('hidden'); profileCard.classList.add('hidden'); }
-    else { profileCard.classList.remove('hidden'); loginCard.classList.add('hidden'); registerCard.classList.add('hidden'); adminCard.classList.add('hidden'); }
-  } else { loginCard.classList.remove('hidden'); registerCard.classList.add('hidden'); profileCard.classList.add('hidden'); adminCard.classList.add('hidden'); }
+    profileCard.classList.remove('hidden');
+    loginCard.classList.add('hidden'); registerCard.classList.add('hidden');
+  } else {
+    loginCard.classList.remove('hidden'); registerCard.classList.add('hidden'); profileCard.classList.add('hidden');
+  }
 }
 function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
 function toggleAuthForm() { document.getElementById('loginCard').classList.toggle('hidden'); document.getElementById('registerCard').classList.toggle('hidden'); }
 
-/* Banner Slider Animation Trigger */
 function initSliderAnimation() {
   const imgs = document.querySelectorAll(".banner-slider img"); const dots = document.querySelectorAll(".dots span");
   if(imgs.length === 0) return;
-  clearInterval(timer);
-  index = 0;
+  clearInterval(timer); index = 0;
   imgs.forEach((img, i) => { if(i===0) img.classList.add("active"); else img.classList.remove("active"); });
   dots.forEach((dot, i) => { if(i===0) dot.classList.add("active"); else dot.classList.remove("active"); });
-  
   if(imgs.length > 1) {
     timer = setInterval(() => {
       imgs[index].classList.remove("active"); dots[index].classList.remove("active");
@@ -481,7 +396,7 @@ function initSliderAnimation() {
   const auth = getAuth(app);
   const db = getDatabase(app);
 
-  // 1. Traffic Views Counter
+  // Traffic Views Counter
   const viewsRef = ref(db, 'site_analytics/views');
   onValue(viewsRef, (snap) => {
     let currentViews = snap.val() || 0;
@@ -491,89 +406,183 @@ function initSliderAnimation() {
     document.getElementById('statViews').innerText = currentViews;
   }, { onlyOnce: true });
 
-  // 2. REALTIME DATABASE မှ BANNER ပုံများဆွဲထုတ်ပြသခြင်း
+  // Load Banner Images
   onValue(ref(db, 'banners'), (snapshot) => {
-    const slider = document.querySelector(".banner-slider");
-    const dots = document.querySelector(".dots");
-    slider.querySelectorAll("img").forEach(i => i.remove());
-    dots.innerHTML = "";
-
-    let count = 0;
+    const slider = document.querySelector(".banner-slider"); const dots = document.querySelector(".dots");
+    slider.querySelectorAll("img").forEach(i => i.remove()); dots.innerHTML = "";
     snapshot.forEach((child) => {
       const b = child.val();
-      const img = document.createElement("img"); img.src = b.image;
-      slider.appendChild(img);
-      const dot = document.createElement("span");
-      dots.appendChild(dot);
-      count++;
+      const img = document.createElement("img"); img.src = b.image; slider.appendChild(img);
+      const dot = document.createElement("span"); dots.appendChild(dot);
     });
     initSliderAnimation();
   });
 
-  // 3. REALTIME DATABASE မှ GAME CATEGORIES (APP) များ ဆွဲထုတ်ပြသခြင်း
+  // Load Game Categories onto Grid
   onValue(ref(db, 'categories'), (snapshot) => {
     const grid = document.getElementById("gameGrid");
+    const selectBox = document.getElementById("priceGameSelect");
     grid.innerHTML = "";
+    
+    // Select dropdown ကို Reset လုပ်မည်
+    selectBox.innerHTML = '<option value="">-- ဂိမ်းအမျိုးအစား ရွေးပါ --</option>';
+
     snapshot.forEach((child) => {
       const key = child.key; const c = child.val();
-      // သာမန် User ဆိုရင် Game ကတ်လေးတွေပဲ မြင်ရမယ်၊ Admin ဆိုရင် ဖျက်ဖို့ Trash Icon လေးပါမြင်ရမယ်
+      
+      // Admin Dropdown ထဲသို့ ဂိမ်းစာရင်းထည့်ခြင်း
+      selectBox.innerHTML += `<option value="${key}">${c.name}</option>`;
+
       grid.innerHTML += `
-        <div class="game-card" style="background:rgba(255,255,255,0.07); border-radius:20px; padding:12px;">
+        <div class="game-card">
           <a href="products.html?cat=${key}" style="text-decoration:none; color:#fff;">
-            <img src="${c.image}" style="width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:14px;">
+            <img src="${c.image}">
             <span>${c.name}</span>
           </a>
           ${isAdmin ? `<br><button class="btn-delete" data-id="${key}" style="margin-top:8px;"><i class="fa-solid fa-trash"></i> ဖျက်မည်</button>` : ''}
         </div>`;
     });
 
-    // Game Category ဖျက်သည့်စနစ်ချိတ်ဆက်ခြင်း
     document.querySelectorAll('.btn-delete').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const id = e.target.closest('button').dataset.id;
-        if(confirm("ဤဂိမ်းအမျိုးအစားကို ဖျက်ပစ်ရန် သေချာပါသလား?")) {
-          remove(ref(db, `categories/${id}`));
-        }
+        if(confirm("ဤဂိမ်းအမျိုးအစားကို ဖျက်ပစ်ရန် သေချာပါသလား?")) remove(ref(db, `categories/${id}`));
       });
     });
   });
 
-  // 4. ADMIN ACTIONS (DASHBOARD မှ GAME နှင့် BANNER တိုက်ရိုက်ထည့်ခြင်း)
-  document.getElementById('btnAddGame').addEventListener('click', () => {
-    const name = document.getElementById('newGameName').value; const img = document.getElementById('newGameImg').value;
-    if(!name || !img) return alert("အချက်အလက် အကုန်ဖြည့်ပါ");
-    push(ref(db, 'categories'), { name: name, image: img })
-    .then(() => { alert("ဂိမ်းအသစ် အောင်မြင်စွာ ထည့်သွင်းပြီးပါပြီ။"); document.getElementById('newGameName').value=""; document.getElementById('newGameImg').value=""; });
-  });
-
-  document.getElementById('btnAddBanner').addEventListener('click', () => {
-    const img = document.getElementById('newBannerImg').value;
-    if(!img) return alert("Banner ပုံ Link ဖြည့်ပါ");
-    push(ref(db, 'banners'), { image: img })
-    .then(() => { alert("Banner ပုံ အောင်မြင်စွာ ထည့်သွင်းပြီးပါပြီ။"); document.getElementById('newBannerImg').value=""; });
-  });
-
-
-  // 5. MONITOR USER LOGGED IN STATE
+  // MONITOR AUTH STATE
   onAuthStateChanged(auth, (user) => {
-    const statusBtn = document.getElementById('userStatusBtn'); const mobileBtn = document.getElementById('mobileLoginBtn');
+    const statusBtn = document.getElementById('userStatusBtn');
+    const adminPanel = document.getElementById('realAdminPanel');
+    
     if (user) {
-      isLoggedIn = true; document.getElementById('profileEmail').innerText = user.email;
+      isLoggedIn = true;
       if(user.email === "royaladmin@gmail.com") {
-        isAdmin = true; statusBtn.innerText = "Admin 👑"; statusBtn.style.background = "#bb86fc";
-        loadAdminOrdersDashboard();
+        isAdmin = true;
+        statusBtn.innerText = "Admin Panel 👑";
+        statusBtn.style.background = "#bb86fc";
+        adminPanel.classList.remove('hidden'); // Admin Panel ကြီးကို ဖော်ပြပေးလိုက်ခြင်း
+        loadAdminDashboardData();
       } else {
-        isAdmin = false; statusBtn.innerText = "Profile"; statusBtn.style.background = "#00cc66"; 
+        isAdmin = false;
+        statusBtn.innerText = "Profile";
+        statusBtn.style.background = "#00cc66";
+        adminPanel.classList.add('hidden');
         loadUserOrdersHistory(user.uid);
       }
       statusBtn.style.color = "#fff";
     } else {
       isLoggedIn = false; isAdmin = false;
       statusBtn.innerText = "Login"; statusBtn.style.background = "#bb86fc"; statusBtn.style.color = "#0c0b1a";
+      adminPanel.classList.add('hidden');
     }
   });
 
-  // CUSTOMER ORDER HISTORY
+  // ===================================================
+  // 💰 PRODUCTS PRICE MANAGEMENT LOGIC (ဈေးနှုန်းထိန်းချုပ်ခြင်း)
+  // ===================================================
+  const gameSelect = document.getElementById('priceGameSelect');
+  gameSelect.addEventListener('change', () => {
+    const gameId = gameSelect.value;
+    loadGamePrices(gameId);
+  });
+
+  function loadGamePrices(gameId) {
+    const priceListDiv = document.getElementById('adminPriceList');
+    if(!gameId) {
+      priceListDiv.innerHTML = '<p style="font-size:12px; color:rgba(255,255,255,0.4); text-align:center;">ဂိမ်းတစ်ခုရွေးပြီး ဈေးနှုန်းများ ကြည့်ရှုပါ။</p>';
+      return;
+    }
+
+    onValue(ref(db, `prices/${gameId}`), (snapshot) => {
+      priceListDiv.innerHTML = "";
+      let hasPrices = false;
+      snapshot.forEach((child) => {
+        hasPrices = true;
+        const priceId = child.key;
+        const p = child.val();
+        priceListDiv.innerHTML += `
+          <div class="panel-item">
+            <div><strong>${p.name}</strong> - <span style="color:#00ff66;">${p.cost} Ks</span></div>
+            <button class="btn-delete" data-game="${gameId}" data-priceid="${priceId}"><i class="fa-solid fa-trash"></i></button>
+          </div>`;
+      });
+      if(!hasPrices) priceListDiv.innerHTML = '<p style="font-size:12px; color:rgba(255,255,255,0.4); text-align:center;">ဈေးနှုန်းစာရင်း မရှိသေးပါ။</p>';
+      
+      // ဈေးနှုန်းဖျက်သည့် ခလုတ်ချိတ်ဆက်ခြင်း
+      priceListDiv.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const gId = e.target.closest('button').dataset.game;
+          const pId = e.target.closest('button').dataset.priceid;
+          if(confirm("ဤဈေးနှုန်းကို ဖြုတ်ပစ်ရန် သေချာပါသလား?")) remove(ref(db, `prices/${gId}/${pId}`));
+        });
+      });
+    });
+  }
+
+  // ဈေးနှုန်း အသစ်ထည့်ခြင်း သို့မဟုတ် ပြင်ဆင်ခြင်း သိမ်းဆည်းရန် ခလုတ်
+  document.getElementById('btnSavePrice').addEventListener('click', () => {
+    const gameId = gameSelect.value;
+    const itemName = document.getElementById('priceItemName').value;
+    const itemCost = document.getElementById('priceItemCost').value;
+
+    if(!gameId || !itemName || !itemCost) return alert("ဂိမ်းအမျိုးအစား၊ ပစ္စည်းအမည်နှင့် ဈေးနှုန်းတို့ကို အပြည့်အစုံဖြည့်ပါ");
+
+    push(ref(db, `prices/${gameId}`), { name: itemName, cost: parseInt(itemCost) })
+    .then(() => {
+      alert("ဈေးနှုန်းစာရင်း သတ်မှတ်ပြီးပါပြီ။");
+      document.getElementById('priceItemName').value = "";
+      document.getElementById('priceItemCost').value = "";
+    });
+  });
+
+
+  // ADMIN VIEW ORDERS & REVENUE (DEPOSIT MANAGEMENT)
+  function loadAdminDashboardData() {
+    onValue(ref(db, 'orders'), (snapshot) => {
+      const list = document.getElementById('adminOrderList'); list.innerHTML = "";
+      let totalRevenue = 0; let pendingCount = 0;
+      snapshot.forEach((child) => {
+        const key = child.key; const o = child.val();
+        if(o.status === "approved") totalRevenue += parseInt(o.amount || 0);
+        if(o.status === "pending") {
+          pendingCount++;
+          list.innerHTML += `
+            <div class="panel-item" style="flex-direction:column; align-items:flex-start; gap:5px;">
+              <div><strong>User:</strong> ${o.userEmail}</div>
+              <div><strong>Game:</strong> ${o.gameName} (${o.amount} Ks)</div>
+              <div class="panel-actions" style="align-self:flex-end; margin-top:5px;">
+                <button class="btn-approve" data-id="${key}">Approve</button>
+                <button class="btn-reject" data-id="${key}">Reject</button>
+              </div>
+            </div>`;
+        }
+      });
+      document.getElementById('statRevenue').innerText = totalRevenue.toLocaleString() + " Ks";
+      document.getElementById('statPendingCount').innerText = pendingCount;
+      if(pendingCount === 0) list.innerHTML = `<p style="font-size:12px; color:rgba(255,255,255,0.4); text-align:center;">လောလောဆယ် ဖောင်တင်ထားသူမရှိပါ။</p>`;
+      
+      list.querySelectorAll('.btn-approve').forEach(b => b.addEventListener('click', (e) => updateStatus(e.target.dataset.id, 'approved')));
+      list.querySelectorAll('.btn-reject').forEach(b => b.addEventListener('click', (e) => updateStatus(e.target.dataset.id, 'rejected')));
+    });
+  }
+
+  function updateStatus(id, stat) { update(ref(db, `orders/${id}`), { status: stat }); }
+
+  // ADMIN & BANNER ADD SYSTEM
+  document.getElementById('btnAddGame').addEventListener('click', () => {
+    const name = document.getElementById('newGameName').value; const img = document.getElementById('newGameImg').value;
+    if(!name || !img) return alert("အချက်အလက် ဖြည့်ပါ");
+    push(ref(db, 'categories'), { name: name, image: img }).then(() => { alert("ဂိမ်းသစ်ထည့်ပြီးပါပြီ"); document.getElementById('newGameName').value=""; document.getElementById('newGameImg').value=""; });
+  });
+  document.getElementById('btnAddBanner').addEventListener('click', () => {
+    const img = document.getElementById('newBannerImg').value;
+    if(!img) return alert("Banner Link ဖြည့်ပါ");
+    push(ref(db, 'banners'), { image: img }).then(() => { alert("Banner ထည့်ပြီးပါပြီ"); document.getElementById('newBannerImg').value=""; });
+  });
+
+  // CUSTOMER LOGIC
   function loadUserOrdersHistory(uid) {
     onValue(ref(db, 'orders'), (snapshot) => {
       const list = document.getElementById('userOrderList'); list.innerHTML = ""; let hasData = false;
@@ -588,49 +597,18 @@ function initSliderAnimation() {
     });
   }
 
-  // ADMIN VIEW ORDERS & REVENUE
-  function loadAdminOrdersDashboard() {
-    onValue(ref(db, 'orders'), (snapshot) => {
-      const list = document.getElementById('adminOrderList'); list.innerHTML = "";
-      let totalRevenue = 0; let hasPending = false;
-      snapshot.forEach((child) => {
-        const key = child.key; const o = child.val();
-        if(o.status === "approved") totalRevenue += parseInt(o.amount || 0);
-        if(o.status === "pending") {
-          hasPending = true;
-          list.innerHTML += `
-            <div class="order-item" style="flex-direction:column; align-items:flex-start; gap:5px;">
-              <div><strong>User:</strong> ${o.userEmail}</div>
-              <div><strong>Game:</strong> ${o.gameName} (${o.amount} Ks)</div>
-              <div class="admin-actions" style="align-self:flex-end;">
-                <button class="btn-approve" data-id="${key}">Approve</button>
-                <button class="btn-reject" data-id="${key}">Reject</button>
-              </div>
-            </div>`;
-        }
-      });
-      document.getElementById('statRevenue').innerText = totalRevenue.toLocaleString() + " Ks";
-      if(!hasPending) list.innerHTML = `<p style="font-size:12px; color:rgba(255,255,255,0.4);">ဖောင်တင်ထားသူမရှိပါ။</p>`;
-      
-      document.querySelectorAll('.btn-approve').forEach(b => b.addEventListener('click', (e) => updateStatus(e.target.dataset.id, 'approved')));
-      document.querySelectorAll('.btn-reject').forEach(b => b.addEventListener('click', (e) => updateStatus(e.target.dataset.id, 'rejected')));
-    });
-  }
-
-  function updateStatus(id, stat) { update(ref(db, `orders/${id}`), { status: stat }); }
-
-  // AUTH TRIGGERS
+  // AUTH ACTIONS
   document.getElementById('btnRegister').addEventListener('click', async () => {
     const e = document.getElementById('regEmail').value; const p = document.getElementById('regPassword').value;
     try { await createUserWithEmailAndPassword(auth, e, p); alert("အကောင့်ဖွင့်ပြီးပါပြီ"); closeAuthModal(); } catch(err) { alert(err.message); }
   });
   document.getElementById('btnLogin').addEventListener('click', async () => {
     const e = document.getElementById('loginEmail').value; const p = document.getElementById('loginPassword').value;
-    try { await signInWithEmailAndPassword(auth, e, p); alert("ဝင်ရောက်မှု အောင်မြင်သည်"); closeAuthModal(); window.location.reload(); } catch(err) { alert("မှားယွင်းနေပါသည်"); }
+    try { await signInWithEmailAndPassword(auth, e, p); alert("ဝင်ရောက်မှု အောင်မြင်သည်"); closeAuthModal(); } catch(err) { alert("မှားယွင်းနေပါသည်"); }
   });
   const logout = async () => { await signOut(auth); alert("Logout ပြီးပါပြီ"); window.location.reload(); };
   document.getElementById('btnLogout').addEventListener('click', logout);
-  document.getElementById('btnAdminLogout').addEventListener('click', logout);
+  document.getElementById('btnAdminPanelLogout').addEventListener('click', logout);
 </script>
 
 </body>
