@@ -297,7 +297,7 @@ main{
 }
 .hidden { display: none; }
 
-/* ===== 🆕 PROFILE STYLES ===== */
+/* ===== PROFILE STYLES ===== */
 .profile-info {
   text-align: center;
   padding: 15px 0;
@@ -433,7 +433,7 @@ const CATEGORY_SHEET =
 "https://opensheet.elk.sh/1TrqwnYbOqSF9ugfFfbKIPMnHPeWuuNbPBhbIUFFwAI4/categories";
 
 let index=0,timer=null,startX=0;
-let isLoggedIn = false; // User ဝင်ထား၊ မထား အခြေအနေ သိမ်းရန်
+let isLoggedIn = false; 
 
 function toggleMenu(){
   document.getElementById("sideMenu").classList.toggle("active");
@@ -449,7 +449,6 @@ function openAuthModal() {
 
   modal.classList.add('active');
 
-  // Login ဝင်ထားရင် တန်းပြီး Profile ကိုပြမယ်၊ မဝင်ထားရင် Login Form ကိုပြမယ်
   if (isLoggedIn) {
     profileCard.classList.remove('hidden');
     loginCard.classList.add('hidden');
@@ -557,7 +556,7 @@ window.onload=()=>{
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-  // API Key အသစ် အစားထိုးပြီးသား Firebase Config
+  // သင့်ရဲ့ Google Cloud API Key အသစ်ဖြင့် ချိတ်ဆက်ထားသော Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyDNLBZM6kHuoQ4ZY-dP-6MeLNr1ZIwlmq4",
     authDomain: "royal-game-shop-1089f.firebaseapp.com",
@@ -573,7 +572,7 @@ window.onload=()=>{
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // Monitor User State (အကောင့်ဝင်/ထွက် စောင့်ကြည့်ပြီး UI ပြောင်းလဲခြင်း)
+  // Monitor User State (Login ဝင်ထားမှုကို စောင့်ကြည့်စစ်ဆေးခြင်း)
   onAuthStateChanged(auth, (user) => {
     const statusBtn = document.getElementById('userStatusBtn');
     const mobileBtn = document.getElementById('mobileLoginBtn');
@@ -581,11 +580,10 @@ window.onload=()=>{
     
     if (user) {
       isLoggedIn = true;
-      profileEmail.innerText = user.email; // Profile Card ထဲမှာ Email ပြပေးခြင်း
+      profileEmail.innerText = user.email;
       
-      // Top Bar ခလုတ်ကို Profile ပုံစံပြောင်းပါမယ်
       statusBtn.innerText = "Profile";
-      statusBtn.style.background = "#00cc66"; // စိမ်းရောင်ပြောင်းမယ်
+      statusBtn.style.background = "#00cc66"; 
       statusBtn.style.color = "#fff";
 
       if(mobileBtn) {
@@ -594,7 +592,6 @@ window.onload=()=>{
     } else {
       isLoggedIn = false;
       
-      // မူရင်းအတိုင်း Login ပြန်ပြောင်းပါမယ်
       statusBtn.innerText = "Login";
       statusBtn.style.background = "#bb86fc";
       statusBtn.style.color = "#0c0b1a";
@@ -651,4 +648,3 @@ window.onload=()=>{
 
 </body>
 </html>
-
