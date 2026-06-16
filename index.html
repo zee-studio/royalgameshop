@@ -204,7 +204,7 @@ main{
   margin-bottom:10px;
 }
 
-/* ===== 🆕 AUTH MODAL (POPUP FORM) ===== */
+/* ===== AUTH MODAL (POPUP FORM) ===== */
 .auth-overlay {
   position: fixed;
   inset: 0;
@@ -226,7 +226,7 @@ main{
 .auth-card {
   width: 100%;
   max-width: 380px;
-  background: rgba(20, 18, 42, 0.85);
+  background: rgba(20, 18, 42, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 24px;
   padding: 25px;
@@ -404,7 +404,7 @@ function toggleMenu(){
   document.querySelector(".overlay").classList.toggle("active");
 }
 
-/* ===== 🆕 MODAL FUNCTIONS ===== */
+/* ===== MODAL FUNCTIONS ===== */
 function openAuthModal() {
   document.getElementById('authModal').classList.add('active');
 }
@@ -503,14 +503,16 @@ window.onload=()=>{
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-  // ⚠️ လူကြီးမင်း၏ Firebase Config အချက်အလက်များကို ဒီနေရာမှာ အစားထိုးပါ
+  // သင့်ရဲ့ သီးသန့် Firebase Config အချက်အလက်များ ထည့်သွင်းပြီးပါပြီ။
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyDNLBZM6kHuoQ4ZY-dP-6MeLNr1ZIwlmq4",
+    authDomain: "royal-game-shop-1089f.firebaseapp.com",
+    databaseURL: "https://royal-game-shop-1089f-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "royal-game-shop-1089f",
+    storageBucket: "royal-game-shop-1089f.firebasestorage.app",
+    messagingSenderId: "1050007150235",
+    appId: "1:1050007150235:web:f6e1a97f5012cd2ffe303e",
+    measurementId: "G-WRMHG3DPXQ"
   };
 
   // Firebase Init
@@ -523,7 +525,6 @@ window.onload=()=>{
     const mobileBtn = document.getElementById('mobileLoginBtn');
     
     if (user) {
-      // User က Login ဝင်ထားလျှင် ခလုတ်ကို Logout ပုံစံပြောင်းပါမယ်
       statusBtn.innerText = "Logout";
       statusBtn.style.background = "#ff4f4f";
       statusBtn.onclick = () => {
@@ -535,7 +536,6 @@ window.onload=()=>{
         mobileBtn.onclick = () => { toggleMenu(); signOut(auth); };
       }
     } else {
-      // Login မဝင်ရသေးလျှင် မူရင်းအတိုင်း ထားပါမယ်
       statusBtn.innerText = "Login";
       statusBtn.style.background = "#bb86fc";
       statusBtn.onclick = () => openAuthModal();
