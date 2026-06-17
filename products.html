@@ -1,1 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Royal Game Shop - Top Up Shop</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
+body{ background:#0c0b1a; color:#fff; padding-top:20px; }
+.shop-container { max-width: 600px; margin: auto; padding: 16px; }
+.game-banner-box { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 20px; text-align: center; margin-bottom: 20px; }
+.game-banner-box img { width: 100px; height: 100px; border-radius: 18px; object-fit: cover; margin-bottom: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+.game-banner-box h2 { color: #d6c1ff; font-size: 22px; }
+.price-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 25px; }
+.price-card { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.05); padding: 16px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+.price-card:hover { border-color: #bb86fc; background: rgba(187, 134, 252, 0.05); }
+.price-card.selected { border-color: #bb86fc; background: rgba(187, 134, 252, 0.15); box-shadow: 0 0 12px rgba(187,134,252,0.3); }
+.price-card .item-n { font-weight: bold; color: #fff; font-size: 15px; }
+.price-card .item-p { color: #bb86fc; font-weight: bold; font-size: 16px; }
+.footer-nav { background: rgba(20, 18, 42, 0.95); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; }
+.btn-order-go { padding: 12px 24px; background: #bb86fc; color: #0c0b1a; border: none; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.3s; }
+.btn-order-go:hover { background: #d6c1ff; }
+.btn-back-home { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 14px; }
+</style>
+</head>
+<body>
 
+<div class="shop-container">
+  <div class="game-banner-box">
+    <img id="gameIcon" src="" alt="Game Icon" style="display:none;">
+    <h2 id="gameTitle">Loading Game...</h2>
+  </div>
+
+  <h3 style="font-size: 15px; margin-bottom: 12px; color: #e1d5ff;"><i class="fa-solid fa-star"></i> ပစ္စည်းအမျိုးအစား ရွေးချယ်ပါ</h3>
+  
+  <div class="price-grid" id="customerPriceGrid">
+    <p style="font-size: 13px; color: rgba(255,255,255,0.4); text-align: center; padding: 20px;">ပစ္စည်းစာရင်းများ ဆွဲတင်နေသည်...</p>
+  </div>
+
+  <div class="footer-nav">
+    <a href="index.html" class="btn-back-home"><i class="fa-solid fa-house"></i> Home သို့</a>
+    <button class="btn-order-go" id="btnNextCheckout">ဝယ်ယူရန် ရှေ့သို့ဆက်သွားမည် <i class="fa-solid fa-chevron-right"></i></button>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDNLBZM6kHuoQ4ZY-dP-6MeLNr1ZIwlmq4",
+    authDomain: "royal-game-shop-1089f.firebaseapp.com",
+    databaseURL: "https://royal-game-shop-1089f-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "royal-game-shop-1089f",
+    storageBucket: "royal-game-shop-1089f.firebasestorage.app",
+    messagingSenderId: "1050007150235",
+    appId: "1:1050007150235:web:f6e1a97f5012cd2ffe303e"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // URL မှ ဂိမ်း ID ကို ဖတ်ယူခြင်း
+  const urlParams = new URLSearchParams(window.location.search);
+  const gameId = urlParams.get('cat');
+
+  if(!gameId) {
+    alert("ဂိမ်းအမျိုးအစား ရွေးချယ်မှု မှားယွင်းနေပါသည်။");
+    window.location.href = "index.html";
+  }
+
+  let selectedItemName = "";
+  let selectedItemPrice = 0;
+  let currentGameName = "";
+
+  // 🎯 ရွေးချယ်လိုက်သော ဂိမ်းအမည်နှင့် ပုံတစ်မျိုးတည်းကိုသာ ဆွဲပြခြင်း (မရောအောင်)
+  onValue(ref(db, `categories/${gameId}`), (snapshot) => {
+    if(snapshot.exists()) {
+      const data = snapshot.val();
+      currentGameName = data.name;
+      document.getElementById('gameTitle').innerText = data.name;
+      const icon = document.getElementById('gameIcon');
+      icon.src = data.image;
+      icon.style.display = "inline-block";
+    } else {
+      document.getElementById('gameTitle').innerText = "Game Not Found";
+    }
+  });
+
+  // 🎯 ဤဂိမ်းတစ်ခုတည်းနှင့် သက်ဆိုင်သော စျေးနှုန်းစာရင်းကိုသာ ဆွဲပြခြင်း
+  onValue(ref(db, `game_products/${gameId}`), (snapshot) => {
+    const grid = document.getElementById('customerPriceGrid');
+    grid.innerHTML = "";
+    let hasItems = false;
+    
+    snapshot.forEach((child) => {
+      hasItems = true;
+      const item = child.val();
+      
+      const card = document.createElement('div');
+      card.className = "price-card";
+      card.innerHTML = `
+        <span class="item-n">${item.name}</span>
+        <span class="item-p">${parseInt(item.price).toLocaleString()} Ks</span>`;
+      
+      // စျေးနှုန်းကတ်ကို ထိလိုက်လျှင် အရောင်ပြောင်းပြီး မှတ်သားထားမည့်စနစ်
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.price-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedItemName = item.name;
+        selectedItemPrice = item.price;
+      });
+      
+      grid.appendChild(card);
+    });
+    
+    if(!hasItems) grid.innerHTML = `<p style="font-size: 13px; color: rgba(255,255,255,0.4); text-align: center; padding: 20px;">လောလောဆယ် ဝယ်ယူရန် ပစ္စည်းစာရင်း မရှိသေးပါ။</p>`;
+  });
+
+  // ဝယ်ယူရန် ရှေ့သို့ဆက်သွားမည် ခလုတ်
+  document.getElementById('btnNextCheckout').addEventListener('click', () => {
+    if(!selectedItemName || !selectedItemPrice) {
+      return alert("ကျေးဇူးပြု၍ ဝယ်ယူလိုသည့် ပစ္စည်း/နှုန်းထားကို အရင်ရွေးချယ်ပေးပါ ခင်ဗျာ။");
+    }
+    // ရွေးချယ်လိုက်တဲ့ အချက်အလက်တွေကို နောက်စာမျက်နှာ (checkout.html) ဆီကို သယ်သွားပေးခြင်း
+    window.location.href = `checkout.html?gameId=${gameId}&gameName=${encodeURIComponent(currentGameName)}&itemName=${encodeURIComponent(selectedItemName)}&price=${selectedItemPrice}`;
+  });
+</script>
+</body>
+</html>
