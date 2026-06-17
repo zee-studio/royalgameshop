@@ -1,1 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Manage Game Items</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
+body{ background:#090812; color:#fff; padding: 20px; }
+.container { max-width: 800px; margin: auto; background: #131124; padding: 25px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+h2 { color: #bb86fc; }
+h3 { color: #00cc66; margin-bottom: 5px; }
+.btn-back { padding: 8px 16px; background: rgba(255,255,255,0.08); color: #fff; border-radius: 12px; text-decoration: none; font-size: 13px; border: 1px solid rgba(255,255,255,0.15); }
+.form-box { background: rgba(255,255,255,0.02); padding: 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
+.form-box input { width: 100%; padding: 12px; margin-bottom: 12px; background: #000; border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 12px; outline: none; }
+.form-box input:focus { border-color: #bb86fc; }
+.btn-save { width: 100%; padding: 12px; background: #bb86fc; border: none; border-radius: 12px; color: #0c0b1a; font-size: 15px; font-weight: bold; cursor: pointer; }
+.item-list { display: flex; flex-direction: column; gap: 10px; }
+.item-card { background: rgba(255,255,255,0.04); padding: 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
+.btn-delete { background: none; border: none; color: #ff4f4f; cursor: pointer; font-size: 16px; }
+</style>
+</head>
+<body>
 
+<div class="container">
+  <div class="header">
+    <div>
+      <p style="font-size: 12px; color: #bb86fc;">Game Name</p>
+      <h2 id="targetGameName">Loading...</h2>
+    </div>
+    <a href="admin.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Dashboard သို့ပြန်ရန်</a>
+  </div>
+
+  <div class="form-box">
+    <h3 style="font-size: 15px; margin-bottom: 15px;"><i class="fa-solid fa-plus-circle"></i> ပစ္စည်းနှင့် စျေးနှုန်းအသစ်ထည့်ရန်</h3>
+    <input type="text" id="itemName" placeholder="ပစ္စည်းအမည် (ဥပမာ - 60 UC / 86 Diamonds)">
+    <input type="number" id="itemPrice" placeholder="စျေးနှုန်း (ဥပမာ - 3500)">
+    <button class="btn-save" id="btnAddItem">စျေးနှုန်းစာရင်း သိမ်းဆည်းမည်</button>
+  </div>
+
+  <div class="form-box">
+    <h4 style="font-size: 14px; margin-bottom: 15px; color: rgba(255,255,255,0.6);">လက်ရှိသတ်မှတ်ထားသော စျေးနှုန်းများ</h4>
+    <div class="item-list" id="itemsContainer">
+      <p style="font-size: 12px; color: rgba(255,255,255,0.4); text-align: center;">စျေးနှုန်းများ ဆွဲတင်နေသည်...</p>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDNLBZM6kHuoQ4ZY-dP-6MeLNr1ZIwlmq4",
+    authDomain: "royal-game-shop-1089f.firebaseapp.com",
+    databaseURL: "https://royal-game-shop-1089f-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "royal-game-shop-1089f",
+    storageBucket: "royal-game-shop-1089f.firebasestorage.app",
+    messagingSenderId: "1050007150235",
+    appId: "1:1050007150235:web:f6e1a97f5012cd2ffe303e"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // URL မှ ဂိမ်း ID ကို ဖတ်ယူခြင်း
+  const urlParams = new URLSearchParams(window.location.search);
+  const gameId = urlParams.get('cat');
+
+  if(!gameId) {
+    alert("ဂိမ်းအမျိုးအစား ရွေးချယ်မှု မှားယွင်းနေပါသည်။");
+    window.location.href = "admin.html";
+  }
+
+  // ဂိမ်းအမည်ကို ရှာဖွေဖော်ပြခြင်း
+  onValue(ref(db, `categories/${gameId}`), (snapshot) => {
+    if(snapshot.exists()) {
+      document.getElementById('targetGameName').innerText = snapshot.val().name;
+    } else {
+      document.getElementById('targetGameName').innerText = "မသိရှိသောဂိမ်း";
+    }
+  });
+
+  // ဂိမ်းအလိုက် သီးသန့် စျေးနှုန်းစာရင်းများကို ဖတ်ယူပြသခြင်း (မရောစေရန်)
+  onValue(ref(db, `game_products/${gameId}`), (snapshot) => {
+    const container = document.getElementById('itemsContainer');
+    container.innerHTML = "";
+    let hasItems = false;
+    snapshot.forEach((child) => {
+      hasItems = true;
+      const key = child.key; const item = child.val();
+      container.innerHTML += `
+        <div class="item-card">
+          <div><strong>${item.name}</strong> - <span style="color:#00ff66;">${parseInt(item.price).toLocaleString()} Ks</span></div>
+          <button class="btn-delete" data-id="${key}"><i class="fa-solid fa-trash-can"></i></button>
+        </div>`;
+    });
+    if(!hasItems) container.innerHTML = `<p style="font-size: 12px; color: rgba(255,255,255,0.4); text-align: center;">စျေးနှုန်းစာရင်း မရှိသေးပါ။</p>`;
+    
+    document.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', (e) => {
+      const itemId = e.target.closest('button').dataset.id;
+      if(confirm("ဤစျေးနှုန်းစာရင်းကို ဖျက်ရန် သေချာပါသလား?")) remove(ref(db, `game_products/${gameId}/${itemId}`));
+    }));
+  });
+
+  // စျေးနှုန်းအသစ်သိမ်းဆည်းခြင်း
+  document.getElementById('btnAddItem').addEventListener('click', () => {
+    const name = document.getElementById('itemName').value;
+    const price = document.getElementById('itemPrice').value;
+    if(!name || !price) return alert("အချက်အလက် ပြည့်စုံအောင် ဖြည့်ပါ။");
+
+    push(ref(db, `game_products/${gameId}`), { name: name, price: parseInt(price) }).then(() => {
+      alert("စျေးနှုန်းစာရင်း ထည့်သွင်းပြီးပါပြီ။");
+      document.getElementById('itemName').value = ""; document.getElementById('itemPrice').value = "";
+    });
+  });
+</script>
+</body>
+</html>
