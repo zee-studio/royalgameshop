@@ -7,72 +7,86 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 *{ margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
-body{ background:#0c0b1a; color:#fff; padding: 20px; }
-.admin-container { max-width: 800px; margin: auto; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 24px; }
-h2 { color: #bb86fc; text-align: center; margin-bottom: 20px; font-size: 26px; }
+body{ background:#090812; color:#fff; padding: 20px; }
+.admin-container { max-width: 900px; margin: auto; background: #131124; border: 1px solid rgba(255,255,255,0.08); padding: 25px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+.header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+h2 { color: #bb86fc; font-size: 24px; }
+.btn-back-home { padding: 8px 16px; background: rgba(255,255,255,0.08); color: #fff; border-radius: 12px; text-decoration: none; font-size: 13px; border: 1px solid rgba(255,255,255,0.15); transition: 0.3s; }
+.btn-back-home:hover { background: #ff4f4f; border-color: #ff4f4f; }
 .admin-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px; }
-.stat-box { background: rgba(187, 134, 252, 0.1); border: 1px solid rgba(187, 134, 252, 0.2); padding: 15px; border-radius: 14px; text-align: center; }
-.stat-box h4 { font-size: 22px; color: #bb86fc; margin-top: 5px; }
-.admin-section { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 18px; border-radius: 16px; margin-bottom: 20px; }
-.admin-section h3 { font-size: 16px; color: #d6c1ff; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px; }
-.admin-form input { width: 100%; padding: 12px; margin-bottom: 10px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 10px; outline: none; }
+.stat-box { background: rgba(187, 134, 252, 0.05); border: 1px solid rgba(187, 134, 252, 0.15); padding: 18px; border-radius: 16px; text-align: center; }
+.stat-box p { font-size: 13px; color: rgba(255,255,255,0.6); }
+.stat-box h4 { font-size: 24px; color: #00ff66; margin-top: 5px; font-weight: bold; }
+#statViews { color: #bb86fc; }
+.admin-section { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 18px; margin-bottom: 20px; }
+.admin-section h3 { font-size: 16px; color: #d6c1ff; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.admin-form input { width: 100%; padding: 12px 15px; margin-bottom: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 12px; outline: none; font-size: 14px; }
 .admin-form input:focus { border-color: #bb86fc; }
-.auth-btn { width: 100%; padding: 12px; background: #bb86fc; border: none; border-radius: 12px; color: #0c0b1a; font-size: 15px; font-weight: bold; cursor: pointer; }
-.upload-tip { font-size: 12px; color: #00cc66; margin-bottom: 10px; line-height: 1.5; background: rgba(0,204,102,0.1); padding: 8px; border-radius: 8px; border: 1px dashed #00cc66; }
+.auth-btn { width: 100%; padding: 12px; background: #bb86fc; border: none; border-radius: 12px; color: #0c0b1a; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+.auth-btn:hover { background: #d6c1ff; }
+.upload-tip { font-size: 12px; color: #00cc66; margin-bottom: 15px; line-height: 1.6; background: rgba(0,204,102,0.06); padding: 10px; border-radius: 10px; border: 1px dashed rgba(0,204,102,0.3); }
 .upload-tip a { color: #fff; font-weight: bold; text-decoration: underline; }
-.order-list { display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto; }
-.order-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
-.admin-actions button { padding: 6px 12px; margin-left: 5px; border: none; border-radius: 8px; font-size: 12px; cursor: pointer; font-weight: bold; }
+.order-list { display: flex; flex-direction: column; gap: 12px; max-height: 300px; overflow-y: auto; }
+.order-item { background: rgba(255,255,255,0.04); padding: 14px; border-radius: 14px; font-size: 13px; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+.admin-actions button { padding: 8px 16px; margin-get: 6px; border: none; border-radius: 10px; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.2s; }
 .btn-approve { background: #00cc66; color: #fff; }
 .btn-reject { background: #ff4f4f; color: #fff; }
-.game-item-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
-.game-mini-card { background: rgba(255,255,255,0.05); padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-.btn-delete { background: #ff3333; color: white; border: none; padding: 3px 8px; border-radius: 6px; cursor: pointer; font-size: 11px; }
+.btn-approve:hover { background: #00ee77; }
+.btn-reject:hover { background: #ff6666; }
+.game-item-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
+@media(max-width: 600px) { .game-item-list { grid-template-columns: 1fr; } .admin-stats { grid-template-columns: 1fr; } }
+.game-mini-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 10px 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+.btn-delete { background: rgba(255, 79, 79, 0.1); color: #ff4f4f; border: 1px solid rgba(255, 79, 79, 0.2); padding: 5px 10px; border-radius: 8px; cursor: pointer; font-size: 12px; transition: 0.3s; }
+.btn-delete:hover { background: #ff4f4f; color: #fff; }
 </style>
 </head>
 <body>
 
 <div class="admin-container">
-  <h2>Royal Game Shop - Admin Dashboard 👑</h2>
+  <div class="header-area">
+    <h2>Royal Game Shop - Control Panel 👑</h2>
+    <a href="index.html" class="btn-back-home" id="btnAdminLogout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+  </div>
 
   <div class="admin-stats">
-    <div class="stat-box"><p>ဝင်ကြည့်သူ (Total Views)</p><h4 id="statViews">0</h4></div>
-    <div class="stat-box"><p>စုစုပေါင်းဝင်ငွေ (Total Revenue)</p><h4 id="statRevenue">0 Ks</h4></div>
+    <div class="stat-box"><p><i class="fa-solid fa-eye"></i> Website ဝင်ကြည့်သူစုစုပေါင်း</p><h4 id="statViews">0</h4></div>
+    <div class="stat-box"><p><i class="fa-solid fa-wallet"></i> အောင်မြင်ပြီး ငွေဝင်မှု (Revenue)</p><h4 id="statRevenue">0 Ks</h4></div>
   </div>
 
   <div class="admin-section">
-    <h3>+ Game အမျိုးအစားသစ်ထည့်ရန်</h3>
+    <h3><i class="fa-solid fa-gamepad"></i> Game အမျိုးအစားအသစ်များ ထည့်သွင်းရန်</h3>
     <div class="admin-form">
       <div class="upload-tip">
-        💡 <b>ပုံတင်နည်းလမ်းညွှန်:</b> Google Drive ရဲ့ Share Link ကို တန်းထည့်နိုင်သလို ဖုန်း/PC ထဲကပုံကို <a href="https://imgbb.com" target="_blank">ImgBB.com</a> မှာ အလကားသွားတင်ပြီး ရလာတဲ့ Link ကို ထည့်ရင်လည်း ရပါတယ်။
+        💡 <b>ပုံတင်နည်းလမ်းညွှန်:</b> ဖုန်း သို့မဟုတ် PC ထဲကပုံကို <a href="https://imgbb.com" target="_blank">ImgBB.com</a> တွင် အခမဲ့တင်ပြီး ရရှိလာသော Direct Link ကို ထည့်သွင်းပါ။ Google Drive Share Link ကိုလည်း တိုက်ရိုက်ထည့်သွင်းအသုံးပြုနိုင်ပါသည်။
       </div>
-      <input type="text" id="newGameName" placeholder="ဂိမ်းနာမည် (ဥပမာ - PUBG Mobile)">
-      <input type="text" id="newGameImg" placeholder="ပုံ Link (Drive Link သို့မဟုတ် ImgBB Link)">
-      <button class="auth-btn" id="btnAddGame">ဂိမ်းအသစ်သိမ်းမည်</button>
+      <input type="text" id="newGameName" placeholder="ဂိမ်းအမည် ထည့်ပါ (ဥပမာ - Mobile Legends)">
+      <input type="text" id="newGameImg" placeholder="ဓါတ်ပုံ Link ကို ဤနေရာတွင် ထည့်ပါ">
+      <button class="auth-btn" id="btnAddGame">ဂိမ်းအသစ်ကို သိမ်းဆည်းမည်</button>
     </div>
     
-    <h4 style="font-size:14px; margin-top:15px; color:#bb86fc;">လက်ရှိဂိမ်းများ ပြန်ဖျက်ရန်စာရင်း</h4>
+    <h4 style="font-size:13px; margin-top:20px; color:#bb86fc; font-weight:600;">လက်ရှိရောင်းချနေသော ဂိမ်းစာရင်းများ</h4>
     <div class="game-item-list" id="adminGameList"></div>
   </div>
 
   <div class="admin-section">
-    <h3>+ Banner ပုံအသစ်ထည့်ရန်</h3>
+    <h3><i class="fa-solid fa-images"></i> Homepage Banner ဆလိုက်ပုံအသစ်ထည့်ရန်</h3>
     <div class="admin-form">
-      <input type="text" id="newBannerImg" placeholder="Banner ပုံ Link">
-      <button class="auth-btn" id="btnAddBanner">Banner သိမ်းမည်</button>
+      <input type="text" id="newBannerImg" placeholder="Banner ပုံ၏ Link ကို ထည့်ပါ">
+      <button class="auth-btn" id="btnAddBanner">Banner ပုံအသစ် သိမ်းမည်</button>
     </div>
   </div>
 
   <div class="admin-section">
-    <h3>ဂိမ်းအပ်နှံမှုဖောင်များ စီမံရန် (Pending Orders)</h3>
+    <h3><i class="fa-solid fa-receipt"></i> ဝယ်ယူမှုဖောင်များ စီမံခန့်ခွဲခြင်း (Pending Orders)</h3>
     <div class="order-list" id="adminOrderList">
-      <p style="font-size:12px; color:rgba(255,255,255,0.4);">ဖောင်တင်ထားသူမရှိပါ။</p>
+      <p style="font-size:12px; color:rgba(255,255,255,0.4); text-align:center; padding:10px;">လောလောဆယ် စစ်ဆေးရန် ဖောင်များမရှိသေးပါ။</p>
     </div>
   </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getDatabase, ref, set, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
   const firebaseConfig = {
@@ -87,9 +101,18 @@ h2 { color: #bb86fc; text-align: center; margin-bottom: 20px; font-size: 26px; }
   };
 
   const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
   const db = getDatabase(app);
 
-  // 💡 Google Drive Link ကို Direct Image Link သို့ ပြောင်းပေးသည့် စနစ်အား ပြင်ဆင်ပြီးဗားရှင်း
+  // လုံခြုံရေးအရ Admin မဟုတ်လျှင် မူရင်းဆိုက်ကို ပြန်မောင်းထုတ်မည်
+  onAuthStateChanged(auth, (user) => {
+    if(!user || user.email !== "royaladmin@gmail.com") {
+      alert("ဤစာမျက်နှာကို ဝင်ရောက်ခွင့်မရှိပါ။");
+      window.location.href = "index.html";
+    }
+  });
+
+  // Google Drive Link ကို Direct ပုံဖြစ်အောင် သေချာပြင်ဆင်ပေးသည့် စနစ်
   function cleanImageLink(url) {
     if(url.includes("drive.google.com")) {
       let parts = url.split('/d/');
@@ -106,45 +129,48 @@ h2 { color: #bb86fc; text-align: center; margin-bottom: 20px; font-size: 26px; }
     return url;
   }
 
-  // Load Views
+  // Load Traffic Views
   onValue(ref(db, 'site_analytics/views'), (snap) => {
-    document.getElementById('statViews').innerText = snap.val() || 0;
+    document.getElementById('statViews').innerText = (snap.val() || 0).toLocaleString();
   });
 
-  // Load Games List for delete
+  // Load Games List
   onValue(ref(db, 'categories'), (snapshot) => {
     const list = document.getElementById("adminGameList"); list.innerHTML = "";
     snapshot.forEach((child) => {
       const key = child.key; const c = child.val();
-      list.innerHTML += `<div class="game-mini-card"><span>${c.name}</span><button class="btn-delete" data-id="${key}"><i class="fa-solid fa-trash"></i> ဖျက်</button></div>`;
+      list.innerHTML += `<div class="game-mini-card"><span>${c.name}</span><button class="btn-delete" data-id="${key}"><i class="fa-solid fa-trash"></i> ဖျက်မည်</button></div>`;
     });
     document.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', (e) => {
       const id = e.target.closest('button').dataset.id;
-      if(confirm("ဤဂိမ်းအမျိုးအစားကို ဖျက်ပစ်ရန် သေချာပါသလား?")) remove(ref(db, `categories/${id}`));
+      if(confirm("ဤဂိမ်းအမျိုးအစားကို ဖျက်ရန် သေချာပါသလား?")) remove(ref(db, `categories/${id}`));
     }));
   });
 
-  // Add Game
+  // Add Game Category
   document.getElementById('btnAddGame').addEventListener('click', () => {
     const name = document.getElementById('newGameName').value;
     let img = document.getElementById('newGameImg').value;
-    if(!name || !img) return alert("ဖြည့်စွက်ပါ");
-    
-    img = cleanImageLink(img.trim()); 
-
-    push(ref(db, 'categories'), { name: name, image: img })
-    .then(() => { alert("ဂိမ်းထည့်ပြီးပါပြီ"); document.getElementById('newGameName').value=""; document.getElementById('newGameImg').value=""; });
+    if(!name || !img) return alert("ကျေးဇူးပြု၍ အချက်အလက်အပြည့်အစုံ ဖြည့်စွက်ပေးပါ။");
+    img = cleanImageLink(img.trim());
+    push(ref(db, 'categories'), { name: name, image: img }).then(() => {
+      alert("ဂိမ်းအမျိုးအစားအသစ်ကို အောင်မြင်စွာ ထည့်သွင်းပြီးပါပြီ။");
+      document.getElementById('newGameName').value=""; document.getElementById('newGameImg').value="";
+    });
   });
 
-  // Add Banner
+  // Add Carousel Banner
   document.getElementById('btnAddBanner').addEventListener('click', () => {
     let img = document.getElementById('newBannerImg').value;
-    if(!img) return alert("ဖြည့်စွက်ပါ");
+    if(!img) return alert("ကျေးဇူးပြု၍ ပုံ Link ထည့်သွင်းပါ။");
     img = cleanImageLink(img.trim());
-    push(ref(db, 'banners'), { image: img }).then(() => { alert("Banner ထည့်ပြီးပါပြီ"); document.getElementById('newBannerImg').value=""; });
+    push(ref(db, 'banners'), { image: img }).then(() => {
+      alert("ဆလိုက် Banner ပုံအသစ် ထည့်သွင်းပြီးပါပြီ။");
+      document.getElementById('newBannerImg').value="";
+    });
   });
 
-  // Load Forms & Orders
+  // Load Incoming Order Forms
   onValue(ref(db, 'orders'), (snapshot) => {
     const list = document.getElementById('adminOrderList'); list.innerHTML = "";
     let totalRevenue = 0; let hasPending = false;
@@ -154,24 +180,24 @@ h2 { color: #bb86fc; text-align: center; margin-bottom: 20px; font-size: 26px; }
       if(o.status === "pending") {
         hasPending = true;
         list.innerHTML += `
-          <div class="order-item" style="flex-direction:column; align-items:flex-start; gap:5px;">
-            <div><strong>User:</strong> ${o.userEmail}</div>
-            <div><strong>Game:</strong> ${o.gameName} (${o.amount} Ks)</div>
-            <div class="admin-actions" style="align-self:flex-end;">
-              <button class="btn-approve" data-id="${key}">Approve</button>
-              <button class="btn-reject" data-id="${key}">Reject</button>
+          <div class="order-item" style="flex-direction:column; align-items:flex-start; gap:6px;">
+            <div><strong>ဝယ်သူအကောင့်:</strong> ${o.userEmail}</div>
+            <div><strong>ဂိမ်းအမျိုးအစား:</strong> ${o.gameName} (${parseInt(o.amount).toLocaleString()} Ks)</div>
+            <div class="admin-actions" style="width:100%; text-align:right; margin-top:5px;">
+              <button class="btn-approve" data-id="${key}"><i class="fa-solid fa-check"></i> Approve</button>
+              <button class="btn-reject" data-id="${key}"><i class="fa-solid fa-xmark"></i> Reject</button>
             </div>
           </div>`;
       }
     });
     document.getElementById('statRevenue').innerText = totalRevenue.toLocaleString() + " Ks";
-    if(!hasPending) list.innerHTML = `<p style="font-size:12px; color:rgba(255,255,255,0.4);">လောလောဆယ် ဖောင်သစ်မရှိပါ။</p>`;
-    
-    document.querySelectorAll('.btn-approve').forEach(b => b.addEventListener('click', (e) => updateStatus(e.target.dataset.id, 'approved')));
-    document.querySelectorAll('.btn-reject').forEach(b => b.addEventListener('click', (e) => updateStatus(e.target.dataset.id, 'rejected')));
+    if(!hasPending) list.innerHTML = `<p style="font-size:12px; color:rgba(255,255,255,0.4); text-align:center; padding:10px;">လောလောဆယ် စစ်ဆေးရန် ဖောင်သစ်မရှိပါ။</p>`;
+    document.querySelectorAll('.btn-approve').forEach(b => b.addEventListener('click', (e) => updateStatus(e.target.closest('button').dataset.id, 'approved')));
+    document.querySelectorAll('.btn-reject').forEach(b => b.addEventListener('click', (e) => updateStatus(e.target.closest('button').dataset.id, 'rejected')));
   });
 
   function updateStatus(id, stat) { update(ref(db, `orders/${id}`), { status: stat }); }
+  document.getElementById('btnAdminLogout').addEventListener('click', async () => { await signOut(auth); });
 </script>
 </body>
 </html>
