@@ -1,4 +1,4 @@
-l<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -35,9 +35,11 @@ body{ background:#0c0b1a; color:#fff; padding-top:90px; }
 main{ padding:20px; text-align:center; }
 .center-title{ font-size:26px; color:#d6c1ff; margin-bottom:22px; }
 .game-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
-.game-card{ background:rgba(255,255,255,0.07); border-radius:20px; padding:12px; text-decoration:none; color:#fff; transition:.3s; }
-.game-card:hover{ transform:translateY(-6px); }
-.game-card img{ width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:14px; margin-bottom:10px; }
+.game-card{ background:rgba(255,255,255,0.07); border-radius:20px; padding:12px; text-decoration:none; color:#fff; transition:.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.05); }
+.game-card:hover{ transform:translateY(-6px); border-color: rgba(187, 134, 252, 0.4); }
+.game-card a { text-decoration: none; color: #fff; width: 100%; text-align: center; }
+.game-card img{ width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:14px; margin-bottom:10px; background: rgba(0,0,0,0.2); }
+.game-card span { font-size: 14px; font-weight: bold; display: block; margin-top: 5px; color: #e1d5ff; }
 .auth-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s ease; z-index: 2000; padding: 20px; }
 .auth-overlay.active { opacity: 1; pointer-events: auto; }
 .auth-card { width: 100%; max-width: 400px; background: rgba(20, 18, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; max-height: 85vh; overflow-y: auto; }
@@ -93,7 +95,9 @@ main{ padding:20px; text-align:center; }
 
 <main>
   <h2 class="center-title">Choose Game</h2>
-  <div class="game-grid" id="gameGrid"></div>
+  <div class="game-grid" id="gameGrid">
+    <p style="font-size:14px; color:rgba(255,255,255,0.4); grid-column: 1/-1; padding: 20px;">ဂိမ်းအမျိုးအစားများ ဆွဲတင်နေသည်...</p>
+  </div>
 </main>
 
 <div class="auth-overlay" id="authModal">
@@ -186,6 +190,7 @@ function initSliderAnimation() {
   // Load Banners
   onValue(ref(db, 'banners'), (snapshot) => {
     const slider = document.querySelector(".banner-slider"); const dots = document.querySelector(".dots");
+    if(!slider) return;
     slider.querySelectorAll("img").forEach(i => i.remove()); dots.innerHTML = "";
     snapshot.forEach((child) => {
       const b = child.val(); const img = document.createElement("img"); img.src = b.image; slider.appendChild(img);
@@ -194,19 +199,28 @@ function initSliderAnimation() {
     initSliderAnimation();
   });
 
-  // Load Game Categories
+  // 👑 Admin တင်လိုက်သည့် Categories အားလုံးကို အလိုအလျောက် ဆွဲပြပေးမည့်နေရာ
   onValue(ref(db, 'categories'), (snapshot) => {
-    const grid = document.getElementById("gameGrid"); grid.innerHTML = "";
+    const grid = document.getElementById("gameGrid"); 
+    if(!grid) return;
+    grid.innerHTML = "";
+    
+    let hasGames = false;
     snapshot.forEach((child) => {
+      hasGames = true;
       const key = child.key; const c = child.val();
       grid.innerHTML += `
         <div class="game-card">
-          <a href="products.html?cat=${key}" style="text-decoration:none; color:#fff;">
-            <img src="${c.image}">
+          <a href="products.html?cat=${key}">
+            <img src="${c.image}" alt="${c.name}">
             <span>${c.name}</span>
           </a>
         </div>`;
     });
+    
+    if(!hasGames) {
+      grid.innerHTML = `<p style="font-size:14px; color:rgba(255,255,255,0.4); grid-column: 1/-1; padding:20px;">တင်ထားသော ဂိမ်းအမျိုးအစားမရှိသေးပါ။</p>`;
+    }
   });
 
   // Monitor Auth State (Admin ဆိုရင် admin.html ကို တန်းပို့မယ်)
@@ -214,23 +228,24 @@ function initSliderAnimation() {
     const statusBtn = document.getElementById('userStatusBtn'); const mobileBtn = document.getElementById('mobileLoginBtn');
     if (user) {
       if(user.email === "royaladmin@gmail.com") {
-        window.location.href = "admin.html"; // 👑 Admin ဖြစ်လို့ dashboard ကို တန်းပို့ပေးခြင်း
+        window.location.href = "admin.html"; 
         return;
       }
       isLoggedIn = true; document.getElementById('profileEmail').innerText = user.email;
-      statusBtn.innerText = "Profile"; statusBtn.style.background = "#00cc66"; statusBtn.style.color = "#fff";
+      if(statusBtn) { statusBtn.innerText = "Profile"; statusBtn.style.background = "#00cc66"; statusBtn.style.color = "#fff"; }
       if(mobileBtn) mobileBtn.innerText = "My Profile";
       loadUserOrdersHistory(user.uid);
     } else {
       isLoggedIn = false;
-      statusBtn.innerText = "Login"; statusBtn.style.background = "#bb86fc"; statusBtn.style.color = "#0c0b1a";
+      if(statusBtn) { statusBtn.innerText = "Login"; statusBtn.style.background = "#bb86fc"; statusBtn.style.color = "#0c0b1a"; }
       if(mobileBtn) mobileBtn.innerText = "Login / Register";
     }
   });
 
   function loadUserOrdersHistory(uid) {
     onValue(ref(db, 'orders'), (snapshot) => {
-      const list = document.getElementById('userOrderList'); list.innerHTML = ""; let hasData = false;
+      const list = document.getElementById('userOrderList'); if(!list) return;
+      list.innerHTML = ""; let hasData = false;
       snapshot.forEach((child) => {
         const o = child.val();
         if(o.userId === uid) {
