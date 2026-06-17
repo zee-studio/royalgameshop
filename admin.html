@@ -89,16 +89,21 @@ h2 { color: #bb86fc; text-align: center; margin-bottom: 20px; font-size: 26px; }
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  // 💡 Google Drive Link ကို Direct Image Link သို့ အော်တိုပြောင်းပေးမည့် Function
+  // 💡 Google Drive Link ကို Direct Image Link သို့ ပြောင်းပေးသည့် စနစ်အား ပြင်ဆင်ပြီးဗားရှင်း
   function cleanImageLink(url) {
     if(url.includes("drive.google.com")) {
       let parts = url.split('/d/');
       if(parts.length > 1) {
         let id = parts[1].split('/')[0];
-        return `https://lh3.googleusercontent.com/u/0/d/${id}`;
+        return `https://lh3.googleusercontent.com/d/${id}`;
+      }
+      let fileParts = url.split('id=');
+      if(fileParts.length > 1) {
+        let id = fileParts[1].split('&')[0];
+        return `https://lh3.googleusercontent.com/d/${id}`;
       }
     }
-    return url; // Google Drive မဟုတ်ရင် မူရင်းအတိုင်းထားမယ်
+    return url;
   }
 
   // Load Views
@@ -111,10 +116,11 @@ h2 { color: #bb86fc; text-align: center; margin-bottom: 20px; font-size: 26px; }
     const list = document.getElementById("adminGameList"); list.innerHTML = "";
     snapshot.forEach((child) => {
       const key = child.key; const c = child.val();
-      list.innerHTML += `<div class="game-mini-card"><span>${c.name}</span><button class="btn-delete" data-id="${key}">ဖျက်</button></div>`;
+      list.innerHTML += `<div class="game-mini-card"><span>${c.name}</span><button class="btn-delete" data-id="${key}"><i class="fa-solid fa-trash"></i> ဖျက်</button></div>`;
     });
     document.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', (e) => {
-      if(confirm("သေချာပါသလား?")) remove(ref(db, `categories/${e.target.dataset.id}`));
+      const id = e.target.closest('button').dataset.id;
+      if(confirm("ဤဂိမ်းအမျိုးအစားကို ဖျက်ပစ်ရန် သေချာပါသလား?")) remove(ref(db, `categories/${id}`));
     }));
   });
 
@@ -124,7 +130,7 @@ h2 { color: #bb86fc; text-align: center; margin-bottom: 20px; font-size: 26px; }
     let img = document.getElementById('newGameImg').value;
     if(!name || !img) return alert("ဖြည့်စွက်ပါ");
     
-    img = cleanImageLink(img); // Link ကို ရှင်းလင်းခြင်း
+    img = cleanImageLink(img.trim()); 
 
     push(ref(db, 'categories'), { name: name, image: img })
     .then(() => { alert("ဂိမ်းထည့်ပြီးပါပြီ"); document.getElementById('newGameName').value=""; document.getElementById('newGameImg').value=""; });
@@ -134,7 +140,7 @@ h2 { color: #bb86fc; text-align: center; margin-bottom: 20px; font-size: 26px; }
   document.getElementById('btnAddBanner').addEventListener('click', () => {
     let img = document.getElementById('newBannerImg').value;
     if(!img) return alert("ဖြည့်စွက်ပါ");
-    img = cleanImageLink(img);
+    img = cleanImageLink(img.trim());
     push(ref(db, 'banners'), { image: img }).then(() => { alert("Banner ထည့်ပြီးပါပြီ"); document.getElementById('newBannerImg').value=""; });
   });
 
