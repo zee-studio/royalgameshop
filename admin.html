@@ -28,14 +28,17 @@ h2 { color: #bb86fc; font-size: 24px; }
 .upload-tip a { color: #fff; font-weight: bold; text-decoration: underline; }
 .order-list { display: flex; flex-direction: column; gap: 12px; max-height: 300px; overflow-y: auto; }
 .order-item { background: rgba(255,255,255,0.04); padding: 14px; border-radius: 14px; font-size: 13px; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
-.admin-actions button { padding: 8px 16px; margin-get: 6px; border: none; border-radius: 10px; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+.admin-actions button { padding: 8px 16px; margin-left: 6px; border: none; border-radius: 10px; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.2s; }
 .btn-approve { background: #00cc66; color: #fff; }
 .btn-reject { background: #ff4f4f; color: #fff; }
 .btn-approve:hover { background: #00ee77; }
 .btn-reject:hover { background: #ff6666; }
 .game-item-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
-@media(max-width: 600px) { .game-item-list { grid-template-columns: 1fr; } .admin-stats { grid-template-columns: 1fr; } }
-.game-mini-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 10px 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+@media(max-width: 768px) { .game-item-list { grid-template-columns: 1fr; } .admin-stats { grid-template-columns: 1fr; } }
+.game-mini-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 12px 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+.action-group { display: flex; gap: 8px; align-items: center; }
+.btn-price { background: #00cc66; color: #fff; text-decoration: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; transition: 0.3s; display: inline-flex; align-items: center; gap: 4px; }
+.btn-price:hover { background: #00ff77; color: #000; }
 .btn-delete { background: rgba(255, 79, 79, 0.1); color: #ff4f4f; border: 1px solid rgba(255, 79, 79, 0.2); padding: 5px 10px; border-radius: 8px; cursor: pointer; font-size: 12px; transition: 0.3s; }
 .btn-delete:hover { background: #ff4f4f; color: #fff; }
 </style>
@@ -50,7 +53,7 @@ h2 { color: #bb86fc; font-size: 24px; }
 
   <div class="admin-stats">
     <div class="stat-box"><p><i class="fa-solid fa-eye"></i> Website ဝင်ကြည့်သူစုစုပေါင်း</p><h4 id="statViews">0</h4></div>
-    <div class="stat-box"><p><i class="fa-solid fa-wallet"></i> အောင်မြင်ပြီး ငွေဝင်မှု (Revenue)</p><h4 id="statRevenue">0 Ks</h4></div>
+    <div class="stat-box"><p><i class="fa-solid fa-wallet"></i> အောင်မြင်ပြီး Ngwe ဝင်မှု (Revenue)</p><h4 id="statRevenue">0 Ks</h4></div>
   </div>
 
   <div class="admin-section">
@@ -104,7 +107,6 @@ h2 { color: #bb86fc; font-size: 24px; }
   const auth = getAuth(app);
   const db = getDatabase(app);
 
-  // လုံခြုံရေးအရ Admin မဟုတ်လျှင် မူရင်းဆိုက်ကို ပြန်မောင်းထုတ်မည်
   onAuthStateChanged(auth, (user) => {
     if(!user || user.email !== "royaladmin@gmail.com") {
       alert("ဤစာမျက်နှာကို ဝင်ရောက်ခွင့်မရှိပါ။");
@@ -112,42 +114,41 @@ h2 { color: #bb86fc; font-size: 24px; }
     }
   });
 
-  // Google Drive Link ကို Direct ပုံဖြစ်အောင် သေချာပြင်ဆင်ပေးသည့် စနစ်
   function cleanImageLink(url) {
     if(url.includes("drive.google.com")) {
-      let parts = url.split('/d/');
-      if(parts.length > 1) {
-        let id = parts[1].split('/')[0];
-        return `https://lh3.googleusercontent.com/d/${id}`;
-      }
-      let fileParts = url.split('id=');
-      if(fileParts.length > 1) {
-        let id = fileParts[1].split('&')[0];
-        return `https://lh3.googleusercontent.com/d/${id}`;
-      }
+      let id = "";
+      if(url.includes("/d/")) { id = url.split('/d/')[1].split('/')[0]; }
+      else if(url.includes("id=")) { id = url.split('id=')[1].split('&')[0]; }
+      if(id) return `https://lh3.googleusercontent.com/d/${id}`;
     }
     return url;
   }
 
-  // Load Traffic Views
   onValue(ref(db, 'site_analytics/views'), (snap) => {
     document.getElementById('statViews').innerText = (snap.val() || 0).toLocaleString();
   });
 
-  // Load Games List
+  // 👑 ဂိမ်းစာရင်းပြသခန်းတွင် "စျေးနှုန်းသတ်မှတ်ရန်" ခလုတ်ကို တွဲလျက်ထည့်သွင်းပေးထားသည့်နေရာ
   onValue(ref(db, 'categories'), (snapshot) => {
     const list = document.getElementById("adminGameList"); list.innerHTML = "";
     snapshot.forEach((child) => {
       const key = child.key; const c = child.val();
-      list.innerHTML += `<div class="game-mini-card"><span>${c.name}</span><button class="btn-delete" data-id="${key}"><i class="fa-solid fa-trash"></i> ဖျက်မည်</button></div>`;
+      list.innerHTML += `
+        <div class="game-mini-card">
+          <span><strong>${c.name}</strong></span>
+          <div class="action-group">
+            <a href="admin-products.html?cat=${key}" class="btn-price"><i class="fa-solid fa-tags"></i> စျေးနှုန်းသတ်မှတ်ရန်</a>
+            <button class="btn-delete" data-id="${key}"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>`;
     });
+    
     document.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', (e) => {
       const id = e.target.closest('button').dataset.id;
       if(confirm("ဤဂိမ်းအမျိုးအစားကို ဖျက်ရန် သေချာပါသလား?")) remove(ref(db, `categories/${id}`));
     }));
   });
 
-  // Add Game Category
   document.getElementById('btnAddGame').addEventListener('click', () => {
     const name = document.getElementById('newGameName').value;
     let img = document.getElementById('newGameImg').value;
@@ -159,7 +160,6 @@ h2 { color: #bb86fc; font-size: 24px; }
     });
   });
 
-  // Add Carousel Banner
   document.getElementById('btnAddBanner').addEventListener('click', () => {
     let img = document.getElementById('newBannerImg').value;
     if(!img) return alert("ကျေးဇူးပြု၍ ပုံ Link ထည့်သွင်းပါ။");
@@ -170,7 +170,6 @@ h2 { color: #bb86fc; font-size: 24px; }
     });
   });
 
-  // Load Incoming Order Forms
   onValue(ref(db, 'orders'), (snapshot) => {
     const list = document.getElementById('adminOrderList'); list.innerHTML = "";
     let totalRevenue = 0; let hasPending = false;
