@@ -36,7 +36,7 @@ button:hover { background: #d6c1ff; }
 
 <div class="section">
   <h3>🎲 Game အမျိုးအစားသစ်များ ထည့်သွင်းရန်</h3>
-  <p class="desc-text">💡 ပုံတင်ရန်အတွက် ဖုန်း သို့မဟုတ် PC ထဲကပုံကို ImgBB.com တွင် အခမဲ့တင်ပြီး ရရှိလာသော Direct Link ကို ထည့်သွင်းပါ။ Google Drive Share Link ကိုလည်း တိုက်ရိုက်ထည့်သွင်းနိုင်ပါသည်။</p>
+  <p class="desc-text">💡 ပုံတင်ရန်အတွက် ImgBB.com မှ Direct Link ကို ဖြစ်စေ၊ Google Drive Share Link (Anyone with the link ဖွင့်ထားသောပုံ) ကို ဖြစ်စေ တိုက်ရိုက်ထည့်သွင်းနိုင်ပါသည်။</p>
   <input type="text" id="catName" placeholder="ဂိမ်းနာမည် ထည့်ပါ (ဥပမာ - Mobile Legends)">
   <input type="text" id="catImage" placeholder="ဓါတ်ပုံ Link ကို ဤနေရာတွင် ထည့်ပါ">
   <button id="btnAddCat">ဂိမ်းအသစ်ကို သိမ်းဆည်းမည်</button>
@@ -72,15 +72,20 @@ const SUPABASE_URL = "https://cmiiovretkzjuiespsmx.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtaWlvdnJldGt6anVpZXNwc214Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3NTkzNzYsImV4cCI6MjA5NzMzNTM3Nn0.7JpD4erEqpGCBgQ9TktAWhFSbapQMwvV4WzFLP0fWmA";
 const royalSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// 🛠️ Google Drive Share Link ကို Image Direct Link ဖြစ်အောင် ပြောင်းပေးသော စနစ်
+// 🛠️ Google Drive Link အမှားပြင်ဆင်ပြီးသား စနစ်အသစ်
 function convertToDirectLink(url) {
   if (url.includes("drive.google.com")) {
     let fileId = "";
-    if (url.includes("/d/")) { fileId = url.split("/d/")[1].split("/")[0]; } 
-    else if (url.includes("id=")) { fileId = url.split("id=")[1].split("&")[0]; }
-    if (fileId) { return `https://lh3.googleusercontent.com/d/${fileId}`; }
+    if (url.includes("/d/")) { 
+      fileId = url.split("/d/")[1].split("/")[0]; 
+    } else if (url.includes("id=")) { 
+      fileId = url.split("id=")[1].split("&")[0]; 
+    }
+    if (fileId) { 
+      return `https://drive.google.com/uc?export=view&id=${fileId}`; 
+    }
   }
-  return url; // Google Drive မဟုတ်ရင် မူရင်း Link အတိုင်းပဲ ထားမယ်
+  return url;
 }
 
 async function checkAdmin() {
@@ -113,10 +118,15 @@ document.getElementById('btnAddCat').addEventListener('click', async () => {
   let image = document.getElementById('catImage').value.trim();
   if(!name || !image) return alert("ဂိမ်းနာမည်နှင့် ပုံလင့်ခ်ကို ဖြည့်စွက်ပေးပါဗျာ။");
   
-  image = convertToDirectLink(image); // Link ကို အော်တို စစ်ဆေးပြောင်းလဲခြင်း
-  await royalSupabase.from('categories').insert({ name, image });
-  alert("ဂိမ်းအမျိုးအစားသစ် ထည့်သွင်းပြီးပါပြီ။");
-  window.location.reload();
+  image = convertToDirectLink(image); // Link ပြောင်းလဲခြင်းစနစ်
+  const { error } = await royalSupabase.from('categories').insert({ name, image });
+  
+  if(error) {
+    alert("Error: " + error.message);
+  } else {
+    alert("ဂိမ်းအမျိုးအစားသစ် ထည့်သွင်းပြီးပါပြီ။");
+    window.location.reload();
+  }
 });
 
 // ၂။ Banner ကဏ္ဍ
@@ -160,7 +170,7 @@ window.updateStatus = async (id, status) => { await royalSupabase.from('orders')
 // ၄။ Password Reset စနစ်
 document.getElementById('btnResetUserPassword').addEventListener('click', async () => {
   const email = document.getElementById('resetUserEmail').value.trim();
-  if (!email) return alert("ကျေးဇူးပြု၍ User ၏ Email ကို ရိုက်ထည့်ပေးပါဗျာ။");
+  if (!email) return alert("ကျေးဇူးပြု၍ User ၏ Email ကို အရင်ရိုက်ထည့်ပေးပါဗျာ။");
   if (confirm(`${email} ဆီသို့ Password ပြန်ချိန်းမည့် Link ပို့မှာ သေချာပါသလား?`)) {
     const { error } = await royalSupabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/index.html' });
     if (error) { alert("Error: " + error.message); } 
