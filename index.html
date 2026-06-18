@@ -75,14 +75,14 @@ main{ padding:20px; text-align:center; }
       <a href="about.html">About</a>
       <a href="promo.html">Promo</a>
     </div>
-    <span class="login-trigger-btn" id="userStatusBtn" onclick="openAuthModal()">Login</span>
+    <span class="login-trigger-btn" id="userStatusBtn">Login</span>
   </div>
 </div>
 
 <div class="side-menu" id="sideMenu">
   <a href="about.html">About</a>
   <a href="promo.html">Promo</a>
-  <a href="javascript:void(0)" onclick="toggleMenu(); openAuthModal();" id="mobileLoginBtn">Login / Register</a>
+  <a href="javascript:void(0)" id="mobileLoginBtn">Login / Register</a>
   <a href="https://www.facebook.com/share/1DVMKr6vKX/?mibextid=wwXIfr" target="_blank">Facebook Page</a>
   <a href="www.tiktok.com/@royalgameshopmm" target="_blank">TikTok</a>
   <a href="https://t.me/royalgameshoptgmm" target="_blank">Telegram</a>
@@ -138,7 +138,7 @@ let isLoggedIn = false;
 
 function toggleMenu(){ document.getElementById("sideMenu").classList.toggle("active"); document.querySelector(".overlay").classList.toggle("active"); }
 
-window.openAuthModal = function() {
+function openAuthModal() {
   const modal = document.getElementById('authModal');
   modal.classList.add('active');
   if (isLoggedIn) {
@@ -152,8 +152,8 @@ window.openAuthModal = function() {
   }
 }
 
-window.closeAuthModal = function() { document.getElementById('authModal').classList.remove('active'); }
-window.toggleAuthForm = function() { document.getElementById('loginCard').classList.toggle('hidden'); document.getElementById('registerCard').classList.toggle('hidden'); }
+function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
+function toggleAuthForm() { document.getElementById('loginCard').classList.toggle('hidden'); document.getElementById('registerCard').classList.toggle('hidden'); }
 
 function initSliderAnimation() {
   const imgs = document.querySelectorAll(".banner-slider img"); const dots = document.querySelectorAll(".dots span");
@@ -176,7 +176,11 @@ const ADMIN_EMAIL = "royaladmin@gmail.com";
 
 const SUPABASE_URL = "https://cmiiovretkzjuiespsmx.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ctGYJqLMn0s6MwNx3qIvRw_V5VG-Y3pzeEpCek80X2REbHh1N0pCdzA5TmhKUXh2WVZoTQ==";
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ခလုတ်နှိပ်ခြင်းများကို Event Listener ဖြင့် စိတ်ချရစွာ ချိတ်ဆက်ခြင်း
+document.getElementById('userStatusBtn').addEventListener('click', openAuthModal);
+document.getElementById('mobileLoginBtn').addEventListener('click', () => { toggleMenu(); openAuthModal(); });
 
 checkAuthState();
 
