@@ -138,7 +138,6 @@ let isLoggedIn = false;
 
 function toggleMenu(){ document.getElementById("sideMenu").classList.toggle("active"); document.querySelector(".overlay").classList.toggle("active"); }
 
-// 🛠️ ပြင်ဆင်ချက်- Modal ဖွင့်စနစ် သေချာအလုပ်လုပ်အောင် Global Scope သို့ ရွှေ့ပေးထားပါသည်
 window.openAuthModal = function() {
   const modal = document.getElementById('authModal');
   modal.classList.add('active');
@@ -165,7 +164,7 @@ function initSliderAnimation() {
     timer = setInterval(() => {
       imgs[index].classList.remove("active"); dots[index].classList.remove("active");
       index = (index + 1) % imgs.length;
-      imgs[index].classList.add("active"); dots[index].mathbf{classList}.add("active");
+      imgs[index].classList.add("active"); dots[index].classList.add("active");
     }, 3500);
   }
 }
@@ -173,7 +172,7 @@ function initSliderAnimation() {
 /* ========================================================
    ⚡ SUPABASE INTEGRATION
    ======================================================== */
-const ADMIN_EMAIL = "royaladmin@gmail.com"; // 👑 လူကြီးမင်းရဲ့ အစစ်အမှန် Admin Email
+const ADMIN_EMAIL = "royaladmin@gmail.com"; 
 
 const SUPABASE_URL = "https://cmiiovretkzjuiespsmx.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ctGYJqLMn0s6MwNx3qIvRw_V5VG-Y3pzeEpCek80X2REbHh1N0pCdzA5TmhKUXh2WVZoTQ==";
