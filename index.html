@@ -17,7 +17,6 @@ body{ background:#0c0b1a; color:#fff; padding-top:90px; }
 .nav-links a, .login-trigger-btn{ padding:8px 16px; border-radius:14px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:#fff; font-weight:600; text-decoration:none; margin-left:10px; cursor: pointer; transition: 0.3s; }
 .login-trigger-btn{ background: #bb86fc; color: #0c0b1a; border-color: #bb86fc; }
 .login-trigger-btn:hover{ background: #d6c1ff; }
-.pc-only{ display:none }
 .side-menu{ position:fixed; top:0; left:-260px; width:240px; height:100vh; background:#121028; padding:90px 18px; transition:.35s ease; z-index:1100; }
 .side-menu a{ display:flex; align-items:center; gap:12px; padding:14px; margin-bottom:12px; border-radius:14px; background:rgba(255,255,255,.08); color:#fff; text-decoration:none; font-weight:600; }
 .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.45); opacity:0; pointer-events:none; transition:.3s; z-index:1050; }
@@ -25,7 +24,7 @@ body{ background:#0c0b1a; color:#fff; padding-top:90px; }
 .overlay.active{ opacity:1; pointer-events:auto; }
 .banner-wrapper{ padding:0 14px }
 .banner-slider{ position:relative; width:100%; height:180px; border-radius:20px; overflow:hidden; margin:18px auto; background:#000; }
-@media(min-width:768px){ .banner-slider{ height:320px; } .game-grid{ grid-template-columns:repeat(3,1fr); } .menu-btn{ display:none; } .pc-only{ display:flex; } }
+@media(min-width:768px){ .banner-slider{ height:320px; } .game-grid{ grid-template-columns:repeat(3,1fr); } .menu-btn{ display:none; } }
 @media(min-width:1100px){ main{ max-width:1200px; margin:auto; } .game-grid{ grid-template-columns:repeat(5,1fr); gap:16px; } }
 .banner-slider img{ width:100%; height:100%; object-fit:contain; background:#000; position:absolute; inset:0; opacity:0; transition:opacity .7s ease; }
 .banner-slider img.active{ opacity:1 }
@@ -42,7 +41,7 @@ main{ padding:20px; text-align:center; }
 .game-card span { font-size: 14px; font-weight: bold; display: block; margin-top: 5px; color: #e1d5ff; }
 .auth-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s ease; z-index: 2000; padding: 20px; }
 .auth-overlay.active { opacity: 1; pointer-events: auto; }
-.auth-card { width: 100%; max-width: 400px; background: rgba(20, 18, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; max-height: 85vh; overflow-y: auto; }
+.auth-card { width: 100%; max-width: 400px; background: rgba(20, 18, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
 .close-auth { position: absolute; top: 15px; right: 20px; font-size: 20px; cursor: pointer; color: rgba(255,255,255,0.6); }
 .auth-card h2 { font-size: 24px; text-align: center; margin-bottom: 20px; color: #d6c1ff; }
 .input-box { position: relative; margin-bottom: 15px; }
@@ -71,21 +70,12 @@ main{ padding:20px; text-align:center; }
     <div class="logo-box"><img src="https://i.ibb.co/pBCj40vb/Untitled33-20250505002056.png"></div>
   </div>
   <div class="nav-links">
-    <div class="pc-only" style="display: contents;">
-      <a href="about.html">About</a>
-      <a href="promo.html">Promo</a>
-    </div>
     <span class="login-trigger-btn" id="userStatusBtn">Login</span>
   </div>
 </div>
 
 <div class="side-menu" id="sideMenu">
-  <a href="about.html">About</a>
-  <a href="promo.html">Promo</a>
   <a href="javascript:void(0)" id="mobileLoginBtn">Login / Register</a>
-  <a href="https://www.facebook.com/share/1DVMKr6vKX/?mibextid=wwXIfr" target="_blank">Facebook Page</a>
-  <a href="www.tiktok.com/@royalgameshopmm" target="_blank">TikTok</a>
-  <a href="https://t.me/royalgameshoptgmm" target="_blank">Telegram</a>
 </div>
 <div class="overlay" onclick="toggleMenu()"></div>
 
@@ -102,25 +92,25 @@ main{ padding:20px; text-align:center; }
 
 <div class="auth-overlay" id="authModal">
   <div class="auth-card hidden" id="loginCard">
-    <span class="close-auth" onclick="closeAuthModal()">×</span>
+    <span class="close-auth" id="btnCloseLogin">×</span>
     <h2>Login</h2>
     <div class="input-box"><i class="fa-solid fa-envelope"></i><input type="email" id="loginEmail" placeholder="Email Address"></div>
     <div class="input-box"><i class="fa-solid fa-lock"></i><input type="password" id="loginPassword" placeholder="Password"></div>
     <button class="auth-btn" id="btnLogin">Sign In</button>
-    <p class="switch-form">အကောင့်မရှိသေးဘူးလား? <a href="javascript:void(0)" onclick="toggleAuthForm()">Register လုပ်ရန်</a></p>
+    <p class="switch-form">အကောင့်မရှိသေးဘူးလား? <a href="javascript:void(0)" id="toRegister">Register လုပ်ရန်</a></p>
   </div>
 
   <div class="auth-card hidden" id="registerCard">
-    <span class="close-auth" onclick="closeAuthModal()">×</span>
+    <span class="close-auth" id="btnCloseReg">×</span>
     <h2>Register</h2>
     <div class="input-box"><i class="fa-solid fa-envelope"></i><input type="email" id="regEmail" placeholder="Email Address"></div>
     <div class="input-box"><i class="fa-solid fa-lock"></i><input type="password" id="regPassword" placeholder="Password"></div>
     <button class="auth-btn" id="btnRegister">Create Account</button>
-    <p class="switch-form">အကောင့်ရှိပြီးသားလား? <a href="javascript:void(0)" onclick="toggleAuthForm()">Login ဝင်ရန်</a></p>
+    <p class="switch-form">အကောင့်ရှိပြီးသားလား? <a href="javascript:void(0)" id="toLogin">Login ဝင်ရန်</a></p>
   </div>
 
   <div class="auth-card hidden" id="profileCard">
-    <span class="close-auth" onclick="closeAuthModal()">×</span>
+    <span class="close-auth" id="btnCloseProfile">×</span>
     <h2>My Profile</h2>
     <div style="text-align: center;"><p class="user-email" id="profileEmail">user@example.com</p></div>
     <div class="history-section">
@@ -133,27 +123,32 @@ main{ padding:20px; text-align:center; }
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-let index=0,timer=null;
-let isLoggedIn = false;
+let index=0, timer=null, isLoggedIn=false;
+const ADMIN_EMAIL = "royaladmin@gmail.com";
+const SUPABASE_URL = "https://cmiiovretkzjuiespsmx.supabase.co";
+const SUPABASE_KEY = "sb_publishable_ctGYJqLMn0s6MwNx3qIvRw_V5VG-Y3pzeEpCek80X2REbHh1N0pCdzA5TmhKUXh2WVZoTQ==";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 function toggleMenu(){ document.getElementById("sideMenu").classList.toggle("active"); document.querySelector(".overlay").classList.toggle("active"); }
 
 function openAuthModal() {
   const modal = document.getElementById('authModal');
   modal.classList.add('active');
-  if (isLoggedIn) {
-    document.getElementById('profileCard').classList.remove('hidden'); 
-    document.getElementById('loginCard').classList.add('hidden'); 
-    document.getElementById('registerCard').classList.add('hidden');
-  } else { 
-    document.getElementById('loginCard').classList.remove('hidden'); 
-    document.getElementById('registerCard').classList.add('hidden'); 
-    document.getElementById('profileCard').classList.add('hidden'); 
-  }
+  document.getElementById('loginCard').classList.add('hidden');
+  document.getElementById('registerCard').classList.add('hidden');
+  document.getElementById('profileCard').classList.add('hidden');
+  if (isLoggedIn) { document.getElementById('profileCard').classList.remove('hidden'); } 
+  else { document.getElementById('loginCard').classList.remove('hidden'); }
 }
-
 function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
-function toggleAuthForm() { document.getElementById('loginCard').classList.toggle('hidden'); document.getElementById('registerCard').classList.toggle('hidden'); }
+
+document.getElementById('userStatusBtn').addEventListener('click', openAuthModal);
+document.getElementById('mobileLoginBtn').addEventListener('click', () => { toggleMenu(); openAuthModal(); });
+document.getElementById('btnCloseLogin').addEventListener('click', closeAuthModal);
+document.getElementById('btnCloseReg').addEventListener('click', closeAuthModal);
+document.getElementById('btnCloseProfile').addEventListener('click', closeAuthModal);
+document.getElementById('toRegister').addEventListener('click', () => { document.getElementById('loginCard').classList.add('hidden'); document.getElementById('registerCard').classList.remove('hidden'); });
+document.getElementById('toLogin').addEventListener('click', () => { document.getElementById('registerCard').classList.add('hidden'); document.getElementById('loginCard').classList.remove('hidden'); });
 
 function initSliderAnimation() {
   const imgs = document.querySelectorAll(".banner-slider img"); const dots = document.querySelectorAll(".dots span");
@@ -169,63 +164,25 @@ function initSliderAnimation() {
   }
 }
 
-/* ========================================================
-   ⚡ SUPABASE INTEGRATION
-   ======================================================== */
-const ADMIN_EMAIL = "royaladmin@gmail.com"; 
-
-const SUPABASE_URL = "https://cmiiovretkzjuiespsmx.supabase.co";
-const SUPABASE_KEY = "sb_publishable_ctGYJqLMn0s6MwNx3qIvRw_V5VG-Y3pzeEpCek80X2REbHh1N0pCdzA5TmhKUXh2WVZoTQ==";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// ခလုတ်နှိပ်ခြင်းများကို Event Listener ဖြင့် စိတ်ချရစွာ ချိတ်ဆက်ခြင်း
-document.getElementById('userStatusBtn').addEventListener('click', openAuthModal);
-document.getElementById('mobileLoginBtn').addEventListener('click', () => { toggleMenu(); openAuthModal(); });
-
-checkAuthState();
-
 async function checkAuthState() {
-  const { data: { session } } = await supabase.auth.getSession();
-  const statusBtn = document.getElementById('userStatusBtn'); 
-  const mobileBtn = document.getElementById('mobileLoginBtn');
-  
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  const statusBtn = document.getElementById('userStatusBtn');
   if (session) {
     const user = session.user;
-    if(user.email === ADMIN_EMAIL) {
-      window.location.href = "admin.html";
-      return;
-    }
-    
-    isLoggedIn = true; 
+    if(user.email === ADMIN_EMAIL) { window.location.href = "admin.html"; return; }
+    isLoggedIn = true;
     document.getElementById('profileEmail').innerText = user.email;
-    if(statusBtn) { statusBtn.innerText = "Profile"; statusBtn.style.background = "#00cc66"; statusBtn.style.color = "#fff"; }
-    if(mobileBtn) mobileBtn.innerText = "My Profile";
-    
+    statusBtn.innerText = "Profile"; statusBtn.style.background = "#00cc66"; statusBtn.style.color = "#fff";
     loadUserOrdersHistory(user.email);
   } else {
     isLoggedIn = false;
-    if(statusBtn) { statusBtn.innerText = "Login"; statusBtn.style.background = "#bb86fc"; statusBtn.style.color = "#0c0b1a"; }
-    if(mobileBtn) mobileBtn.innerText = "Login / Register";
+    statusBtn.innerText = "Login"; statusBtn.style.background = "#bb86fc"; statusBtn.style.color = "#0c0b1a";
   }
-  
-  updateAnalytics();
-  loadBanners();
-  loadCategories();
-}
-
-async function updateAnalytics() {
-  if(!sessionStorage.getItem('counted')) {
-    try {
-      const { data } = await supabase.from('site_analytics').select('views').eq('id', 1).single();
-      let currentViews = (data ? data.views : 0) + 1;
-      await supabase.from('site_analytics').upsert({ id: 1, views: currentViews });
-      sessionStorage.setItem('counted', 'true');
-    } catch(e) {}
-  }
+  loadBanners(); loadCategories();
 }
 
 async function loadBanners() {
-  const { data: banners } = await supabase.from('banners').select('*').order('created_at', { ascending: true });
+  const { data: banners } = await supabaseClient.from('banners').select('*').order('created_at', { ascending: true });
   const slider = document.querySelector(".banner-slider"); const dots = document.querySelector(".dots");
   if(!slider || !banners || banners.length === 0) return;
   slider.querySelectorAll("img").forEach(i => i.remove()); dots.innerHTML = "";
@@ -237,68 +194,37 @@ async function loadBanners() {
 }
 
 async function loadCategories() {
-  const grid = document.getElementById("gameGrid"); 
-  if(!grid) return;
-  
-  const { data: categories, error } = await supabase.from('categories').select('*').order('created_at', { ascending: true });
-  
-  if(error || !categories || categories.length === 0) {
-    grid.innerHTML = `<p style="font-size:14px; color:rgba(255,255,255,0.4); grid-column: 1/-1; padding:20px;">တင်ထားသော ဂိမ်းအမျိုးအစားမရှိသေးပါ။</p>`;
-    return;
-  }
-  
+  const grid = document.getElementById("gameGrid");
+  const { data: categories } = await supabaseClient.from('categories').select('*').order('created_at', { ascending: true });
+  if(!categories || categories.length === 0) { grid.innerHTML = `<p style="font-size:14px; color:rgba(255,255,255,0.4); grid-column:1/-1;">တင်ထားသော ဂိမ်းမရှိသေးပါ။</p>`; return; }
   grid.innerHTML = "";
-  categories.forEach((c) => {
-    grid.innerHTML += `
-      <div class="game-card">
-        <a href="products.html?cat=${c.id}">
-          <img src="${c.image}" alt="${c.name}">
-          <span>${c.name}</span>
-        </a>
-      </div>`;
-  });
+  categories.forEach((c) => { grid.innerHTML += `<div class="game-card"><a href="products.html?cat=${c.id}"><img src="${c.image}"><span>${c.name}</span></a></div>`; });
 }
 
 async function loadUserOrdersHistory(email) {
-  const list = document.getElementById('userOrderList'); if(!list) return;
-  list.innerHTML = "";
-  
-  const { data: orders } = await supabase.from('orders').select('*').eq('user_email', email).order('created_at', { ascending: false });
-  
+  const list = document.getElementById('userOrderList'); list.innerHTML = "";
+  const { data: orders } = await supabaseClient.from('orders').select('*').eq('user_email', email).order('created_at', { ascending: false });
   if(orders && orders.length > 0) {
-    orders.forEach((o) => {
-      list.innerHTML += `<div class="order-item"><div><strong>${o.game_name}</strong> - ${parseInt(o.amount).toLocaleString()} Ks</div><span class="status-${o.status}">${o.status.toUpperCase()}</span></div>`;
-    });
-  } else {
-    list.innerHTML = `<p style="font-size:12px; color:rgba(255,255,255,0.4);">မှတ်တမ်းမရှိသေးပါ။</p>`;
-  }
+    orders.forEach((o) => { list.innerHTML += `<div class="order-item"><div><strong>${o.game_name}</strong> - ${parseInt(o.amount).toLocaleString()} Ks</div><span class="status-${o.status}">${o.status.toUpperCase()}</span></div>`; });
+  } else { list.innerHTML = `<p style="font-size:12px; color:rgba(255,255,255,0.4);">မှတ်တမ်းမရှိသေးပါ။</p>`; }
 }
 
 document.getElementById('btnRegister').addEventListener('click', async () => {
-  const email = document.getElementById('regEmail').value.trim();
-  const password = document.getElementById('regPassword').value.trim();
-  if(!email || !password) return alert("အချက်အလက်များကို ပြည့်စုံအောင် ဖြည့်ပေးပါ ခင်ဗျာ။");
-
-  const { error } = await supabase.auth.signUp({ email, password });
-  if(error) { alert("အကောင့်ဖွင့်၍မရပါ- " + error.message); }
-  else { alert("အကောင့်ဖွင့်ခြင်း အောင်မြင်ပါသည်။"); window.location.reload(); }
+  const email = document.getElementById('regEmail').value.trim(); const password = document.getElementById('regPassword').value.trim();
+  if(!email || !password) return alert("ဖြည့်စွက်ပေးပါ");
+  const { error } = await supabaseClient.auth.signUp({ email, password });
+  if(error) alert(error.message); else { alert("Register အောင်မြင်ပါသည်"); window.location.reload(); }
 });
 
 document.getElementById('btnLogin').addEventListener('click', async () => {
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value.trim();
-  if(!email || !password) return alert("အချက်အလက်များကို ပြည့်စုံအောင် ဖြည့်ပေးပါ ခင်ဗျာ။");
-
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if(error) { alert("လော့ဂ်အင် ဝင်၍မရပါ- " + error.message); }
-  else { alert("ဝင်ရောက်မှု အောင်မြင်သည်"); window.location.reload(); }
+  const email = document.getElementById('loginEmail').value.trim(); const password = document.getElementById('loginPassword').value.trim();
+  if(!email || !password) return alert("ဖြည့်စွက်ပေးပါ");
+  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if(error) alert(error.message); else { window.location.reload(); }
 });
 
-document.getElementById('btnLogout').addEventListener('click', async () => {
-  await supabase.auth.signOut();
-  alert("Logout ပြီးပါပြီ");
-  window.location.reload();
-});
+document.getElementById('btnLogout').addEventListener('click', async () => { await supabaseClient.auth.signOut(); window.location.reload(); });
+window.onload = checkAuthState;
 </script>
 </body>
 </html>
