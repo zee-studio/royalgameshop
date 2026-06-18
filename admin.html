@@ -3,16 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Royal Game Shop - Admin Dashboard</title>
+<title>Royal Game Shop - Admin Control Panel</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 *{ margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
 body{ background:#090812; color:#fff; padding: 20px; }
-.admin-container { max-width: 900px; margin: auto; background: #131124; border: 1px solid rgba(255,255,255,0.08); padding: 25px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+
+/* Login Box Style */
+.login-overlay { position: fixed; inset: 0; background: #090812; display: flex; justify-content: center; align-items: center; z-index: 9999; }
+.login-card { background: #131124; padding: 30px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.login-card h2 { color: #bb86fc; margin-bottom: 20px; font-size: 22px; }
+
+/* Dashboard Style */
+.admin-container { max-width: 900px; margin: auto; background: #131124; border: 1px solid rgba(255,255,255,0.08); padding: 25px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); display: none; }
 .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
 h2 { color: #bb86fc; font-size: 24px; }
-.btn-back-home { padding: 8px 16px; background: rgba(255,255,255,0.08); color: #fff; border-radius: 12px; text-decoration: none; font-size: 13px; border: 1px solid rgba(255,255,255,0.15); transition: 0.3s; }
-.btn-back-home:hover { background: #ff4f4f; border-color: #ff4f4f; }
+.btn-logout { padding: 8px 16px; background: rgba(255, 79, 79, 0.1); color: #ff4f4f; border-radius: 12px; text-decoration: none; font-size: 13px; border: 1px solid rgba(255, 79, 79, 0.2); cursor: pointer; transition: 0.3s; }
+.btn-logout:hover { background: #ff4f4f; color: #fff; }
 .admin-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px; }
 .stat-box { background: rgba(187, 134, 252, 0.05); border: 1px solid rgba(187, 134, 252, 0.15); padding: 18px; border-radius: 16px; text-align: center; }
 .stat-box p { font-size: 13px; color: rgba(255,255,255,0.6); }
@@ -37,10 +44,21 @@ h2 { color: #bb86fc; font-size: 24px; }
 </head>
 <body>
 
-<div class="admin-container">
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <h2>Royal Game Shop Admin 🔑</h2>
+    <div class="admin-form">
+      <input type="text" id="loginUser" placeholder="အသုံးပြုသူအမည် (Username)">
+      <input type="password" id="loginPass" placeholder="လျှို့ဝှက်နံပါတ် (Password)">
+      <button class="auth-btn" id="btnLogin">လော့ဂ်အင် ဝင်မည်</button>
+    </div>
+  </div>
+</div>
+
+<div class="admin-container" id="adminDashboard">
   <div class="header-area">
     <h2>Royal Game Shop - Control Panel 👑</h2>
-    <a href="index.html" class="btn-back-home">Home သို့ပြန်ရန်</a>
+    <button class="btn-logout" id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
   </div>
 
   <div class="admin-stats">
@@ -59,7 +77,7 @@ h2 { color: #bb86fc; font-size: 24px; }
       <button class="auth-btn" id="btnAddGame">ဂိမ်းအသစ်ကို သိမ်းဆည်းမည်</button>
     </div>
     
-    <h4 style="font-size:13px; margin-top:20px; color:#bb86fc; font-weight:600;">လက်ရှိရောင်းချနေသော ဂိမ်းစာရင်းများ</h4>
+    <h4 style="font-size:13px; margin-top:20px; color:#bb86fc; font-weight:600;">...လက်ရှိရောင်းချနေသော ဂိမ်းစာရင်းများ</h4>
     <div class="game-item-list" id="adminGameList"></div>
   </div>
 
@@ -74,16 +92,48 @@ h2 { color: #bb86fc; font-size: 24px; }
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  // 🔐 ADMIN အကောင့် သတ်မှတ်ခြင်း (ဤနေရာတွင် မိမိစိတ်ကြိုက် ပြောင်းလဲနိုင်ပါသည်)
+  const ADMIN_USERNAME = "admin";
+  const ADMIN_PASSWORD = "123"; // လူကြီးမင်း ကြိုက်တဲ့ စာလုံး/နံပါတ် ပြောင်းလို့ရပါတယ်
+
   const SUPABASE_URL = "https://cmiiovretkzjuiespsmx.supabase.co";
   const SUPABASE_KEY = "sb_publishable_ctGYJqLMn0s6MwNx3qIvRw_V5VG-Y3pzeEpCek80X2REbHh1N0pCdzA5TmhKUXh2WVZoTQ==";
   const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // Login စစ်ဆေးခြင်း စနစ်
+  if(sessionStorage.getItem('adminLoggedIn') === 'true') {
+    showDashboard();
+  }
+
+  document.getElementById('btnLogin').addEventListener('click', () => {
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
+
+    if(user === ADMIN_USERNAME && pass === ADMIN_PASSWORD) {
+      sessionStorage.setItem('adminLoggedIn', 'true');
+      showDashboard();
+    } else {
+      alert("Username သို့မဟုတ် Password မှားယွင်းနေပါသည်။");
+    }
+  });
+
+  document.getElementById('btnLogout').addEventListener('click', () => {
+    sessionStorage.removeItem('adminLoggedIn');
+    window.location.reload();
+  });
+
+  function showDashboard() {
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('adminDashboard').style.display = 'block';
+    loadAnalytics();
+    loadCategories();
+  }
 
   // Load Analytics
   async function loadAnalytics() {
     const { data } = await supabase.from('site_analytics').select('views').eq('id', 1).single();
     if(data) document.getElementById('statViews').innerText = Number(data.views).toLocaleString();
   }
-  loadAnalytics();
 
   // Load Categories List
   async function loadCategories() {
@@ -104,7 +154,6 @@ h2 { color: #bb86fc; font-size: 24px; }
         </div>`;
     });
   }
-  loadCategories();
 
   // Add Game Category
   document.getElementById('btnAddGame').addEventListener('click', async () => {
@@ -133,7 +182,7 @@ h2 { color: #bb86fc; font-size: 24px; }
   });
 
   // Delete Category
-  async function deleteCategory(id) {
+  window.deleteCategory = async function(id) {
     if(confirm("ဤဂိမ်းအမျိုးအစားကို ဖျက်ရန် သေချာပါသလား?")) {
       await supabase.from('categories').delete().eq('id', id);
       loadCategories();
