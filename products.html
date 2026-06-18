@@ -24,6 +24,7 @@ main{ padding:20px; max-width:600px; margin:auto; }
 .product-card.selected .radio-dots { border-color: #00ff66; }
 .product-card.selected .radio-dots::after { content: ''; width: 10px; height: 10px; background: #00ff66; border-radius: 50%; }
 .order-form { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 20px; border-radius: 18px; margin-top: 20px; }
+.order-form.hidden { display: none; }
 .order-form h3 { font-size: 16px; color: #d6c1ff; margin-bottom: 15px; }
 input, select { width: 100%; padding: 12px; margin-bottom: 14px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; border-radius: 10px; outline: none; }
 input:focus, select:focus { border-color: #bb86fc; }
@@ -31,6 +32,7 @@ select option { background: #121028; }
 .btn-order { width: 100%; padding: 14px; background: #bb86fc; color: #0c0b1a; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
 .btn-order:hover { background: #d6c1ff; }
 .please-login { text-align: center; color: #ff4f4f; font-weight: bold; background: rgba(255, 79, 79, 0.1); padding: 12px; border-radius: 10px; font-size: 14px; }
+.please-login.hidden { display: none; }
 </style>
 </head>
 <body>
@@ -54,13 +56,13 @@ select option { background: #121028; }
     <h3>📥 ဝယ်ယူမှုအချက်အလက် ဖြည့်သွင်းရန်</h3>
     <input type="text" id="playerGameId" placeholder="Player ID / Zone ID ရိုက်ထည့်ပါ (ဥပမာ - 12345678 (2026))">
     
-    <label for="paymentMethod" style="font-size:13px; color:rgba(255,255,255,0.6); display:block; margin-bottom:5px;">ငွေပေးချေမည့်စနစ် ရွေးပါ:</label>
+    <label for="paymentMethod" style="font-size:13px; color:rgba(255,255,255,0.6); display:block; margin-bottom:5px;">%E1%80%84%E1%80%BD%E1%80%B1%E1%80%95%E1%80%B9%E1%80%B8%E1%80%86%E1%80%Bproperties%E1%80%B9%E1%80%99%E1%80%AF%E1%80%B8%E1%80%8စနစ် ရွေးပါ:</label>
     <select id="paymentMethod">
-      <option value="KBZPay">KBZPay (09xxxxxxxxx)</option>
-      <option value="WaveMoney">WaveMoney (09xxxxxxxxx)</option>
+      <option value="KBZPay">KBZPay</option>
+      <option value="WaveMoney">WaveMoney</option>
     </select>
 
-    <input type="text" id="slipLink" placeholder="ငွေလွှဲစလစ်ပုံ (ImgBB / Google Drive Share Link)">
+    <input type="text" id="slipLink" placeholder="ငွေလွှဲစလစ်ပုံ Link (ImgBB သို့မဟုတ် Google Drive Share Link)">
     
     <button class="btn-order" id="btnSubmitOrder">အော်ဒါတင်မည် (Confirm Order) 🚀</button>
   </div>
@@ -70,9 +72,12 @@ select option { background: #121028; }
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = "https://cmiiovretkzjuiespsmx.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtaWlvdnJldGt6anVpZXNwc214Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3NTkzNzYsImV4cCI6MjA5NzMzNTM3Nn0.7JpD4erEqpGCBgQ9TktAWhFSbapQMwvV4WzFLP0fWmA";
-const royalSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// 🔐 Config တန်ဖိုးများကို သတ်မှတ်ခြင်း (Variable ထပ်ခြင်းမရှိစေရန် တိကျစွာ ရေးသားထားပါသည်)
+const SIGNUP_URL_BASE = "https://cmiiovretkzjuiespsmx.supabase.co";
+const SIGNUP_KEY_BASE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtaWlvdnJldGt6anVpZXNwc214Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3NTkzNzYsImV4cCI6MjA5NzMzNTM3Nn0.7JpD4erEqpGCBgQ9TktAWhFSbapQMwvV4WzFLP0fWmA";
+
+// အစောနက Error တက်စေသော 'supabase' ကြေညာချက်ကို လုံးဝဖျက်ပြီး 'royalSupabase' တစ်ခုတည်းကိုသာ သုံးထားပါသည်
+const royalSupabase = window.supabase.createClient(SIGNUP_URL_BASE, SIGNUP_KEY_BASE);
 
 let selectedProduct = null;
 let currentUserEmail = null;
@@ -81,7 +86,7 @@ let currentUserEmail = null;
 const urlParams = new URLSearchParams(window.location.search);
 const catId = urlParams.get('cat');
 
-// Google Drive Share Link ကို သယ်ယူနိုင်ရန် စနစ်
+// Google Drive Link ပြောင်းလဲပေးသော စနစ်
 function convertToDirectLink(url) {
   if (url.includes("drive.google.com")) {
     let fileId = "";
@@ -141,7 +146,7 @@ async function loadGameProducts() {
     card.addEventListener('click', () => {
       document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
-      selectedProduct = p; // ရွေးချယ်လိုက်သော ပစ္စည်းကို မှတ်သားခြင်း
+      selectedProduct = p;
     });
     
     container.appendChild(card);
@@ -159,21 +164,21 @@ document.getElementById('btnSubmitOrder').addEventListener('click', async () => 
   if (!playerId) return alert("Player ID ဖြည့်စွက်ပေးပါဗျာ။");
   if (!slipUrl) return alert("ငွေလွှဲစလစ်ပုံ (Link) ထည့်သွင်းပေးပါဗျာ။");
 
-  slipUrl = convertToDirectLink(slipUrl); // Google Drive Link ပြောင်းလဲခြင်း
+  slipUrl = convertToDirectLink(slipUrl);
 
-  // အော်ဒါအချက်အလက်ကို Supabase Database ထဲသို့ ပို့ခြင်း
+  // အော်ဒါအချက်အလက်ကို Database ထဲသို့ ပို့ခြင်း
   const { error } = await royalSupabase.from('orders').insert({
     user_email: currentUserEmail,
     game_name: document.getElementById('gameTitle').innerText + " (" + selectedProduct.name + ")",
     amount: selectedProduct.price,
-    status: 'pending' // စောင့်ဆိုင်းဆဲ အဆင့်အဖြစ် သတ်မှတ်ခြင်း
+    status: 'pending'
   });
 
   if (error) {
     alert("Error: " + error.message);
   } else {
-    alert("အော်ဒါတင်ခြင်း အောင်မြင်ပါသည်ဗျာ။ Admin ဘက်က ၁၀ မိနစ်အတွင်း စစ်ဆေးပြီး ဆောင်ရွက်ပေးပါလိမ့်မည်။");
-    window.location.href = "index.html"; // အောင်မြင်ရင် Home ကို ပြန်ခေါ်သွားခြင်း
+    alert("အော်ဒါတင်ခြင်း အောင်မြင်ပါသည်ဗျာ။ Admin ဘက်က စစ်ဆေးပြီး ဆောင်ရွက်ပေးပါလိမ့်မည်။");
+    window.location.href = "index.html";
   }
 });
 
