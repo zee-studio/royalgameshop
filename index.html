@@ -123,11 +123,13 @@ main{ padding:20px; text-align:center; }
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-let index=0, timer=null, isLoggedIn=false;
+let index = 0, timer = null, isLoggedIn = false;
 const ADMIN_EMAIL = "royaladmin@gmail.com";
+
+// 🔐 SUPABASE CONFIGURATION (သန့်ရှင်းရေးလုပ်ထားသော စနစ်သစ်)
 const SUPABASE_URL = "https://cmiiovretkzjuiespsmx.supabase.co";
-const SUPABASE_KEY = "sb_publishable_ctGYJqLMn0s6MwNx3qIvRw_V5VG-Y3pzeEpCek80X2REbHh1N0pCdzA5TmhKUXh2WVZoTQ==";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtaWlvdnJldGt6anVpZXNwc214Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3NTkzNzYsImV4cCI6MjA5NzMzNTM3Nn0.7JpD4erEqpGCBgQ9TktAWhFSbapQMwvV4WzFLP0fWmA";
+const royalSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 function toggleMenu(){ document.getElementById("sideMenu").classList.toggle("active"); document.querySelector(".overlay").classList.toggle("active"); }
 
@@ -142,6 +144,7 @@ function openAuthModal() {
 }
 function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
 
+// 🛠️ Event Listeners (ခလုတ်များကို JavaScript မှ တိုက်ရိုက်ထိန်းချုပ်ခြင်း)
 document.getElementById('userStatusBtn').addEventListener('click', openAuthModal);
 document.getElementById('mobileLoginBtn').addEventListener('click', () => { toggleMenu(); openAuthModal(); });
 document.getElementById('btnCloseLogin').addEventListener('click', closeAuthModal);
@@ -165,7 +168,7 @@ function initSliderAnimation() {
 }
 
 async function checkAuthState() {
-  const { data: { session } } = await supabaseClient.auth.getSession();
+  const { data: { session } } = await royalSupabase.auth.getSession();
   const statusBtn = document.getElementById('userStatusBtn');
   if (session) {
     const user = session.user;
@@ -182,7 +185,7 @@ async function checkAuthState() {
 }
 
 async function loadBanners() {
-  const { data: banners } = await supabaseClient.from('banners').select('*').order('created_at', { ascending: true });
+  const { data: banners } = await royalSupabase.from('banners').select('*').order('created_at', { ascending: true });
   const slider = document.querySelector(".banner-slider"); const dots = document.querySelector(".dots");
   if(!slider || !banners || banners.length === 0) return;
   slider.querySelectorAll("img").forEach(i => i.remove()); dots.innerHTML = "";
@@ -195,7 +198,7 @@ async function loadBanners() {
 
 async function loadCategories() {
   const grid = document.getElementById("gameGrid");
-  const { data: categories } = await supabaseClient.from('categories').select('*').order('created_at', { ascending: true });
+  const { data: categories } = await royalSupabase.from('categories').select('*').order('created_at', { ascending: true });
   if(!categories || categories.length === 0) { grid.innerHTML = `<p style="font-size:14px; color:rgba(255,255,255,0.4); grid-column:1/-1;">တင်ထားသော ဂိမ်းမရှိသေးပါ။</p>`; return; }
   grid.innerHTML = "";
   categories.forEach((c) => { grid.innerHTML += `<div class="game-card"><a href="products.html?cat=${c.id}"><img src="${c.image}"><span>${c.name}</span></a></div>`; });
@@ -203,7 +206,7 @@ async function loadCategories() {
 
 async function loadUserOrdersHistory(email) {
   const list = document.getElementById('userOrderList'); list.innerHTML = "";
-  const { data: orders } = await supabaseClient.from('orders').select('*').eq('user_email', email).order('created_at', { ascending: false });
+  const { data: orders } = await royalSupabase.from('orders').select('*').eq('user_email', email).order('created_at', { ascending: false });
   if(orders && orders.length > 0) {
     orders.forEach((o) => { list.innerHTML += `<div class="order-item"><div><strong>${o.game_name}</strong> - ${parseInt(o.amount).toLocaleString()} Ks</div><span class="status-${o.status}">${o.status.toUpperCase()}</span></div>`; });
   } else { list.innerHTML = `<p style="font-size:12px; color:rgba(255,255,255,0.4);">မှတ်တမ်းမရှိသေးပါ။</p>`; }
@@ -212,18 +215,18 @@ async function loadUserOrdersHistory(email) {
 document.getElementById('btnRegister').addEventListener('click', async () => {
   const email = document.getElementById('regEmail').value.trim(); const password = document.getElementById('regPassword').value.trim();
   if(!email || !password) return alert("ဖြည့်စွက်ပေးပါ");
-  const { error } = await supabaseClient.auth.signUp({ email, password });
+  const { error } = await royalSupabase.auth.signUp({ email, password });
   if(error) alert(error.message); else { alert("Register အောင်မြင်ပါသည်"); window.location.reload(); }
 });
 
 document.getElementById('btnLogin').addEventListener('click', async () => {
   const email = document.getElementById('loginEmail').value.trim(); const password = document.getElementById('loginPassword').value.trim();
   if(!email || !password) return alert("ဖြည့်စွက်ပေးပါ");
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  const { error } = await royalSupabase.auth.signInWithPassword({ email, password });
   if(error) alert(error.message); else { window.location.reload(); }
 });
 
-document.getElementById('btnLogout').addEventListener('click', async () => { await supabaseClient.auth.signOut(); window.location.reload(); });
+document.getElementById('btnLogout').addEventListener('click', async () => { await royalSupabase.auth.signOut(); window.location.reload(); });
 window.onload = checkAuthState;
 </script>
 </body>
