@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard</title>
+<title>Royal Game Shop - Control Panel 👑</title>
 <style>
 *{ margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
 body{ background:#0c0b1a; color:#fff; padding:20px; }
-.nav { display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 1px solid #ff4f4f; padding-bottom: 15px; }
+.nav { display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 1px solid #bb86fc; padding-bottom: 15px; align-items: center; }
 .nav a { color: #bb86fc; text-decoration: none; font-weight: bold; }
 .section { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05); }
 h3 { margin-bottom: 15px; color: #d6c1ff; font-size: 18px; }
@@ -19,55 +19,69 @@ button:hover { background: #d6c1ff; }
 .btn-approve { background: #00ff66; color: #000; margin-right: 5px; }
 .btn-reject { background: #ff4f4f; color: #fff; }
 .list-item { display: flex; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.03); margin-bottom: 5px; border-radius: 6px; align-items: center; }
-.btn-del { background:#ff4f4f; padding: 6px 12px; font-size:12px; color: #fff; }
-.desc-text { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 12px; block-size: auto; }
+.btn-action-group { display: flex; gap: 8px; }
+.btn-price { background: #00cc66; color: white; padding: 6px 12px; font-size:12px; border-radius: 6px; text-decoration: none; font-weight: bold; }
+.btn-del { background:#ff4f4f; padding: 6px 12px; font-size:12px; color: #fff; border-radius: 6px; }
+.desc-text { font-size: 13px; color: #00ff66; margin-bottom: 12px; background: rgba(0, 255, 102, 0.1); padding: 8px; border-radius: 6px; }
 </style>
 </head>
 <body>
 
 <div class="nav">
-  <h2>Admin Dashboard 👑</h2>
+  <h2>Royal Game Shop - Control Panel 👑</h2>
   <div>
-    <a href="admin-products.html" style="margin-right:20px;">ပစ္စည်းစျေးနှုန်းများ ထည့်ရန် ></a>
     <a href="javascript:void(0)" id="btnAdminLogout" style="color:#ff4f4f;">Logout</a>
   </div>
 </div>
 
 <div class="section">
-  <h3>၁။ ဂိမ်းအမျိုးအစားသစ် ထည့်သွင်းရန်</h3>
-  <input type="text" id="catName" placeholder="ဂိမ်းနာမည် (ဥပမာ - Mobile Legends)">
-  <input type="text" id="catImage" placeholder="Logo ပုံ Link (ImgBB URL)">
-  <button id="btnAddCat">ဂိမ်းအမျိုးအစား သိမ်းမည်</button>
-  <div id="catAdminList" style="margin-top:15px;"></div>
+  <h3>🎲 Game အမျိုးအစားသစ်များ ထည့်သွင်းရန်</h3>
+  <p class="desc-text">💡 ပုံတင်ရန်အတွက် ဖုန်း သို့မဟုတ် PC ထဲကပုံကို ImgBB.com တွင် အခမဲ့တင်ပြီး ရရှိလာသော Direct Link ကို ထည့်သွင်းပါ။ Google Drive Share Link ကိုလည်း တိုက်ရိုက်ထည့်သွင်းနိုင်ပါသည်။</p>
+  <input type="text" id="catName" placeholder="ဂိမ်းနာမည် ထည့်ပါ (ဥပမာ - Mobile Legends)">
+  <input type="text" id="catImage" placeholder="ဓါတ်ပုံ Link ကို ဤနေရာတွင် ထည့်ပါ">
+  <button id="btnAddCat">ဂိမ်းအသစ်ကို သိမ်းဆည်းမည်</button>
+  
+  <div style="margin-top:20px;">
+    <h4 style="color:#bb86fc; margin-bottom:10px;">လက်ရှိရောင်းချနေသော ဂိမ်းစာရင်းများ-</h4>
+    <div id="catAdminList"></div>
+  </div>
 </div>
 
 <div class="section">
-  <h3>၂။ Banner ပုံအသစ် ထည့်သွင်းရန်</h3>
-  <input type="text" id="bannerImage" placeholder="Banner ပုံ Link (ImgBB URL)">
-  <button id="btnAddBanner">Banner သိမ်းမည်</button>
+  <h3>🖼️ Homepage Banner ဆလိုက်ပုံအသစ်ထည့်ရန်</h3>
+  <input type="text" id="bannerImage" placeholder="Banner ပုံ၏ Link ကို ထည့်ပါ">
+  <button id="btnAddBanner">Banner ပုံအသစ် သိမ်းမည်</button>
   <div id="bannerAdminList" style="margin-top:15px;"></div>
 </div>
 
 <div class="section">
-  <h3>၃။ လက်ခံရရှိထားသော အော်ဒါများ (Pending Orders)</h3>
-  <div id="adminOrdersList"><p>အော်ဒါများ ဆွဲယူနေသည်...</p></div>
+  <h3>📥 ဝယ်ယူမှုအော်ဒါများ စီမံခန့်ခွဲခြင်း (Pending Orders)</h3>
+  <div id="adminOrdersList"><p>အော်ဒါများ စစ်ဆေးရန် စောင့်ဆိုင်းနေပါသည်...</p></div>
 </div>
 
 <div class="section">
-  <h3>၄။ အသုံးပြုသူများ စီမံခန့်ခွဲရန် (User Password Reset)</h3>
-  <p class="desc-text">User က Password မေ့သွားပါက ၎င်း၏ Email ကို ရိုက်ထည့်၍ လျှို့ဝှက်ချက်ချိန်းရန် Link ကို ပို့ပေးနိုင်ပါသည်။</p>
-  <input type="email" id="resetUserEmail" placeholder="User ၏ Email Address ကို ရိုက်ထည့်ပါ (ဥပမာ - user@gmail.com)">
-  <button id="btnResetUserPassword" style="background: #ffbb00;">Password Reset Link ပို့မည် ✉️</button>
+  <h3>✉️ User Password မေ့သွားပါက ပြန်ချိန်းပေးရန်</h3>
+  <input type="email" id="resetUserEmail" placeholder="User ၏ Email Address ကို ရိုက်ထည့်ပါ">
+  <button id="btnResetUserPassword" style="background: #ffbb00;">Password Reset Link ပို့မည်</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const ADMIN_EMAIL = "royaladmin@gmail.com";
-
-// 🔐 SUPABASE CONFIGURATION
 const SUPABASE_URL = "https://cmiiovretkzjuiespsmx.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtaWlvdnJldGt6anVpZXNwc214Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3NTkzNzYsImV4cCI6MjA5NzMzNTM3Nn0.7JpD4erEqpGCBgQ9TktAWhFSbapQMwvV4WzFLP0fWmA";
 const royalSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// 🛠️ Google Drive Share Link ကို Image Direct Link ဖြစ်အောင် ပြောင်းပေးသော စနစ်
+function convertToDirectLink(url) {
+  if (url.includes("drive.google.com")) {
+    let fileId = "";
+    if (url.includes("/d/")) { fileId = url.split("/d/")[1].split("/")[0]; } 
+    else if (url.includes("id=")) { fileId = url.split("id=")[1].split("&")[0]; }
+    if (fileId) { return `https://lh3.googleusercontent.com/d/${fileId}`; }
+  }
+  return url; // Google Drive မဟုတ်ရင် မူရင်း Link အတိုင်းပဲ ထားမယ်
+}
 
 async function checkAdmin() {
   const { data: { session } } = await royalSupabase.auth.getSession();
@@ -77,18 +91,32 @@ async function checkAdmin() {
 
 // ၁။ ဂိမ်းအမျိုးအစား ကဏ္ဍ
 async function loadCategories() {
-  const { data } = await royalSupabase.from('categories').select('*');
+  const { data } = await royalSupabase.from('categories').select('*').order('created_at', { ascending: true });
   const div = document.getElementById('catAdminList'); div.innerHTML = "";
-  if(data) data.forEach(c => {
-    div.innerHTML += `<div class="list-item"><span>${c.name}</span><button class="btn-del" onclick="deleteCat(${c.id})">ဖျက်မည်</button></div>`;
+  if(!data || data.length === 0) { div.innerHTML = "<p style='color:rgba(255,255,255,0.4);'>ဂိမ်းမရှိသေးပါ။</p>"; return; }
+  data.forEach(c => {
+    div.innerHTML += `
+      <div class="list-item">
+        <span>${c.name}</span>
+        <div class="btn-action-group">
+          <a href="admin-products.html?cat=${c.id}&name=${encodeURIComponent(c.name)}" class="btn-price">💰 စျေးနှုန်းသတ်မှတ်ရန်</a>
+          <button class="btn-del" onclick="deleteCat(${c.id})">🗑️ ဖျက်မည်</button>
+        </div>
+      </div>`;
   });
 }
-window.deleteCat = async (id) => { if(confirm("ဖျက်မှာ သေचाပါသလား?")) { await royalSupabase.from('categories').delete().eq('id', id); loadCategories(); } }
+
+window.deleteCat = async (id) => { if(confirm("ဤဂိမ်းအမျိုးအစားကို ဖျက်မှာ သေချာပါသလား? ၎င်းအောက်ရှိ စျေးနှုန်းများပါ ပျက်သွားပါမည်။")) { await royalSupabase.from('categories').delete().eq('id', id); loadCategories(); } }
 
 document.getElementById('btnAddCat').addEventListener('click', async () => {
-  const name = document.getElementById('catName').value.trim(); const image = document.getElementById('catImage').value.trim();
-  if(!name || !image) return alert("ဖြည့်ပါ");
-  await royalSupabase.from('categories').insert({ name, image }); window.location.reload();
+  const name = document.getElementById('catName').value.trim(); 
+  let image = document.getElementById('catImage').value.trim();
+  if(!name || !image) return alert("ဂိမ်းနာမည်နှင့် ပုံလင့်ခ်ကို ဖြည့်စွက်ပေးပါဗျာ။");
+  
+  image = convertToDirectLink(image); // Link ကို အော်တို စစ်ဆေးပြောင်းလဲခြင်း
+  await royalSupabase.from('categories').insert({ name, image });
+  alert("ဂိမ်းအမျိုးအစားသစ် ထည့်သွင်းပြီးပါပြီ။");
+  window.location.reload();
 });
 
 // ၂။ Banner ကဏ္ဍ
@@ -102,7 +130,8 @@ async function loadBanners() {
 window.deleteBanner = async (id) => { await royalSupabase.from('banners').delete().eq('id', id); loadBanners(); }
 
 document.getElementById('btnAddBanner').addEventListener('click', async () => {
-  const image = document.getElementById('bannerImage').value.trim(); if(!image) return alert("Link ဖြည့်ပါ");
+  let image = document.getElementById('bannerImage').value.trim(); if(!image) return alert("Link ဖြည့်ပါ");
+  image = convertToDirectLink(image);
   await royalSupabase.from('banners').insert({ image }); window.location.reload();
 });
 
@@ -128,23 +157,14 @@ async function loadOrders() {
 }
 window.updateStatus = async (id, status) => { await royalSupabase.from('orders').update({ status }).eq('id', id); loadOrders(); }
 
-// 🔥 ၄။ PASSWORD RESET FUNCTION (အသစ်ထည့်သွင်းထားသော ကုဒ်)
+// ၄။ Password Reset စနစ်
 document.getElementById('btnResetUserPassword').addEventListener('click', async () => {
   const email = document.getElementById('resetUserEmail').value.trim();
-  if (!email) return alert("ကျေးဇူးပြု၍ User ၏ Email ကို အရင်ရိုက်ထည့်ပေးပါဗျာ။");
-
+  if (!email) return alert("ကျေးဇူးပြု၍ User ၏ Email ကို ရိုက်ထည့်ပေးပါဗျာ။");
   if (confirm(`${email} ဆီသို့ Password ပြန်ချိန်းမည့် Link ပို့မှာ သေချာပါသလား?`)) {
-    // Supabase ရဲ့ Password Reset OTP/Link စနစ်ကို လှမ်းခေါ်ခြင်း
-    const { error } = await royalSupabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + '/index.html', // ၎င်းတို့ ချိန်းပြီးရင် ပြန်လာရမယ့် နေရာ
-    });
-
-    if (error) {
-      alert("Error: " + error.message);
-    } else {
-      alert(`အောင်မြင်ပါသည်။ Password ချိန်းရန် Link ကို ${email} ထံသို့ ပို့ပေးလိုက်ပါပြီဗျာ။ User ကို ၎င်း၏ Email ဝင်စစ်ခိုင်းလိုက်ပါ။`);
-      document.getElementById('resetUserEmail').value = ""; // Form ရှင်းလင်းခြင်း
-    }
+    const { error } = await royalSupabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/index.html' });
+    if (error) { alert("Error: " + error.message); } 
+    else { alert(`Password ချိန်းရန် Link ကို ${email} ထံသို့ ပို့ပေးလိုက်ပါပြီဗျာ။`); document.getElementById('resetUserEmail').value = ""; }
   }
 });
 
