@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Royal Game Shop - Products</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
+body{ background:#0c0b1a; color:#fff; padding-top:90px; }
+.top-bar{ position:fixed; top:0; left:0; width:100%; height:70px; display:flex; justify-content:space-between; align-items:center; padding:0 16px; background:rgba(255,255,255,0.06); backdrop-filter:blur(12px); border-bottom:1px solid rgba(255,255,255,0.15); z-index:1000; }
+.logo-box img{ height:44px; cursor: pointer; }
+.nav-links a { padding:8px 16px; border-radius:14px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:#fff; font-weight:600; text-decoration:none; }
+main{ padding:20px; max-width:600px; margin:auto; }
+.game-header { text-align: center; margin-bottom: 25px; }
+.game-header h2 { color: #bb86fc; font-size: 24px; margin-bottom: 5px; }
+.product-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
+.product-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+.product-card:hover { border-color: #bb86fc; background: rgba(187, 134, 252, 0.05); }
+.product-card.selected { border-color: #00ff66; background: rgba(0, 255, 102, 0.08); }
+.product-info .name { font-weight: bold; font-size: 16px; color: #e1d5ff; }
+.product-info .price { font-size: 14px; color: #00ff66; margin-top: 4px; font-weight: bold; }
+.radio-dots { width: 20px; height: 20px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4); display: flex; justify-content: center; align-items: center; }
+.product-card.selected .radio-dots { border-color: #00ff66; }
+.product-card.selected .radio-dots::after { content: ''; width: 10px; height: 10px; background: #00ff66; border-radius: 50%; }
+.order-form { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 20px; border-radius: 18px; margin-top: 20px; }
+.order-form h3 { font-size: 16px; color: #d6c1ff; margin-bottom: 15px; }
+input, select { width: 100%; padding: 12px; margin-bottom: 14px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; border-radius: 10px; outline: none; }
+input:focus, select:focus { border-color: #bb86fc; }
+select option { background: #121028; }
+.btn-order { width: 100%; padding: 14px; background: #bb86fc; color: #0c0b1a; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+.btn-order:hover { background: #d6c1ff; }
+.please-login { text-align: center; color: #ff4f4f; font-weight: bold; background: rgba(255, 79, 79, 0.1); padding: 12px; border-radius: 10px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="logo-box" onclick="window.location.href='index.html'"><img src="https://i.ibb.co/pBCj40vb/Untitled33-20250505002056.png"></div>
+  <div class="nav-links"><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></div>
+</div>
+
+<main>
+  <div class="game-header">
+    <h2 id="gameTitle">Game Products</h2>
+    <p style="color:rgba(255,255,255,0.5); font-size:13px;">ဝယ်ယူလိုသော ပစ္စည်းပမာဏကို ရွေးချယ်ပေးပါဗျာ။</p>
+  </div>
+
+  <div class="product-group" id="productsContainer">
+    <p style="text-align:center; color:rgba(255,255,255,0.4);">ပစ္စည်းစာရင်းများ ဆွဲတင်နေသည်...</p>
+  </div>
+
+  <div class="order-form hidden" id="orderFormBox">
+    <h3>📥 ဝယ်ယူမှုအချက်အလက် ဖြည့်သွင်းရန်</h3>
+    <input type="text" id="playerGameId" placeholder="Player ID / Zone ID ရိုက်ထည့်ပါ (ဥပမာ - 12345678 (2026))">
+    
+    <label for="paymentMethod" style="font-size:13px; color:rgba(255,255,255,0.6); display:block; margin-bottom:5px;">ငွေပေးချေမည့်စနစ် ရွေးပါ:</label>
+    <select id="paymentMethod">
+      <option value="KBZPay">KBZPay (09xxxxxxxxx)</option>
+      <option value="WaveMoney">WaveMoney (09xxxxxxxxx)</option>
+    </select>
+
+    <input type="text" id="slipLink" placeholder="ငွေလွှဲစလစ်ပုံ (ImgBB / Google Drive Share Link)">
+    
+    <button class="btn-order" id="btnSubmitOrder">အော်ဒါတင်မည် (Confirm Order) 🚀</button>
+  </div>
+
+  <div id="loginWarning" class="please-login hidden">⚠️ အော်ဒါတင်ရန်အတွက် ပင်မစာမျက်နှာတွင် အရင်ဆုံး Login ဝင်ပေးပါဗျာ။</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://cmiiovretkzjuiespsmx.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtaWlvdnJldGt6anVpZXNwc214Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3NTkzNzYsImV4cCI6MjA5NzMzNTM3Nn0.7JpD4erEqpGCBgQ9TktAWhFSbapQMwvV4WzFLP0fWmA";
+const royalSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let selectedProduct = null;
+let currentUserEmail = null;
+
+// URL ထဲကနေ လာတဲ့ ?cat=ID ကို ဖမ်းယူခြင်း
+const urlParams = new URLSearchParams(window.location.search);
+const catId = urlParams.get('cat');
+
+// Google Drive Share Link ကို သယ်ယူနိုင်ရန် စနစ်
+function convertToDirectLink(url) {
+  if (url.includes("drive.google.com")) {
+    let fileId = "";
+    if (url.includes("/d/")) { fileId = url.split("/d/")[1].split("/")[0]; } 
+    else if (url.includes("id=")) { fileId = url.split("id=")[1].split("&")[0]; }
+    if (fileId) { return `https://drive.google.com/uc?export=view&id=${fileId}`; }
+  }
+  return url;
+}
+
+async function initPage() {
+  if (!catId) { window.location.href = "index.html"; return; }
+  
+  // အသုံးပြုသူ အကောင့်ဝင်ထားခြင်း ရှိမရှိ စစ်ဆေးခြင်း
+  const { data: { session } } = await royalSupabase.auth.getSession();
+  if (session) {
+    currentUserEmail = session.user.email;
+    document.getElementById('orderFormBox').classList.remove('hidden');
+  } else {
+    document.getElementById('loginWarning').classList.remove('hidden');
+  }
+
+  await loadGameDetails();
+  await loadGameProducts();
+}
+
+// ဂိမ်းအမည်ကို ဆွဲတင်ပြသခြင်း
+async function loadGameDetails() {
+  const { data: category } = await royalSupabase.from('categories').select('*').eq('id', catId).single();
+  if (category) {
+    document.getElementById('gameTitle').innerText = category.name;
+  }
+}
+
+// သက်ဆိုင်ရာ ဂိမ်းအလိုက် ပစ္စည်းနှင့် စျေးနှုန်းများ ဆွဲတင်ပြသခြင်း
+async function loadGameProducts() {
+  const container = document.getElementById('productsContainer');
+  const { data: products, error } = await royalSupabase.from('products').select('*').eq('category_id', catId).order('price', { ascending: true });
+
+  if (error || !products || products.length === 0) {
+    container.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.4); padding:20px;">ဤဂိမ်းအတွက် ရောင်းချမည့် ပစ္စည်းများ မရှိသေးပါဗျာ။</p>`;
+    return;
+  }
+
+  container.innerHTML = "";
+  products.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `
+      <div class="product-info">
+        <div class="name">${p.name}</div>
+        <div class="price">${parseInt(p.price).toLocaleString()} Ks</div>
+      </div>
+      <div class="radio-dots"></div>
+    `;
+    
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedProduct = p; // ရွေးချယ်လိုက်သော ပစ္စည်းကို မှတ်သားခြင်း
+    });
+    
+    container.appendChild(card);
+  });
+}
+
+// အော်ဒါတင်သည့် လုပ်ဆောင်ချက်
+document.getElementById('btnSubmitOrder').addEventListener('click', async () => {
+  if (!selectedProduct) return alert("ကျေးဇူးပြု၍ ဝယ်ယူမည့် ပစ္စည်းပမာဏကို အရင်ရွေးချယ်ပေးပါဗျာ။");
+  
+  const playerId = document.getElementById('playerGameId').value.trim();
+  let slipUrl = document.getElementById('slipLink').value.trim();
+  const payment = document.getElementById('paymentMethod').value;
+
+  if (!playerId) return alert("Player ID ဖြည့်စွက်ပေးပါဗျာ။");
+  if (!slipUrl) return alert("ငွေလွှဲစလစ်ပုံ (Link) ထည့်သွင်းပေးပါဗျာ။");
+
+  slipUrl = convertToDirectLink(slipUrl); // Google Drive Link ပြောင်းလဲခြင်း
+
+  // အော်ဒါအချက်အလက်ကို Supabase Database ထဲသို့ ပို့ခြင်း
+  const { error } = await royalSupabase.from('orders').insert({
+    user_email: currentUserEmail,
+    game_name: document.getElementById('gameTitle').innerText + " (" + selectedProduct.name + ")",
+    amount: selectedProduct.price,
+    status: 'pending' // စောင့်ဆိုင်းဆဲ အဆင့်အဖြစ် သတ်မှတ်ခြင်း
+  });
+
+  if (error) {
+    alert("Error: " + error.message);
+  } else {
+    alert("အော်ဒါတင်ခြင်း အောင်မြင်ပါသည်ဗျာ။ Admin ဘက်က ၁၀ မိနစ်အတွင်း စစ်ဆေးပြီး ဆောင်ရွက်ပေးပါလိမ့်မည်။");
+    window.location.href = "index.html"; // အောင်မြင်ရင် Home ကို ပြန်ခေါ်သွားခြင်း
+  }
+});
+
+window.onload = initPage;
+</script>
+</body>
+</html>
