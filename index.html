@@ -138,18 +138,23 @@ let isLoggedIn = false;
 
 function toggleMenu(){ document.getElementById("sideMenu").classList.toggle("active"); document.querySelector(".overlay").classList.toggle("active"); }
 
-function openAuthModal() {
+// 🛠️ ပြင်ဆင်ချက်- Modal ဖွင့်စနစ် သေချာအလုပ်လုပ်အောင် Global Scope သို့ ရွှေ့ပေးထားပါသည်
+window.openAuthModal = function() {
   const modal = document.getElementById('authModal');
   modal.classList.add('active');
   if (isLoggedIn) {
-    document.getElementById('profileCard').classList.remove('hidden'); document.getElementById('loginCard').classList.add('hidden'); document.getElementById('registerCard').classList.add('hidden');
+    document.getElementById('profileCard').classList.remove('hidden'); 
+    document.getElementById('loginCard').classList.add('hidden'); 
+    document.getElementById('registerCard').classList.add('hidden');
   } else { 
-    document.getElementById('loginCard').classList.remove('hidden'); document.getElementById('registerCard').classList.add('hidden'); document.getElementById('profileCard').classList.add('hidden'); 
+    document.getElementById('loginCard').classList.remove('hidden'); 
+    document.getElementById('registerCard').classList.add('hidden'); 
+    document.getElementById('profileCard').classList.add('hidden'); 
   }
 }
 
-function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
-function toggleAuthForm() { document.getElementById('loginCard').classList.toggle('hidden'); document.getElementById('registerCard').classList.toggle('hidden'); }
+window.closeAuthModal = function() { document.getElementById('authModal').classList.remove('active'); }
+window.toggleAuthForm = function() { document.getElementById('loginCard').classList.toggle('hidden'); document.getElementById('registerCard').classList.toggle('hidden'); }
 
 function initSliderAnimation() {
   const imgs = document.querySelectorAll(".banner-slider img"); const dots = document.querySelectorAll(".dots span");
@@ -160,21 +165,20 @@ function initSliderAnimation() {
     timer = setInterval(() => {
       imgs[index].classList.remove("active"); dots[index].classList.remove("active");
       index = (index + 1) % imgs.length;
-      imgs[index].classList.add("active"); dots[index].classList.add("active");
+      imgs[index].classList.add("active"); dots[index].mathbf{classList}.add("active");
     }, 3500);
   }
 }
 
 /* ========================================================
-   ⚡ SUPABASE INTEGRATION (VPN လုံးဝမလိုဘဲ တန်းအလုပ်လုပ်မည့်နေရာ)
+   ⚡ SUPABASE INTEGRATION
    ======================================================== */
-const ADMIN_EMAIL = "admin@gmail.com"; // 👑 မိမိ Admin Email ကို ဒီမှာ သတ်မှတ်ပါ
+const ADMIN_EMAIL = "royaladmin@gmail.com"; // 👑 လူကြီးမင်းရဲ့ အစစ်အမှန် Admin Email
 
 const SUPABASE_URL = "https://cmiiovretkzjuiespsmx.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ctGYJqLMn0s6MwNx3qIvRw_V5VG-Y3pzeEpCek80X2REbHh1N0pCdzA5TmhKUXh2WVZoTQ==";
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ၁။ စာမျက်နှာစဖွင့်ချိန်တွင် အကောင့်အခြေအနေကို စစ်ဆေးခြင်း
 checkAuthState();
 
 async function checkAuthState() {
@@ -185,7 +189,6 @@ async function checkAuthState() {
   if (session) {
     const user = session.user;
     if(user.email === ADMIN_EMAIL) {
-      // Admin အကောင့်ဖြစ်ပါက admin.html သို့ တိုက်ရိုက်ပို့မည်
       window.location.href = "admin.html";
       return;
     }
@@ -202,27 +205,26 @@ async function checkAuthState() {
     if(mobileBtn) mobileBtn.innerText = "Login / Register";
   }
   
-  // App Core လုပ်ဆောင်ချက်များ စတင်ခြင်း
   updateAnalytics();
   loadBanners();
   loadCategories();
 }
 
-// ၂။ Website Traffic Views မြှင့်တင်ခြင်း
 async function updateAnalytics() {
   if(!sessionStorage.getItem('counted')) {
-    const { data } = await supabase.from('site_analytics').select('views').eq('id', 1).single();
-    let currentViews = (data ? data.views : 0) + 1;
-    await supabase.from('site_analytics').upsert({ id: 1, views: currentViews });
-    sessionStorage.setItem('counted', 'true');
+    try {
+      const { data } = await supabase.from('site_analytics').select('views').eq('id', 1).single();
+      let currentViews = (data ? data.views : 0) + 1;
+      await supabase.from('site_analytics').upsert({ id: 1, views: currentViews });
+      sessionStorage.setItem('counted', 'true');
+    } catch(e) {}
   }
 }
 
-// ၃။ Website Banner ပုံများ ဆွဲတင်ခြင်း
 async function loadBanners() {
   const { data: banners } = await supabase.from('banners').select('*').order('created_at', { ascending: true });
   const slider = document.querySelector(".banner-slider"); const dots = document.querySelector(".dots");
-  if(!slider || !banners) return;
+  if(!slider || !banners || banners.length === 0) return;
   slider.querySelectorAll("img").forEach(i => i.remove()); dots.innerHTML = "";
   banners.forEach((b) => {
     const img = document.createElement("img"); img.src = b.image; slider.appendChild(img);
@@ -231,7 +233,6 @@ async function loadBanners() {
   initSliderAnimation();
 }
 
-// ၄။ ဂိမ်းအမျိုးအစားများကို Database မှ ဆွဲပြခြင်း
 async function loadCategories() {
   const grid = document.getElementById("gameGrid"); 
   if(!grid) return;
@@ -255,7 +256,6 @@ async function loadCategories() {
   });
 }
 
-// ၅။ ရိုးရိုး User များအတွက် ဝယ်ယူမှုမှတ်တမ်း (Order History) ဖတ်ယူခြင်း
 async function loadUserOrdersHistory(email) {
   const list = document.getElementById('userOrderList'); if(!list) return;
   list.innerHTML = "";
@@ -271,7 +271,6 @@ async function loadUserOrdersHistory(email) {
   }
 }
 
-// ၆။ Register ခလုတ် လုပ်ဆောင်ချက်
 document.getElementById('btnRegister').addEventListener('click', async () => {
   const email = document.getElementById('regEmail').value.trim();
   const password = document.getElementById('regPassword').value.trim();
@@ -282,7 +281,6 @@ document.getElementById('btnRegister').addEventListener('click', async () => {
   else { alert("အကောင့်ဖွင့်ခြင်း အောင်မြင်ပါသည်။"); window.location.reload(); }
 });
 
-// ၇။ Login ခလုတ် လုပ်ဆောင်ချက်
 document.getElementById('btnLogin').addEventListener('click', async () => {
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value.trim();
@@ -293,7 +291,6 @@ document.getElementById('btnLogin').addEventListener('click', async () => {
   else { alert("ဝင်ရောက်မှု အောင်မြင်သည်"); window.location.reload(); }
 });
 
-// ၈။ Logout ခလုတ် လုပ်ဆောင်ချက်
 document.getElementById('btnLogout').addEventListener('click', async () => {
   await supabase.auth.signOut();
   alert("Logout ပြီးပါပြီ");
