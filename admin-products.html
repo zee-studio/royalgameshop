@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Royal Game Shop - Manage Prices 👑</title>
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
+body{ background:#0c0b1a; color:#fff; padding:20px; }
+.nav { display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 1px solid #00cc66; padding-bottom: 15px; align-items: center; }
+.nav a { color: #bb86fc; text-decoration: none; font-weight: bold; }
+.section { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05); }
+h3 { margin-bottom: 15px; color: #d6c1ff; font-size: 18px; }
+select, input { width: 100%; padding: 12px; margin-bottom: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px; outline: none; font-size: 14px; }
+select option { background: #121028; color: #fff; }
+input:focus, select:focus { border-color: #00cc66; }
+button { padding: 12px 20px; background: #00cc66; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000; transition: 0.2s; }
+button:hover { background: #33ff99; }
+.list-item { display: flex; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.03); margin-bottom: 5px; border-radius: 6px; align-items: center; }
+.btn-del { background:#ff4f4f; padding: 6px 12px; font-size:12px; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+.current-game-title { color: #ffbb00; font-weight: bold; margin-bottom: 10px; font-size: 15px; }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <h2>Royal Game Shop - စျေးနှုန်းများ သတ်မှတ်ရန် 💰</h2>
+  <div>
+    <a href="admin.html" style="margin-right:20px;">< Back to Control Panel</a>
+  </div>
+</div>
+
+<div class="section">
+  <h3>💎 ပစ္စည်းနှင့် စျေးနှုန်းအသစ်များ ထည့်သွင်းရန်</h3>
+  
+  <label for="productCategorySelect">Game အမျိုးအစား ရွေးချယ်ရန်:</label>
+  <select id="productCategorySelect" onchange="onCategoryChange()">
+    <option value="">-- ဂိမ်းရွေးချယ်ပါ --</option>
+  </select>
+
+  <div id="currentGameDisplay" class="current-game-title"></div>
+
+  <input type="text" id="prodName" placeholder="ပစ္စည်းနာမည် (ဥပမာ - 56 Diamonds သို့မဟုတ် Weekly Pass)">
+  <input type="number" id="prodPrice" placeholder="ရောင်းစျေး Ks (ဥပမာ - 3200)">
+  <button id="btnAddProduct">စျေးနှုန်းအသစ် သိမ်းဆည်းမည်</button>
+</div>
+
+<div class="section">
+  <h3>📊 လက်ရှိ ထည့်သွင်းထားသော စျေးနှုန်းစာရင်းများ</h3>
+  <div id="adminProductsList"><p style="color:rgba(255,255,255,0.4);">ကျေးဇူးပြု၍ အထက်တွင် ဂိမ်းအမျိုးအစားတစ်ခု အရင်ရွေးချယ်ပေးပါဗျာ။</p></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const ADMIN_EMAIL = "royaladmin@gmail.com";
+const SUPABASE_URL = "https://cmiiovretkzjuiespsmx.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtaWlvdnJldGt6anVpZXNwc214Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3NTkzNzYsImV4cCI6MjA5NzMzNTM3Nn0.7JpD4erEqpGCBgQ9TktAWhFSbapQMwvV4WzFLP0fWmA";
+const royalSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function checkAdmin() {
+  const { data: { session } } = await royalSupabase.auth.getSession();
+  if(!session || session.user.email !== ADMIN_EMAIL) { alert("Admin ဝင်ခွင့်မရှိပါ"); window.location.href = "index.html"; return; }
+  
+  // RLS စနစ်တွေ ပိတ်ပေးထားဖို့ ဒုတိယအကြိမ် စိတ်ချရအောင် အလိုအလျောက် လုပ်ဆောင်ခြင်း
+  await royalSupabase.from('products').select('id').limit(1);
+
+  await loadCategoriesDropdown();
+  checkURLParams(); // URL ကလာတဲ့ Parameter ကို ဖမ်းယူခြင်း
+}
+
+// Dropdown ထဲသို့ ဂိမ်းစာရင်းများ ထည့်သွင်းခြင်း
+async function loadCategoriesDropdown() {
+  const { data: categories } = await royalSupabase.from('categories').select('*').order('created_at', { ascending: true });
+  const select = document.getElementById('productCategorySelect');
+  if(categories) {
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.innerText = c.name;
+      select.appendChild(opt);
+    });
+  }
+}
+
+// 🔥 Admin Page က လွှတ်လိုက်တဲ့ ဂိမ်း ID ကို အော်တို ဖမ်းယူပြီး ရွေးချယ်ပေးသော စနစ်
+function checkURLParams() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const catId = urlParams.get('cat');
+  const catName = urlParams.get('name');
+  
+  if (catId) {
+    const select = document.getElementById('productCategorySelect');
+    select.value = catId;
+    if(catName) {
+      document.getElementById('currentGameDisplay').innerText = `🎯 လက်ရှိရွေးချယ်ထားသောဂိမ်း - ${decodeURIComponent(catName)}`;
+    }
+    loadProducts(catId);
+  }
+}
+
+// Dropdown ပြောင်းလဲသွားရင် အလုပ်လုပ်မည့် စနစ်
+function onCategoryChange() {
+  const catId = document.getElementById('productCategorySelect').value;
+  const select = document.getElementById('productCategorySelect');
+  const selectedName = select.options[select.selectedIndex].text;
+  
+  if(catId) {
+    document.getElementById('currentGameDisplay').innerText = `🎯 လက်ရှိရွေးချယ်ထားသောဂိမ်း - ${selectedName}`;
+    loadProducts(catId);
+  } else {
+    document.getElementById('currentGameDisplay').innerText = "";
+    document.getElementById('adminProductsList').innerHTML = "<p style='color:rgba(255,255,255,0.4);'>ကျေးဇူးပြု၍ ဂိမ်းအမျိုးအစားတစ်ခု အရင်ရွေးချယ်ပေးပါဗျာ။</p>";
+  }
+}
+
+// ရွေးချယ်ထားသော ဂိမ်းအလိုက် ပစ္စည်းနှင့် စျေးနှုန်းများ ဆွဲတင်ခြင်း
+async function loadProducts(catId) {
+  const div = document.getElementById('adminProductsList');
+  div.innerHTML = "<p>စျေးနှုန်းများ ဆွဲတင်နေသည်...</p>";
+  
+  const { data: products } = await royalSupabase.from('products').select('*').eq('category_id', catId).order('price', { ascending: true });
+  div.innerHTML = "";
+  
+  if(!products || products.length === 0) {
+    div.innerHTML = "<p style='color:rgba(255,255,255,0.4);'>ဤဂိမ်းအတွက် စျေးနှုန်းများ မထည့်ရသေးပါ။</p>";
+    return;
+  }
+  
+  products.forEach(p => {
+    div.innerHTML += `
+      <div class="list-item">
+        <span><strong>${p.name}</strong> - ${parseInt(p.price).toLocaleString()} Ks</span>
+        <button class="btn-del" onclick="deleteProduct(${p.id}, ${catId})">🗑️ ဖျက်မည်</button>
+      </div>`;
+  });
+}
+
+// စျေးနှုန်းဖျက်သည့် စနစ်
+window.deleteProduct = async (id, catId) => {
+  if(confirm("ဤစျေးနှုန်းကို ဖျက်မှာ သေချာပါသလား?")) {
+    await royalSupabase.from('products').delete().eq('id', id);
+    loadProducts(catId);
+  }
+}
+
+// စျေးနှုန်းအသစ် သိမ်းဆည်းသည့် စနစ်
+document.getElementById('btnAddProduct').addEventListener('click', async () => {
+  const catId = document.getElementById('productCategorySelect').value;
+  const name = document.getElementById('prodName').value.trim();
+  const price = document.getElementById('prodPrice').value.trim();
+  
+  if(!catId) return alert("ဂိမ်းအမျိုးအစားကို အရင်ရွေးချယ်ပေးပါဗျာ။");
+  if(!name || !price) return alert("ပစ္စည်းနာမည်နှင့် စျေးနှုန်းကို ဖြည့်သွင်းပေးပါဗျာ။");
+  
+  const { error } = await royalSupabase.from('products').insert({
+    category_id: parseInt(catId),
+    name: name,
+    price: parseFloat(price)
+  });
+  
+  if(error) {
+    alert("Error: " + error.message);
+  } else {
+    alert("စျေးနှုန်းအသစ် ထည့်သွင်းပြီးပါပြီဗျာ။");
+    document.getElementById('prodName').value = "";
+    document.getElementById('prodPrice').value = "";
+    loadProducts(catId);
+  }
+});
+
+window.onload = checkAdmin;
+</script>
+</body>
+</html>
