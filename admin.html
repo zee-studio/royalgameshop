@@ -93,7 +93,7 @@ body { background: var(--bg-dark); color:#fff; min-height: 100vh; display: flex;
 .btn-view-slip { background: rgba(3, 218, 198, 0.12); color: var(--accent); border: 1px solid rgba(3, 218, 198, 0.25); padding: 8px 14px; border-radius: 10px; font-size: 12px; cursor: pointer; font-weight: 700; text-align: center; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 .btn-view-slip:hover { background: var(--accent); color: #000; }
 .order-actions { display: flex; gap: 8px; width: 100%; }
-.order-actions button { flex: 1; padding: 10px; font-size: 12px; justify-content: center; border-radius: 10px; }
+.order-actions button { flex: 1; padding: 10px; font-size: 12px; justify-content: center; border-radius: 10px; font-weight: bold; cursor: pointer; }
 
 /* 📥 Inputs, Controls UI Elements */
 .card-box { background: var(--panel-bg); border: 1px solid var(--border); padding: 25px; border-radius: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); margin-bottom: 25px; }
@@ -281,20 +281,16 @@ let currentOrderTab = "pending";
 
 // 🛠️ Page Switcher Component Engine
 function switchAdminPage(pageId, element) {
-  // Navigation Links Active State ပြောင်းလဲခြင်း
   document.querySelectorAll('.sidebar-menu .menu-item').forEach(item => item.classList.remove('active'));
   if(element) element.classList.add('active');
 
-  // စာမျက်နှာခွဲများ တစ်ခုချင်းစီ အဖွင့်အပိတ်လုပ်ခြင်း
   document.querySelectorAll('.dashboard-page').forEach(page => page.classList.remove('active-page'));
   const targetPage = document.getElementById(`page-${pageId}`);
   if(targetPage) targetPage.classList.add('active-page');
 
-  // Mobile Top Bar Title ပြောင်းလဲခြင်း
   const titles = { overview: "Overview Dashboard", orders: "Manage Orders", "game-manager": "Game & Banners", security: "Security Controls" };
   document.getElementById('mobilePageTitle').innerText = titles[pageId] || "Control Panel";
   
-  // Mobile မှာ နှိပ်လိုက်ရင် Sidebar ပြန်ပိတ်ရန်
   document.getElementById('dashboardSidebar').classList.remove('mobile-open');
 }
 
@@ -322,29 +318,41 @@ async function checkAdmin() {
   loadOrders();
 }
 
+// 🔄 နည်းလမ်း (၂) စနစ်သစ် - အော်ဒါမတင်ရသေးသော်လည်း အကောင့်ဖွင့်ထားသမျှ profiles ထဲမှ တိုက်ရိုက်ပြမည့် Function
 async function loadUsersList() {
   const tbody = document.getElementById('userTableBody');
-  const { data: ordersData } = await royalSupabase.from('orders').select('user_email, phone_number').order('created_at', {ascending: false});
   
-  let uniqueUsers = []; let checkedEmails = new Set();
-  if(ordersData) {
-    ordersData.forEach(o => {
-      if(!checkedEmails.has(o.user_email)) {
-        checkedEmails.add(o.user_email);
-        uniqueUsers.push({ email: o.user_email, phone: o.phone_number || "မဖော်ပြထားပါ" });
-      }
-    });
+  const { data: profilesData, error } = await royalSupabase
+    .from('profiles')
+    .select('email, phone')
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error("Profiles Load Error:", error);
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--error);">Error: Table (profiles) မရှိသေးပါ သို့မဟုတ် SQL မ Run ရသေးပါ။</td></tr>`;
+    return;
   }
-  document.getElementById('txtTotalUsers').innerText = uniqueUsers.length;
+
+  document.getElementById('txtTotalUsers').innerText = profilesData ? profilesData.length : 0;
   tbody.innerHTML = "";
-  if(uniqueUsers.length === 0) {
+  
+  if (!profilesData || profilesData.length === 0) {
     tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:rgba(255,255,255,0.4);">အဖွဲ့ဝင်မှတ်တမ်း မရှိသေးပါ။</td></tr>`;
     return;
   }
-  uniqueUsers.forEach(user => {
-    const fallbackUsername = user.email.split('@')[0];
+  
+  profilesData.forEach(user => {
+    const displayEmail = user.email || "No Email Provided";
+    const fallbackUsername = displayEmail.split('@')[0];
+    const displayPhone = user.phone || "မဖော်ပြထားပါ";
+    
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td><strong>${fallbackUsername}</strong></td><td>${user.phone}</td><td>${user.email}</td><td><span style="color:var(--success); font-size:12px;"><i class="fa-solid fa-shield-halved"></i> Encrypted</span></td>`;
+    tr.innerHTML = `
+      <td><strong>${fallbackUsername}</strong></td>
+      <td>${displayPhone}</td>
+      <td>${displayEmail}</td>
+      <td><span style="color:var(--success); font-size:12px;"><i class="fa-solid fa-shield-halved"></i> Encrypted</span></td>
+    `;
     tbody.appendChild(tr);
   });
 }
@@ -370,11 +378,11 @@ window.deleteCat = async (id) => { if(confirm("ဤဂိမ်းအမျို
 document.getElementById('btnAddCat').addEventListener('click', async () => {
   const name = document.getElementById('catName').value.trim(); 
   let image = document.getElementById('catImage').value.trim();
-  if(!name || !image) return alert("ဂိမ်းနာမည်နှင့် ပုံလင့်ခ်ကို ဖြည့်စွက်ပေးပါဗျာ।");
+  if(!name || !image) return alert("ဂိမ်းနာမည်နှင့် ပုံလင့်ခ်ကို ဖြည့်စွက်ပေးပါဗျာ။");
   image = convertToDirectLink(image);
   const { error } = await royalSupabase.from('categories').insert({ name, image });
   if(error) alert("Error: " + error.message);
-  else { alert("ဂိမ်းအမျိုးအစားသစ် ထည့်သွင်းပြီးပါပြီ।"); window.location.reload(); }
+  else { alert("ဂိမ်းအမျိုးအစားသစ် ထည့်သွင်းပြီးပါပြီ။"); window.location.reload(); }
 });
 
 async function loadBanners() {
@@ -396,7 +404,7 @@ document.getElementById('btnAddBanner').addEventListener('click', async () => {
   image = convertToDirectLink(image);
   const { error } = await royalSupabase.from('banners').insert({ image }); 
   if(error) alert("Error: " + error.message);
-  else { alert("Banner ပုံအသစ် သိမ်းဆည်းပြီးပါပြီဗျာ।"); window.location.reload(); }
+  else { alert("Banner ပုံအသစ် သိမ်းဆည်းပြီးပါပြီဗျာ။"); window.location.reload(); }
 });
 
 function switchOrderTab(tabName) {
@@ -414,7 +422,7 @@ async function loadOrders() {
   const div = document.getElementById('adminOrdersList'); div.innerHTML = "";
   
   if(error || !data || data.length === 0) { 
-    div.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.4); padding:20px;">ဤနေရာတွင် ${currentOrderTab} အော်ဒါမှတ်တမ်းများ မရှိသေးပါဗျာ।</p>`; 
+    div.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.4); padding:20px;">ဤနေရာတွင် ${currentOrderTab} အော်ဒါမှတ်တမ်းများ မရှိသေးပါဗျာ။</p>`; 
     return; 
   }
   
@@ -470,7 +478,7 @@ window.updateStatus = async (id, status) => {
 window.viewSlip = (id) => {
   const card = document.getElementById(`order-card-${id}`);
   const slipData = card.getAttribute('data-slip');
-  if(!slipData) return alert("ဤအော်ဒါအတွက် စလစ်ပုံမှတ်တမ်း ရှာမတွေ့ပါဗျာ।");
+  if(!slipData) return alert("ဤအော်ဒါအတွက် စလစ်ပုံမှတ်တမ်း ရှာမတွေ့ပါဗျာ။");
   document.getElementById('modalSlipImg').src = slipData;
   document.getElementById('slipModal').style.display = "flex";
 }
@@ -479,11 +487,11 @@ window.closeSlipModal = () => { document.getElementById('slipModal').style.displ
 
 document.getElementById('btnResetUserPassword').addEventListener('click', async () => {
   const email = document.getElementById('resetUserEmail').value.trim();
-  if (!email) return alert("ကျေးဇူးပြု၍ User ၏ Email ကို အရင်ရိုက်ထည့်ပေးပါဗျာ।");
+  if (!email) return alert("ကျေးဇူးပြု၍ User ၏ Email ကို အရင်ရိုက်ထည့်ပေးပါဗျာ။");
   if (confirm(`${email} ဆီသို့ Password ပြန်ချိန်းမည့် Link ပို့မှာ သေချာပါသလား?`)) {
     const { error } = await royalSupabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/index.html' });
     if (error) alert("Error: " + error.message);
-    else { alert(`Password ချိန်းရန် Link ကို ${email} ထံသို့ ပို့ပေးလိုက်ပါပြီဗျာ।`); document.getElementById('resetUserEmail').value = ""; }
+    else { alert(`Password ချိန်းရန် Link ကို ${email} ထံသို့ ပို့ပေးလိုက်ပါပြီဗျာ။`); document.getElementById('resetUserEmail').value = ""; }
   }
 });
 
