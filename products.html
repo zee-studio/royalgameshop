@@ -116,7 +116,7 @@ main { padding: 20px; max-width: 1200px; margin: auto; display: grid; grid-templ
     <div class="input-field-group">
       <label>Player ID / Zone ID (မထည့်လဲရ)</label>
       <i class="fa-solid fa-id-card"></i>
-      <input type="text" id="playerGameId" placeholder="ဥပမာ - 12345678 (2026)">
+      <input type="text" id="playerGameId" placeholder="ဥပမာ - 12345678">
     </div>
 
     <div class="input-field-group">
@@ -155,7 +155,7 @@ main { padding: 20px; max-width: 1200px; margin: auto; display: grid; grid-templ
     <div class="input-field-group">
       <label>စလစ်အမှတ် (Auto Scanned Slip ID)</label>
       <i class="fa-solid fa-receipt"></i>
-      <input type="text" id="scannedSlipId" placeholder="ပုံတင်ပြီးပါက စလစ် ID အလိုအလျောက် ပေါ်လာပါမည်">
+      <input type="text" id="scannedSlipId" placeholder="ပုံတင်ပြီးပါက စလစ် ID အလိုအလျောက် ပေါ်လာပါမည် (ကိုယ်တိုင်လည်း ပြင်နိုင်သည်)">
     </div>
 
     <div class="input-field-group">
@@ -202,7 +202,6 @@ async function initPage() {
   await loadGameProducts();
 }
 
-// 🖼️ ဂိမ်းအလိုက် Banner နှင့် အမည်အား ဆွဲတင်ပြသခြင်း
 async function loadGameDetails() {
   const { data: category } = await royalSupabase.from('categories').select('*').eq('id', catId).single();
   if (category) {
@@ -215,7 +214,6 @@ async function loadGameDetails() {
   }
 }
 
-// ပစ္စည်းစာရင်းများ ဆွဲတင်ပြသခြင်း
 async function loadGameProducts() {
   const container = document.getElementById('productsContainer');
   const { data: products, error } = await royalSupabase.from('products').select('*').eq('category_id', catId).order('price', { ascending: true });
@@ -246,7 +244,6 @@ async function loadGameProducts() {
   });
 }
 
-// 🏦 အတန်းလိုက် Payment ရွေးချယ်မှု Function
 function setupPaymentSelection() {
   const items = document.querySelectorAll('.payment-item');
   items.forEach(item => {
@@ -258,7 +255,7 @@ function setupPaymentSelection() {
   });
 }
 
-// 📁 တိုက်ရိုက်ပုံတင်ခြင်းနှင့် Auto Scan ဖတ်ခြင်းစနစ်
+// 📁 ပုံဖတ်ခြင်းစနစ်သစ် (Background Scan စစ်စစ်)
 function setupFileUploadSystem() {
   const fileInput = document.getElementById('slipFileInput');
   const previewContainer = document.getElementById('previewContainer');
@@ -271,7 +268,7 @@ function setupFileUploadSystem() {
     const file = e.target.files[0];
     if (!file) return;
 
-    statusText.innerText = "ပုံတင်သွင်းပြီးပါပြီ - " + file.name;
+    statusText.innerText = "ပုံတင်သွင်းပြီးပါပြီ";
     
     const reader = new FileReader();
     reader.onload = function(event) {
@@ -279,35 +276,43 @@ function setupFileUploadSystem() {
       previewImg.src = uploadedSlipBase64;
       previewContainer.style.display = "block";
       scanLoader.style.display = "flex";
-      slipIdInput.value = "";
+      
+      // User မစောင့်ရအောင် စာသားလေးပြထားမည်
+      slipIdInput.placeholder = "စလစ် ID ကို Auto Scan ဖတ်နေဆဲ... (ကိုယ်တိုင်လည်း ရိုက်ထည့်နိုင်ပါတယ်)";
 
-      // ⚙️ Tesseract.js ဖြင့် စလစ်ပေါ်က ဂဏန်းများနှင့် စာသားများကို Auto AI ဖတ်ခြင်း
-      Tesseract.recognize(uploadedSlipBase64, 'eng', { logger: m => console.log(m) })
+      Tesseract.recognize(uploadedSlipBase64, 'eng')
       .then(({ data: { text } }) => {
         scanLoader.style.display = "none";
-        // KPay သို့မဟုတ် Wave ရဲ့ Transaction ID ဂဏန်းပုံစံများကို ရှာထုတ်ခြင်း Regular Expression
-        const matchRegex = /\b\d{15,22}\b/g; 
-        const foundIds = text.replace(/[\s-]/g, '').match(/\d{15,20}/);
+        // စာသားထဲမှ Space များနှင့် Dash များကို ဖြုတ်ပြီး ဂဏန်း ၁၅ လုံးမှ ၂၀ ลုံး ရှာခြင်း
+        const cleanedText = text.replace(/[\s-]/g, '');
+        const foundIds = cleanedText.match(/\d{15,20}/);
         
         if (foundIds && foundIds[0]) {
           slipIdInput.value = foundIds[0];
+          slipIdInput.placeholder = "စလစ် ID အလိုအလျောက် ဖတ်လို့ရရှိပါပြီ";
         } else {
-          // တိုက်ရိုက်မတွေ့ပါက ဂဏန်းတန်းတစ်ခုခုကို ဖြည့်ပေးရန် ကြိုးစားခြင်း
-          const fallback = text.match(/\d+/g);
-          slipIdInput.value = fallback ? fallback.sort((a,b) => b.length - a.length)[0].substring(0, 18) : "";
+          // တိုက်ရိုက်မတွေ့ပါက အရှည်ဆုံးဂဏန်းတွဲကို ယူခြင်း
+          const fallback = cleanedText.match(/\d+/g);
+          if (fallback) {
+            const longestNum = fallback.sort((a, b) => b.length - a.length)[0];
+            slipIdInput.value = longestNum.substring(0, 18);
+            slipIdInput.placeholder = "စလစ် ID ဖတ်လို့ရရှိပါပြီ";
+          } else {
+            slipIdInput.placeholder = "ပုံတင်ပြီးပါက စလစ် ID အလိုအလျောက် ပေါ်လာပါမည်";
+          }
         }
-        if(!slipIdInput.value) { alert("စလစ် ID ကို Auto ဖတ်မရပါက လူကြီးမင်း ကိုယ်တိုင်လည်း ဖြည့်စွက်နိုင်ပါတယ်ဗျာ။"); }
       })
       .catch(err => {
-        console.error(err);
+        console.error("Scan Error: ", err);
         scanLoader.style.display = "none";
+        slipIdInput.placeholder = "စလစ် ID ကို ကိုယ်တိုင် ဖြည့်စွက်ပေးပါရန်";
       });
     };
     reader.readAsDataURL(file);
   });
 }
 
-// อော်ဒါတင်သည့် လုပ်ဆောင်ချက်
+// 🛒 အော်ဒါတင်ခြင်း စနစ်သစ် (Admin UI နှင့် ကွက်တိအချိတ်အဆက်)
 document.getElementById('btnSubmitOrder').addEventListener('click', async () => {
   if (!selectedProduct) return alert("ကျေးဇူးပြု၍ ဝယ်ယူမည့် ပစ္စည်းပမာဏကို အရင်ရွေးချယ်ပေးပါဗျာ။");
   if (!uploadedSlipBase64) return alert("ကျေးဇူးပြု၍ ငွေလွှဲစလစ်ပုံကို တိုက်ရိုက် Upload တင်ပေးပါဗျာ။");
@@ -317,13 +322,18 @@ document.getElementById('btnSubmitOrder').addEventListener('click', async () => 
   const slipId = document.getElementById('scannedSlipId').value.trim() || "Manual/Not Parsed";
   const remark = document.getElementById('orderRemark').value.trim() || "-";
 
-  // အော်ဒါအချက်အလက်ကို Supabase Database ထဲသို့ ပို့ခြင်း
+  // 🛠️ Admin Panel က ဖော်ပြပေးမည့် Column အမည်များနှင့် ကွက်တိထည့်သွင်းခြင်း
   const { error } = await royalSupabase.from('orders').insert({
     user_email: currentUserEmail,
     game_name: document.getElementById('gameTitle').innerText + " (" + selectedProduct.name + ")",
     amount: selectedProduct.price,
     status: 'pending',
-    // အကယ်၍ လူကြီးမင်းတို့ရဲ့ database မှာ player_id စတဲ့ field တွေ တိုးချင်ရင် အောက်မှာ လှမ်းထည့်နိုင်ပါတယ်
+    player_id: playerId,
+    player_name: pName,
+    payment_method: selectedPayment,
+    slip_id: slipId,
+    remark: remark,
+    slip_url: uploadedSlipBase64 // Base64 သို့မဟုတ် Image Link အဖြစ် သိမ်းဆည်းခြင်း
   });
 
   if (error) {
