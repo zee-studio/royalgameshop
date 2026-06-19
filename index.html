@@ -95,17 +95,51 @@ main { padding:24px; max-width:1200px; margin:auto; }
 .status-rejected { color: var(--error); font-weight: bold; }
 
 /* 🖥️ Responsive Media Queries (Mobile, Tablet, PC အားလုံးကွက်တိဖြစ်စေရန်) */
-@media(min-width:768px){ 
-  .banner-slider { height:300px; } 
-  .game-grid { grid-template-columns:repeat(3,1fr); gap: 20px; } 
-  .menu-btn { display:none; } 
+/* 🖼️ Premium Responsive Banner Slider CSS */
+.banner-slider-box {
+  width: 100%;
+  max-width: 1200px; /* Banner ရဲ့ အကျယ်ဆုံး Size */
+  margin: 20px auto;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px; /* ထောင့်ဝိုင်းဒီဇိုင်း */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  aspect-ratio: 16 / 6; /* 💡 ပုံကို ဘယ် Device မှာမဆို ၁၆:၆ အချိုးအတိုင်း အပြည့်မြင်ရစေမည့် Magic Code */
+  background: #090814;
 }
-@media(min-width:1100px){ 
-  .banner-slider { height:360px; }
-  main { max-width:1200px; margin:auto; padding: 24px 0; } 
-  .game-grid { grid-template-columns:repeat(5,1fr); gap:22px; } 
+
+.banner-slider-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* 💡 ပုံကို ဘေးတွေ အပေါ်အောက်တွေ လုံးဝမပြတ်ဘဲ အပြည့်ပြသခိုင်းခြင်း */
+  display: block;
+  transition: opacity 0.5s ease-in-out;
 }
-.hidden { display: none !important; }
+
+/* Slide Dots ကလေးများ */
+.banner-slider-box .dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.banner-slider-box .dots span {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.banner-slider-box .dots span.active {
+  background: #bb86fc;
+  width: 20px;
+  border-radius: 4px;
+}
 </style>
 </head>
 <body>
