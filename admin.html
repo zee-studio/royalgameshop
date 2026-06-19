@@ -71,14 +71,25 @@ button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(187,134,
 .tab-btn:hover { transform: none; background: rgba(255,255,255,0.05); color: #fff; }
 .tab-btn.active { background: var(--primary); color: #0c0b1a; }
 
-.orders-wrapper { max-height: 480px; overflow-y: auto; padding-right: 4px; display: flex; flex-direction: column; gap: 12px; }
-.order-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 16px; border-radius: 16px; display: flex; flex-direction: column; gap: 12px; transition: 0.2s; }
-@media (min-width: 576px) {
-  .order-card { flex-direction: row; justify-content: space-between; align-items: center; }
+.orders-wrapper { max-height: 600px; overflow-y: auto; padding-right: 4px; display: flex; flex-direction: column; gap: 14px; }
+.order-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 18px; border-radius: 18px; display: flex; flex-direction: column; gap: 14px; transition: 0.2s; border-left: 4px solid var(--warning); }
+.order-card.approved-card { border-left-color: var(--success); }
+.order-card.rejected-card { border-left-color: var(--error); }
+
+.order-detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 5px; }
+.order-detail-grid p strong { color: #fff; }
+
+.order-panel-right { display: flex; flex-direction: column; gap: 10px; justify-content: center; align-items: flex-end; min-width: 140px; }
+@media (max-width: 768px) {
+  .order-card { flex-direction: column; }
+  .order-panel-right { align-items: flex-start; width: 100%; }
 }
-.order-info p { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 3px; }
-.order-info p strong { color: #fff; }
-.order-actions { display: flex; gap: 8px; }
+
+.btn-view-slip { background: rgba(3, 218, 198, 0.15); color: var(--accent); border: 1px solid rgba(3, 218, 198, 0.3); padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; font-weight: 600; text-align: center; width: 100%; }
+.btn-view-slip:hover { background: var(--accent); color: #000; }
+.order-actions { display: flex; gap: 8px; width: 100%; }
+.order-actions button { flex: 1; padding: 10px; font-size: 12px; justify-content: center; }
+
 .btn-approve { background: var(--success); color: #000; }
 .btn-reject { background: var(--error); color: #fff; }
 
@@ -90,10 +101,17 @@ button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(187,134,
 .user-table tr:last-child td { border-bottom: none; }
 .user-table tr:hover td { background: rgba(255,255,255,0.02); }
 
-.badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase; display: inline-block; }
+.badge { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; text-transform: uppercase; display: inline-block; text-align: center; }
 .badge-pending { background: rgba(255,187,0,0.15); color: var(--warning); border: 1px solid rgba(255,187,0,0.2); }
 .badge-approved { background: rgba(0,255,102,0.15); color: var(--success); border: 1px solid rgba(0,255,102,0.2); }
 .badge-rejected { background: rgba(255,79,79,0.15); color: var(--error); border: 1px solid rgba(255,79,79,0.2); }
+
+/* 📄 Slip View Modal UI System */
+.slip-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
+.slip-modal-content { background: #121028; border: 1px solid var(--border); border-radius: 20px; padding: 20px; max-width: 450px; width: 100%; position: relative; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+.slip-modal-content img { max-width: 100%; max-height: 70vh; border-radius: 12px; object-fit: contain; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1); }
+.btn-close-modal { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.1); color: #fff; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+.btn-close-modal:hover { background: var(--error); }
 </style>
 </head>
 <body>
@@ -193,6 +211,14 @@ button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(187,134,
 
 </div>
 
+<div class="slip-modal" id="slipModal">
+  <div class="slip-modal-content">
+    <button class="btn-close-modal" onclick="closeSlipModal()"><i class="fa-solid fa-xmark"></i></button>
+    <h4 style="color:var(--accent); font-size:15px; margin-bottom:5px;"><i class="fa-solid fa-image"></i> Payment Slip Screenshot</h4>
+    <img id="modalSlipImg" src="" alt="User Slip Proof">
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const ADMIN_EMAIL = "royaladmin@gmail.com";
@@ -202,7 +228,6 @@ const royalSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentOrderTab = "pending";
 
-// 🛠️ Google Drive Link အားလုံးကို အမှားအယွင်းမရှိ ကွက်တိ ID ဖြတ်ထုတ်ပေးမည့် စနစ်သစ်
 function convertToDirectLink(url) {
   if (url.includes("drive.google.com")) {
     let fileId = "";
@@ -211,7 +236,6 @@ function convertToDirectLink(url) {
     } else if (url.includes("id=")) { 
       fileId = url.split("id=")[1].split("&")[0]; 
     }
-    
     if (fileId && fileId.trim() !== "") { 
       return `https://drive.google.com/uc?export=view&id=${fileId.trim()}`; 
     }
@@ -229,7 +253,6 @@ async function checkAdmin() {
   loadOrders();
 }
 
-// 👥 ၁။ Users စာရင်း ကော်ထုတ်ပြသခြင်းစနစ်
 async function loadUsersList() {
   const tbody = document.getElementById('userTableBody');
   const { data: ordersData } = await royalSupabase.from('orders').select('user_email, phone_number').order('created_at', {ascending: false});
@@ -270,7 +293,6 @@ async function loadUsersList() {
   });
 }
 
-// 🎲 ၂။ ဂိမ်းအမျိုးအစား ကဏ္ဍ
 async function loadCategories() {
   const { data } = await royalSupabase.from('categories').select('*').order('created_at', { ascending: true });
   const div = document.getElementById('catAdminList'); div.innerHTML = "";
@@ -296,12 +318,10 @@ document.getElementById('btnAddCat').addEventListener('click', async () => {
   
   image = convertToDirectLink(image);
   const { error } = await royalSupabase.from('categories').insert({ name, image });
-  
   if(error) alert("Error: " + error.message);
   else { alert("ဂိမ်းအမျိုးအစားသစ် ထည့်သွင်းပြီးပါပြီ။"); window.location.reload(); }
 });
 
-// 🖼️ ၃။ Banner ကဏ္ဍ
 async function loadBanners() {
   const { data } = await royalSupabase.from('banners').select('*').order('created_at', { ascending: false });
   const div = document.getElementById('bannerAdminList'); div.innerHTML = "";
@@ -320,13 +340,11 @@ window.deleteBanner = async (id) => { if(confirm("ဤ Banner ပုံကို 
 document.getElementById('btnAddBanner').addEventListener('click', async () => {
   let image = document.getElementById('bannerImage').value.trim(); if(!image) return alert("Link ဖြည့်ပါ");
   image = convertToDirectLink(image);
-  
   const { error } = await royalSupabase.from('banners').insert({ image }); 
   if(error) alert("Error: " + error.message);
   else { alert("Banner ပုံအသစ် သိမ်းဆည်းပြီးပါပြီဗျာ။"); window.location.reload(); }
 });
 
-// 🛒 ၄။ အော်ဒါစီမံခန့်ခွဲခြင်း ကဏ္ဍ
 function switchOrderTab(tabName) {
   currentOrderTab = tabName;
   document.querySelectorAll('.order-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -334,6 +352,7 @@ function switchOrderTab(tabName) {
   loadOrders();
 }
 
+// 🛒 ၄။ အော်ဒါစီမံခန့်ခွဲခြင်း ကဏ္ဍ (စနစ်သစ်)
 async function loadOrders() {
   const { data: pCount } = await royalSupabase.from('orders').select('id').eq('status', 'pending');
   document.getElementById('txtPendingCount').innerText = pCount ? pCount.length : 0;
@@ -347,31 +366,79 @@ async function loadOrders() {
   }
   
   data.forEach(o => {
-    let actionButtons = "";
+    let cardClass = "";
+    if (o.status === 'approved') cardClass = "approved-card";
+    if (o.status === 'rejected') cardClass = "rejected-card";
+
+    let actionPanel = "";
     if(o.status === 'pending') {
-      actionButtons = `
-        <div class="order-actions">
-          <button class="btn-approve" onclick="updateStatus(${o.id}, 'approved')"><i class="fa-solid fa-circle-check"></i> Accept</button>
-          <button class="btn-reject" onclick="updateStatus(${o.id}, 'rejected')"><i class="fa-solid fa-circle-xmark"></i> Reject</button>
+      actionPanel = `
+        <div class="order-panel-right">
+          <button class="btn-view-slip" onclick="viewSlip('${o.id}')"><i class="fa-solid fa-file-invoice"></i> View Slip 📄</button>
+          <div class="order-actions">
+            <button class="btn-approve" onclick="updateStatus(${o.id}, 'approved')"><i class="fa-solid fa-circle-check"></i> Accept</button>
+            <button class="btn-reject" onclick="updateStatus(${o.id}, 'rejected')"><i class="fa-solid fa-circle-xmark"></i> Reject</button>
+          </div>
         </div>`;
     } else {
-      actionButtons = `<div><span class="badge badge-${o.status}">${o.status}</span></div>`;
+      actionPanel = `
+        <div class="order-panel-right">
+          <button class="btn-view-slip" style="margin-bottom:5px;" onclick="viewSlip('${o.id}')"><i class="fa-solid fa-file-invoice"></i> View Slip 📄</button>
+          <span class="badge badge-${o.status}">${o.status}</span>
+        </div>`;
     }
 
+    // တန်ဖိုးများမရှိပါက ဖော်ပြပေးမည့် သတ်မှတ်ချက်များ
+    const pId = o.player_id || "Not Provided";
+    const pName = o.player_name || "Not Provided";
+    const payMethod = o.payment_method || "KPay/Wave";
+    const slipId = o.slip_id || "Manual/Not Parsed";
+    const remark = o.remark || "-";
+
     div.innerHTML += `
-      <div class="order-card">
-        <div class="order-info">
-          <p><strong>User Email:</strong> ${o.user_email}</p>
-          <p><strong>Game Item:</strong> ${o.game_name}</p>
-          <p><strong>Price:</strong> <span style="color:var(--success); font-weight:bold;">${parseInt(o.amount).toLocaleString()} Ks</span></p>
+      <div class="order-card ${cardClass}" id="order-card-${o.id}" data-slip="${o.slip_url || b.image || ''}">
+        <div class="order-info" style="flex:1;">
+          <p style="font-size:15px; color:var(--primary); margin-bottom:6px;"><strong>🛒 ${o.game_name}</strong></p>
+          <div class="order-detail-grid">
+            <p><strong>Email:</strong> ${o.user_email}</p>
+            <p><strong>Player ID:</strong> <span style="color:var(--accent); font-weight:bold;">${pId}</span></p>
+            <p><strong>Name:</strong> ${pName}</p>
+            <p><strong>Method:</strong> ${payMethod}</p>
+            <p><strong>Slip ID:</strong> <span style="color:var(--warning); font-weight:600;">${slipId}</span></p>
+            <p><strong>Price:</strong> <span style="color:var(--success); font-weight:bold;">${parseInt(o.amount).toLocaleString()} Ks</span></p>
+          </div>
+          <p style="margin-top:6px; font-size:12px; color:rgba(255,255,255,0.4);"><strong>Remark:</strong> ${remark}</p>
         </div>
-        ${actionButtons}
+        ${actionPanel}
       </div>`;
   });
 }
-window.updateStatus = async (id, status) => { await royalSupabase.from('orders').update({ status }).eq('id', id); loadOrders(); }
 
-// ✉️ ၅။ Password Reset စနစ်
+window.updateStatus = async (id, status) => { 
+  if(confirm(`ဤအော်ဒါကို ${status} ပြောင်းလဲရန် သေချာပါသလား?`)) {
+    await royalSupabase.from('orders').update({ status }).eq('id', id); 
+    loadOrders(); 
+  } 
+}
+
+// 📄 စလစ်ပုံကို Modal ဖြင့် ချက်ချင်းလှမ်းကြည့်မည့် စနစ်
+window.viewSlip = (id) => {
+  const card = document.getElementById(`order-card-${id}`);
+  const slipData = card.getAttribute('data-slip');
+  
+  if(!slipData || slipData === "null" || slipData === "") {
+    alert("ဤအော်ဒါအတွက် စလစ်ပုံမှတ်တမ်း ရှာမတွေ့ပါဗျာ။");
+    return;
+  }
+  
+  document.getElementById('modalSlipImg').src = slipData;
+  document.getElementById('slipModal').style.display = "flex";
+}
+
+window.closeSlipModal = () => {
+  document.getElementById('slipModal').style.display = "none";
+}
+
 document.getElementById('btnResetUserPassword').addEventListener('click', async () => {
   const email = document.getElementById('resetUserEmail').value.trim();
   if (!email) return alert("ကျေးဇူးပြု၍ User ၏ Email ကို အရင်ရိုက်ထည့်ပေးပါဗျာ။");
