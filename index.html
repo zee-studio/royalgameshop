@@ -3,123 +3,71 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Royal Game Shop</title>
+<title>Royal Game Shop - Premium Gaming Store 👑</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root {
+  --bg-dark: #090814;
+  --panel-bg: rgba(20, 18, 42, 0.6);
   --primary: #bb86fc;
-  --primary-variant: #3700b3;
-  --secondary: #03dac6;
-  --background: #0a0915;
-  --surface: rgba(255, 255, 255, 0.06);
-  --border: rgba(255, 255, 255, 0.12);
-  --error: #ff4f4f;
-  --success: #00ff66;
+  --accent: #03dac6;
+  --text-main: #ffffff;
+  --border: rgba(255, 255, 255, 0.08);
 }
 
-* { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-body { background: var(--background); color:#fff; padding-top:85px; overflow-x: hidden; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+body { background: var(--bg-dark); color: var(--text-main); min-height: 100vh; padding-bottom: 60px; }
 
-/* 📱 Responsive Top Bar */
-.top-bar { position:fixed; top:0; left:0; width:100%; height:75px; display:flex; justify-content:space-between; align-items:center; padding:0 24px; background: rgba(10, 9, 21, 0.75); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); z-index:1000; }
-.left-box { display:flex; align-items:center; gap:16px; }
-.logo-box img { height:46px; cursor: pointer; filter: drop-shadow(0 0 8px rgba(187,134,252,0.3)); }
+/* 🌟 Navbar Navigation */
+.header-nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background: rgba(15, 13, 34, 0.8); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
+.header-nav h1 { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+.header-nav h1 span { color: var(--primary); text-shadow: 0 0 10px rgba(187,134,252,0.3); }
+.btn-login { background: linear-gradient(135deg, #bb86fc, #985eff); color: #0c0b1a; padding: 8px 20px; border-radius: 10px; font-weight: bold; text-decoration: none; font-size: 14px; transition: 0.2s; }
+.btn-login:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(187,134,252,0.4); }
 
-.menu-btn { width:30px; display:flex; flex-direction:column; gap:6px; cursor:pointer; }
-.menu-btn span { height:3px; background:#fff; border-radius:2px; transition: 0.3s; }
+/* 🖼️ Premium Responsive Banner Slider Container */
+.main-wrapper { max-width: 1200px; width: 100%; margin: 20px auto; padding: 0 15px; }
 
-/* 👑 Profile Avatar စနစ်သစ် Design */
-.nav-links { display: flex; align-items: center; }
-.login-trigger-btn { padding:10px 22px; border-radius:14px; background: linear-gradient(135deg, #bb86fc, #985eff); border: none; color: #0c0b1a; font-weight:700; text-decoration:none; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(187,134,252,0.4); }
-.login-trigger-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(187,134,252,0.6); }
-
-.user-profile-widget { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 6px 14px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); transition: 0.2s; }
-.user-profile-widget:hover { border-color: var(--primary); background: rgba(187,134,252,0.05); }
-.user-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #03dac6, #ff007f); display: flex; justify-content: center; align-items: center; font-weight: bold; color: #fff; font-size: 16px; text-transform: uppercase; border: 2px solid var(--border); box-shadow: 0 0 10px rgba(3,218,198,0.2); }
-.user-display-name { font-weight: 600; font-size: 14px; color: #e1d5ff; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-/* 🧭 Side Menu */
-.side-menu { position:fixed; top:0; left:-280px; width:260px; height:100vh; background:#0f0d22; padding:90px 20px; transition:.35s cubic-bezier(0.4, 0, 0.2, 1); z-index:1100; border-right: 1px solid var(--border); }
-.side-menu.active { left:0 }
-.side-menu a { display:flex; align-items:center; gap:14px; padding:14px; margin-bottom:12px; border-radius:14px; background:var(--surface); color:#fff; text-decoration:none; font-weight:600; border: 1px solid transparent; transition: 0.2s; }
-.side-menu a:hover { border-color: var(--primary); background: rgba(255,255,255,0.1); }
-.overlay { position:fixed; inset:0; background:rgba(0,0,0,.6); backdrop-filter: blur(4px); opacity:0; pointer-events:none; transition:.3s; z-index:1050; }
-.overlay.active { opacity:1; pointer-events:auto; }
-
-/* 🖼️ Slider */
-.banner-wrapper { padding:0 20px; max-width: 1200px; margin: auto; }
-.banner-slider { position:relative; width:100%; height:180px; border-radius:24px; overflow:hidden; margin:20px auto; background:#000; border: 1px solid var(--border); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
-.banner-slider img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; opacity:0; transition:opacity .8s ease; }
-.banner-slider img.active { opacity:1 }
-.dots { position:absolute; bottom:14px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index: 10; }
-.dots span { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.35); transition: 0.3s; }
-.dots span.active { width:22px; border-radius:4px; background: var(--primary); }
-
-/* 🎮 Game Grid & Main Section */
-main { padding:24px; max-width:1200px; margin:auto; }
-.center-title { font-size:28px; font-weight: 800; letter-spacing: 0.5px; color:#fff; margin-bottom:24px; text-align: left; border-left: 4px solid var(--primary); padding-left: 12px; }
-.game-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
-.game-card { background: var(--surface); border-radius:24px; padding:14px; text-decoration:none; color:#fff; transition:.3s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; border: 1px solid var(--border); }
-.game-card:hover { transform:translateY(-6px); border-color: var(--primary); box-shadow: 0 10px 25px rgba(187,134,252,0.15); }
-.game-card a { text-decoration: none; color: inherit; width: 100%; }
-.game-card img { width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:18px; margin-bottom:12px; }
-.game-card span { font-size: 15px; font-weight: 700; text-align: center; display: block; color: #f3efff; }
-
-/* 🔐 Auth Overlay & Cards */
-.auth-overlay { position: fixed; inset: 0; background: rgba(5, 4, 10, 0.85); backdrop-filter: blur(12px); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s ease; z-index: 2000; padding: 20px; }
-.auth-overlay.active { opacity: 1; pointer-events: auto; }
-.auth-card { width: 100%; max-width: 420px; background: #110f24; border: 1px solid var(--border); border-radius: 28px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); position: relative; }
-.close-auth { position: absolute; top: 20px; right: 22px; font-size: 24px; cursor: pointer; color: rgba(255,255,255,0.5); transition: 0.2s; }
-.close-auth:hover { color: #fff; }
-.auth-card h2 { font-size: 26px; font-weight: 800; text-align: center; margin-bottom: 24px; color: #fff; }
-
-.input-box { position: relative; margin-bottom: 16px; }
-.input-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 15px; }
-.input-box input { width: 100%; padding: 14px 16px 14px 46px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 14px; color: #fff; outline: none; font-size: 14px; transition: 0.2s; }
-.input-box input:focus { border-color: var(--primary); background: rgba(255,255,255,0.07); }
-
-.auth-btn { width: 100%; padding: 14px; background: var(--primary); border: none; border-radius: 14px; color: #0c0b1a; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s; }
-.auth-btn:hover { background: #d6c1ff; transform: scale(1.01); }
-.logout-btn { background: var(--error); color: #fff; margin-top: 20px; }
-.logout-btn:hover { background: #ff6b6b; }
-.switch-form { text-align: center; margin-top: 18px; font-size: 13px; color: rgba(255,255,255,0.6); }
-.switch-form a { color: var(--primary); text-decoration: none; font-weight: 600; margin-left: 4px; }
-
-/* 📊 Order History Design */
-.history-section { margin-top: 24px; text-align: left; }
-.history-section h3 { font-size: 15px; font-weight:700; color: #d6c1ff; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-.order-list { display: flex; flex-direction: column; gap: 10px; max-height: 180px; overflow-y: auto; padding-right: 4px; }
-.order-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 12px; border-radius: 12px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
-.status-pending { color: #ffbb00; font-weight: bold; }
-.status-approved { color: var(--success); font-weight: bold; }
-.status-rejected { color: var(--error); font-weight: bold; }
-
-/* 🖥️ Responsive Media Queries (Mobile, Tablet, PC အားလုံးကွက်တိဖြစ်စေရန်) */
-/* 🖼️ Premium Responsive Banner Slider CSS */
 .banner-slider-box {
   width: 100%;
-  max-width: 1200px; /* Banner ရဲ့ အကျယ်ဆုံး Size */
-  margin: 20px auto;
   position: relative;
   overflow: hidden;
-  border-radius: 16px; /* ထောင့်ဝိုင်းဒီဇိုင်း */
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  aspect-ratio: 16 / 6; /* 💡 ပုံကို ဘယ် Device မှာမဆို ၁၆:၆ အချိုးအတိုင်း အပြည့်မြင်ရစေမည့် Magic Code */
-  background: #090814;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  background: #000000;
+  /* 💡 ၁၆:၆ အချိုးအတိုင်း မပြတ်ဘဲ ဖုန်းရော PC မှာပါ အလိုအလျောက် ပုံစံကျကျ ကြီးလာ/သေးလာစေရန် */
+  aspect-ratio: 16 / 6; 
 }
 
-.banner-slider-box img {
+/* Slide များကို တစ်ခုစီ ပတ်လည်ရွေ့လျားစေမည့် Track */
+.slider-track {
+  display: flex;
   width: 100%;
   height: 100%;
-  object-fit: contain; /* 💡 ပုံကို ဘေးတွေ အပေါ်အောက်တွေ လုံးဝမပြတ်ဘဲ အပြည့်ပြသခိုင်းခြင်း */
-  display: block;
-  transition: opacity 0.5s ease-in-out;
+  transition: transform 0.5s ease-in-out;
 }
 
-/* Slide Dots ကလေးများ */
-.banner-slider-box .dots {
+.slide-item {
+  min-width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slide-item img {
+  width: 100%;
+  height: 100%;
+  /* 💡 ပုံရဲ့ ဘေးအနားသတ်တွေကို လုံးဝမပြတ်ဘဲ တစ်ပုံလုံး အပြည့်အဝ ပေါ်နေစေရန် ကော်မန်ပေးခြင်း */
+  object-fit: contain; 
+  display: block;
+}
+
+/* Slider Dropdown Dots Indicator */
+.slider-dots {
   position: absolute;
-  bottom: 12px;
+  bottom: 15px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -127,289 +75,167 @@ main { padding:24px; max-width:1200px; margin:auto; }
   z-index: 10;
 }
 
-.banner-slider-box .dots span {
+.slider-dots span {
   width: 8px;
   height: 8px;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.35);
   border-radius: 50%;
+  cursor: pointer;
   transition: 0.3s;
 }
 
-.banner-slider-box .dots span.active {
-  background: #bb86fc;
-  width: 20px;
-  border-radius: 4px;
+.slider-dots span.active {
+  background: var(--primary);
+  width: 22px;
+  border-radius: 5px;
+  box-shadow: 0 0 8px var(--primary);
 }
+
+/* 🎲 Game Categories Section UI */
+.section-title { font-size: 20px; font-weight: 700; margin: 35px 0 20px 0; display: flex; align-items: center; gap: 10px; border-left: 4px solid var(--primary); padding-left: 10px; }
+
+.games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; }
+@media (min-width: 576px) { .games-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); } }
+
+.game-card { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 18px; padding: 12px; text-align: center; text-decoration: none; color: #fff; transition: 0.2s; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
+.game-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 8px 25px rgba(187,134,252,0.25); }
+
+.game-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 14px; background: #14122a; }
+.game-card span { font-weight: 700; font-size: 14px; color: #e1d5ff; padding: 4px 0; }
 </style>
 </head>
 <body>
 
-<div class="top-bar">
-  <div class="left-box">
-    <div class="menu-btn" onclick="toggleMenu()"><span></span><span></span><span></span></div>
-    <div class="logo-box" onclick="window.location.reload()"><img src="https://i.ibb.co/pBCj40vb/Untitled33-20250505002056.png"></div>
-  </div>
-  <div class="nav-links" id="navAuthArea">
-    <button class="login-trigger-btn" id="userStatusBtn">Login</button>
-  </div>
+<div class="header-nav">
+  <h1><span>Royal Game Shop</span> Store 👑</h1>
+  <a href="login.html" class="btn-login" id="navAuthBtn"><i class="fa-solid fa-user"></i> Login</a>
 </div>
 
-<div class="side-menu" id="sideMenu">
-  <div id="sideUserArea" style="margin-bottom: 20px;"></div>
-  <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
-  <a href="javascript:void(0)" id="mobileLoginBtn"><i class="fa-solid fa-user"></i> Login / Register</a>
-</div>
-<div class="overlay" onclick="toggleMenu()"></div>
+<div class="main-wrapper">
 
-<div class="banner-wrapper">
-  <div class="banner-slider" id="bannerSliderBox"><div class="dots"></div></div>
-</div>
-
-<main>
-  <h2 class="center-title">Choose Game</h2>
-  <div class="game-grid" id="gameGrid">
-    <p style="font-size:14px; color:rgba(255,255,255,0.4); grid-column: 1/-1; padding: 20px;">ဂိမ်းအမျိုးအစားများ ဆွဲတင်နေသည်...</p>
-  </div>
-</main>
-
-<div class="auth-overlay" id="authModal">
-  
-  <div class="auth-card hidden" id="loginCard">
-    <span class="close-auth" id="btnCloseLogin">×</span>
-    <h2>Login</h2>
-    <div class="input-box">
-      <i class="fa-solid fa-user"></i>
-      <input type="text" id="loginUserOrEmail" placeholder="User Name သို့မဟုတ် Email">
+  <div class="banner-slider-box">
+    <div class="slider-track" id="bannerSliderTrack">
+      <div class="slide-item"><p style="padding: 50px; color: rgba(255,255,255,0.4);">Banners Loading...</p></div>
     </div>
-    <div class="input-box">
-      <i class="fa-solid fa-lock"></i>
-      <input type="password" id="loginPassword" placeholder="Password">
-    </div>
-    <button class="auth-btn" id="btnLogin">Sign In</button>
-    <p class="switch-form">အကောင့်မရှိသေးဘူးလား? <a href="javascript:void(0)" id="toRegister">Register လုပ်ရန်</a></p>
+    <div class="slider-dots" id="sliderDotsContainer"></div>
   </div>
 
-  <div class="auth-card hidden" id="registerCard">
-    <span class="close-auth" id="btnCloseReg">×</span>
-    <h2>Register</h2>
-    <div class="input-box">
-      <i class="fa-solid fa-user"></i>
-      <input type="text" id="regUsername" placeholder="User Name ထည့်ပါ">
-    </div>
-    <div class="input-box">
-      <i class="fa-solid fa-phone"></i>
-      <input type="tel" id="regPhone" placeholder="Phone Number ထည့်ပါ">
-    </div>
-    <div class="input-box">
-      <i class="fa-solid fa-envelope"></i>
-      <input type="email" id="regEmail" placeholder="Email Address ထည့်ပါ">
-    </div>
-    <div class="input-box">
-      <i class="fa-solid fa-lock"></i>
-      <input type="password" id="regPassword" placeholder="Password အသစ်ပေးပါ">
-    </div>
-    <button class="auth-btn" id="btnRegister">Create Account</button>
-    <p class="switch-form">အကောင့်ရှိပြီးသားလား? <a href="javascript:void(0)" id="toLogin">Login ဝင်ရန်</a></p>
+  <h2 class="section-title">🎲 Choose Game Category</h2>
+  <div class="games-grid" id="homepageGamesGrid">
+    <p style="color: rgba(255,255,255,0.4);">ဂိမ်းအမျိုးအစားများ ဆွဲတင်နေပါသည်...</p>
   </div>
 
-  <div class="auth-card hidden" id="profileCard">
-    <span class="close-auth" id="btnCloseProfile">×</span>
-    <h2>Account Profile</h2>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); padding: 16px; border-radius: 16px; border: 1px solid var(--border);">
-      <div class="user-avatar" id="modalUserAvatar" style="width: 60px; height: 60px; font-size: 24px;">R</div>
-      <div id="modalDisplayName" style="font-weight: 700; font-size: 18px; color: var(--primary);">User Name</div>
-      <div id="modalUserEmail" style="font-size: 13px; color: rgba(255,255,255,0.5);">user@email.com</div>
-    </div>
-    
-    <div class="history-section">
-      <h3>ဝယ်ယူမှုမှတ်တမ်း (Order History)</h3>
-      <div class="order-list" id="userOrderList"><p style="font-size:12px; color:rgba(255,255,255,0.4);">မှတ်တမ်းမရှိသေးပါ။</p></div>
-    </div>
-    <button class="auth-btn logout-btn" id="btnLogout">Logout 🚪</button>
-  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-let sliderIndex = 0, sliderTimer = null, isLoggedIn = false;
-const ADMIN_EMAIL = "royaladmin@gmail.com";
-
 const SUPABASE_URL = "https://cmiiovretkzjuiespsmx.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtaWlvdnJldGt6anVpZXNwc214Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3NTkzNzYsImV4cCI6MjA5NzMzNTM3Nn0.7JpD4erEqpGCBgQ9TktAWhFSbapQMwvV4WzFLP0fWmA";
 const royalSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function toggleMenu(){ 
-  document.getElementById("sideMenu").classList.toggle("active"); 
-  document.querySelector(".overlay").classList.toggle("active"); 
+let currentSlideIndex = 0;
+let slideInterval;
+
+async function initHomepage() {
+  checkUserSession();
+  await loadBanners();
+  await loadCategories();
 }
 
-function openAuthModal() {
-  const modal = document.getElementById('authModal');
-  modal.classList.add('active');
-  document.getElementById('loginCard').classList.add('hidden');
-  document.getElementById('registerCard').classList.add('hidden');
-  document.getElementById('profileCard').classList.add('hidden');
-  
-  if (isLoggedIn) { 
-    document.getElementById('profileCard').classList.remove('hidden'); 
-  } else { 
-    document.getElementById('loginCard').classList.remove('hidden'); 
-  }
-}
-function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
-
-// 🛠️ Navigation Controls Buttons Click Listeners
-document.getElementById('mobileLoginBtn').addEventListener('click', () => { toggleMenu(); openAuthModal(); });
-document.getElementById('btnCloseLogin').addEventListener('click', closeAuthModal);
-document.getElementById('btnCloseReg').addEventListener('click', closeAuthModal);
-document.getElementById('btnCloseProfile').addEventListener('click', closeAuthModal);
-document.getElementById('toRegister').addEventListener('click', () => { document.getElementById('loginCard').classList.add('hidden'); document.getElementById('registerCard').classList.remove('hidden'); });
-document.getElementById('toLogin').addEventListener('click', () => { document.getElementById('registerCard').classList.add('hidden'); document.getElementById('loginCard').classList.remove('hidden'); });
-
-function initSliderAnimation() {
-  const imgs = document.querySelectorAll(".banner-slider img"); const dots = document.querySelectorAll(".dots span");
-  if(imgs.length === 0) return; clearInterval(sliderTimer); sliderIndex = 0;
-  imgs.forEach((img, i) => { if(i===0) img.classList.add("active"); else img.classList.remove("active"); });
-  dots.forEach((dot, i) => { if(i===0) dot.classList.add("active"); else dot.classList.remove("active"); });
-  if(imgs.length > 1) {
-    sliderTimer = setInterval(() => {
-      imgs[sliderIndex].classList.remove("active"); dots[sliderIndex].classList.remove("active");
-      sliderIndex = (sliderIndex + 1) % imgs.length;
-      imgs[sliderIndex].classList.add("active"); dots[sliderIndex].classList.add("active");
-    }, 4000);
-  }
-}
-
-// 🔐 ပြောင်းလဲမြှင့်တင်ထားသော အကောင့်အခြေအနေစစ်ဆေးမှုစနစ်
-async function checkAuthState() {
+// 🔐 လူကြီးမင်းတို့ရဲ့ အကောင့် Login အခြေအနေ စစ်ဆေးခြင်း
+async function checkUserSession() {
   const { data: { session } } = await royalSupabase.auth.getSession();
-  const authArea = document.getElementById('navAuthArea');
-  const sideUserArea = document.getElementById('sideUserArea');
-  const mobileLoginBtn = document.getElementById('mobileLoginBtn');
-
+  const authBtn = document.getElementById("navAuthBtn");
   if (session) {
-    const user = session.user;
-    if(user.email === ADMIN_EMAIL) { window.location.href = "admin.html"; return; }
-    
-    isLoggedIn = true;
-    
-    // User Metadata ထဲမှ အချက်အလက်များ ဆွဲထုတ်ခြင်း
-    const username = user.user_metadata.username || user.email.split('@')[0];
-    const firstLetter = username.charAt(0);
-    
-    // Top Bar တွင် ပြောင်းလဲပြသရန် Widget ဆောက်ခြင်း
-    authArea.innerHTML = `
-      <div class="user-profile-widget" id="topProfileWidget">
-        <div class="user-avatar">${firstLetter}</div>
-        <div class="user-display-name">${username}</div>
-      </div>`;
-      
-    // Mobile Side Menu မှာလည်း ပြသပေးရန်
-    sideUserArea.innerHTML = `
-      <div style="display:flex; align-items:center; gap:12px; padding:10px;">
-        <div class="user-avatar" style="width:40px; height:40px;">${firstLetter}</div>
-        <div style="font-weight:700; font-size:15px; color:#fff;">${username}</div>
-      </div>`;
-    mobileLoginBtn.innerHTML = `<i class="fa-solid fa-right-from-bracket"></i> My Profile / Logout`;
-
-    // Modal Profile ဖြည့်စွက်ခြင်း
-    document.getElementById('modalDisplayName').innerText = username;
-    document.getElementById('modalUserEmail').innerText = user.email;
-    document.getElementById('modalUserAvatar').innerText = firstLetter;
-
-    document.getElementById('topProfileWidget').addEventListener('click', openAuthModal);
-    loadUserOrdersHistory(user.email);
-  } else {
-    isLoggedIn = false;
-    authArea.innerHTML = `<button class="login-trigger-btn" id="userStatusBtn">Login</button>`;
-    document.getElementById('userStatusBtn').addEventListener('click', openAuthModal);
-    sideUserArea.innerHTML = "";
-    mobileLoginBtn.innerHTML = `<i class="fa-solid fa-user"></i> Login / Register`;
+    authBtn.innerHTML = `<i class="fa-solid fa-right-from-bracket"></i> Logout`;
+    authBtn.href = "javascript:void(0)";
+    authBtn.addEventListener('click', async () => {
+      await royalSupabase.auth.signOut();
+      window.location.reload();
+    });
   }
-  loadBanners(); loadCategories();
 }
 
+// 🖼️ Supabase 'banners' ထဲမှ ပုံများကို အမှားအယွင်းမရှိ ဆွဲထုတ်ပြီး အချိုးကျ ဆလိုက်လှုပ်ရှားစေခြင်း စနစ်သစ်
 async function loadBanners() {
-  const { data: banners } = await royalSupabase.from('banners').select('*').order('created_at', { ascending: true });
-  const slider = document.getElementById("bannerSliderBox"); const dots = slider.querySelector(".dots");
-  if(!slider || !banners || banners.length === 0) return;
-  slider.querySelectorAll("img").forEach(i => i.remove()); dots.innerHTML = "";
-  banners.forEach((b) => {
-    const img = document.createElement("img"); img.src = b.image; slider.appendChild(img);
-    const dot = document.createElement("span"); dots.appendChild(dot);
+  const { data: banners, error } = await royalSupabase.from('banners').select('*').order('created_at', { ascending: true });
+  const track = document.getElementById("bannerSliderTrack");
+  const dotsContainer = document.getElementById("sliderDotsContainer");
+  
+  if (error || !banners || banners.length === 0) {
+    // အကယ်၍ ဒေတာဘေ့စ်ထဲမှာ ဘာမှမရှိသေးရင် Default ပုံတစ်ခု ပြသထားပေးမည်
+    track.innerHTML = `<div class="slide-item"><img src="https://www.pubgmobile.com/images/event/home/kv17.jpg"></div>`;
+    return;
+  }
+
+  track.innerHTML = "";
+  dotsContainer.innerHTML = "";
+
+  banners.forEach((b, index) => {
+    // Slide တစ်ခုချင်းစီ ဖန်တီးခြင်း
+    const slide = document.createElement("div");
+    slide.className = "slide-item";
+    
+    const img = document.createElement("img");
+    img.src = b.image;
+    img.onerror = () => { img.src = "https://www.pubgmobile.com/images/event/home/kv17.jpg"; }; // လင့်ခ်အမှားပါက PUBG ပုံဖြင့် အစားထိုးရန်
+    
+    slide.appendChild(img);
+    track.appendChild(slide);
+
+    // Indicator Dot စက်ဝိုင်းလေးများ ဖန်တီးခြင်း
+    const dot = document.createElement("span");
+    if (index === 0) dot.className = "active";
+    dot.addEventListener("click", () => goToSlide(index));
+    dotsContainer.appendChild(dot);
   });
-  initSliderAnimation();
+
+  // ဆလိုက် လှုပ်ရှားမှု စတင်မောင်းနှင်ခြင်း
+  startSliderAutoPlay(banners.length);
 }
 
+function goToSlide(index) {
+  const track = document.getElementById("bannerSliderTrack");
+  const dots = document.querySelectorAll(".slider-dots span");
+  currentSlideIndex = index;
+  
+  track.style.transform = `translateX(-${index * 100}%)`;
+  
+  dots.forEach(dot => dot.classList.remove("active"));
+  if (dots[index]) dots[index].classList.add("active");
+}
+
+function startSliderAutoPlay(totalSlides) {
+  if(slideInterval) clearInterval(slideInterval);
+  if(totalSlides <= 1) return; // Banner တစ်ခုတည်းရှိလျှင် အလိုအလျောက် မရွေ့စေရန်
+  
+  slideInterval = setInterval(() => {
+    currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+    goToSlide(currentSlideIndex);
+  }, 4000); // ၄ စက္ကန့်လျှင် တစ်ကြိမ် အလိုအလျောက် Slide ပြောင်းပေးမည်
+}
+
+// 🎲 Supabase 'categories' ထဲမှ ဂိမ်းစာရင်းများကို ဆွဲတင်ပြသခြင်း
 async function loadCategories() {
-  const grid = document.getElementById("gameGrid");
-  const { data: categories } = await royalSupabase.from('categories').select('*').order('created_at', { ascending: true });
-  if(!categories || categories.length === 0) { grid.innerHTML = `<p style="font-size:14px; color:rgba(255,255,255,0.4); grid-column:1/-1;">တင်ထားသော ဂိမ်းမရှိသေးပါ။</p>`; return; }
+  const { data: categories, error } = await royalSupabase.from('categories').select('*').order('created_at', { ascending: true });
+  const grid = document.getElementById("homepageGamesGrid");
+  
+  if (error || !categories || categories.length === 0) {
+    grid.innerHTML = `<p style="color: rgba(255,255,255,0.4); grid-column: 1/-1; text-align:center;">လက်ရှိတွင် ရောင်းချမည့်ဂိမ်းများ မရှိသေးပါဗျာ။</p>`;
+    return;
+  }
+
   grid.innerHTML = "";
-  categories.forEach((c) => { grid.innerHTML += `<div class="game-card"><a href="products.html?cat=${c.id}"><img src="${c.image}"><span>${c.name}</span></a></div>`; });
-}
-
-async function loadUserOrdersHistory(email) {
-  const list = document.getElementById('userOrderList'); list.innerHTML = "";
-  const { data: orders } = await royalSupabase.from('orders').select('*').eq('user_email', email).order('created_at', { ascending: false });
-  if(orders && orders.length > 0) {
-    orders.forEach((o) => { list.innerHTML += `<div class="order-item"><div><strong>${o.game_name}</strong> - ${parseInt(o.amount).toLocaleString()} Ks</div><span class="status-${o.status}">${o.status.toUpperCase()}</span></div>`; });
-  } else { list.innerHTML = `<p style="font-size:12px; color:rgba(255,255,255,0.4);">မှတ်တမ်းမရှိသေးပါ။</p>`; }
-}
-
-// 🛠️ REGISTER စနစ်သစ် (Metadata သိမ်းဆည်းခြင်း ပါဝင်သည်)
-document.getElementById('btnRegister').addEventListener('click', async () => {
-  const username = document.getElementById('regUsername').value.trim();
-  const phone = document.getElementById('regPhone').value.trim();
-  const email = document.getElementById('regEmail').value.trim(); 
-  const password = document.getElementById('regPassword').value.trim();
-  
-  if(!username || !phone || !email || !password) return alert("ကျေးဇူးပြု၍ အချက်အလက်အားလုံးကို ပြည့်စုံစွာ ဖြည့်ပေးပါဗျာ။");
-  
-  const { data, error } = await royalSupabase.auth.signUp({
-    email: email,
-    password: password,
-    options: {
-      data: {
-        username: username,
-        phone: phone
-      }
-    }
+  categories.forEach(c => {
+    grid.innerHTML += `
+      <a href="products.html?cat=${c.id}&name=${encodeURIComponent(c.name)}" class="game-card">
+        <img src="${c.image}" alt="${c.name}">
+        <span>${c.name}</span>
+      </a>`;
   });
-  
-  if(error) {
-    alert("Error: " + error.message);
-  } else {
-    alert("အကောင့်အသစ်ဆောက်ခြင်း အောင်မြင်ပါသည်ဗျာ။");
-    window.location.reload();
-  }
-});
+}
 
-// 🛠️ LOGIN စနစ်သစ် (Username သို့မဟုတ် Email ဖြင့် ဝင်ရောက်နိုင်စနစ်)
-document.getElementById('btnLogin').addEventListener('click', async () => {
-  const userInput = document.getElementById('loginUserOrEmail').value.trim(); 
-  const password = document.getElementById('loginPassword').value.trim();
-  if(!userInput || !password) return alert("ဖြည့်စွက်ပေးပါ");
-  
-  let targetEmail = userInput;
-
-  // အကယ်၍ ရိုက်ထည့်လိုက်တာ Email မဟုတ်ပါက၊ ၎င်းသည် Username ဖြစ်သဖြင့် သက်ဆိုင်ရာ Email ကို လှမ်းရှာရမည်
-  if (!userInput.includes('@')) {
-    alert("Username ဖြင့် Login စနစ်ကို စစ်ဆေးနေပါသည်၊ ခေတ္တစောင့်ပါ။");
-    // 💡 မှတ်ချက် - Username စနစ်ကို Supabase Auth တွင် သက်သောင့်သက်သာဖြစ်စေရန် ပထမအဆင့် Email ဖြင့် ဝင်ရောက်ခြင်းကို ဦးစားပေးသုံးရန် အကြံပြုပါသည်
-  }
-
-  const { error } = await royalSupabase.auth.signInWithPassword({ email: targetEmail, password: password });
-  if(error) alert("Error: " + error.message + "\n(မှတ်ချက်: လက်ရှိစနစ်တွင် Email နှင့် Password ဖြင့် တိုက်ရိုက် ဝင်ရောက်နိုင်ပါသည်)"); 
-  else { window.location.reload(); }
-});
-
-document.getElementById('btnLogout').addEventListener('click', async () => { 
-  await royalSupabase.auth.signOut(); 
-  window.location.reload(); 
-});
-
-window.onload = checkAuthState;
+window.onload = initHomepage;
 </script>
 </body>
 </html>
