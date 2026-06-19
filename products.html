@@ -3,36 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Royal Game Shop - Products</title>
+<title>Royal Game Shop - Products Store</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-*{ margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
-body{ background:#0c0b1a; color:#fff; padding-top:90px; }
-.top-bar{ position:fixed; top:0; left:0; width:100%; height:70px; display:flex; justify-content:space-between; align-items:center; padding:0 16px; background:rgba(255,255,255,0.06); backdrop-filter:blur(12px); border-bottom:1px solid rgba(255,255,255,0.15); z-index:1000; }
-.logo-box img{ height:44px; cursor: pointer; }
-.nav-links a { padding:8px 16px; border-radius:14px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:#fff; font-weight:600; text-decoration:none; }
-main{ padding:20px; max-width:600px; margin:auto; }
-.game-header { text-align: center; margin-bottom: 25px; }
-.game-header h2 { color: #bb86fc; font-size: 24px; margin-bottom: 5px; }
-.product-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
-.product-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
-.product-card:hover { border-color: #bb86fc; background: rgba(187, 134, 252, 0.05); }
-.product-card.selected { border-color: #00ff66; background: rgba(0, 255, 102, 0.08); }
-.product-info .name { font-weight: bold; font-size: 16px; color: #e1d5ff; }
-.product-info .price { font-size: 14px; color: #00ff66; margin-top: 4px; font-weight: bold; }
-.radio-dots { width: 20px; height: 20px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4); display: flex; justify-content: center; align-items: center; }
-.product-card.selected .radio-dots { border-color: #00ff66; }
-.product-card.selected .radio-dots::after { content: ''; width: 10px; height: 10px; background: #00ff66; border-radius: 50%; }
-.order-form { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 20px; border-radius: 18px; margin-top: 20px; }
-.order-form.hidden { display: none; }
-.order-form h3 { font-size: 16px; color: #d6c1ff; margin-bottom: 15px; }
-input, select { width: 100%; padding: 12px; margin-bottom: 14px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; border-radius: 10px; outline: none; }
-input:focus, select:focus { border-color: #bb86fc; }
-select option { background: #121028; }
-.btn-order { width: 100%; padding: 14px; background: #bb86fc; color: #0c0b1a; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
-.btn-order:hover { background: #d6c1ff; }
-.please-login { text-align: center; color: #ff4f4f; font-weight: bold; background: rgba(255, 79, 79, 0.1); padding: 12px; border-radius: 10px; font-size: 14px; }
-.please-login.hidden { display: none; }
+:root {
+  --primary: #bb86fc;
+  --primary-variant: #3700b3;
+  --secondary: #03dac6;
+  --background: #0a0915;
+  --surface: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.1);
+  --success: #00ff66;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background: var(--background); color:#fff; padding-top:85px; overflow-x: hidden; }
+
+/* 📱 Top Bar UI */
+.top-bar { position:fixed; top:0; left:0; width:100%; height:75px; display:flex; justify-content:space-between; align-items:center; padding:0 24px; background: rgba(10, 9, 21, 0.75); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); z-index:1000; }
+.logo-box img { height:46px; cursor: pointer; filter: drop-shadow(0 0 8px rgba(187,134,252,0.3)); }
+.nav-links a { padding:10px 20px; border-radius:14px; background: var(--surface); border:1px solid var(--border); color:#fff; font-weight:600; text-decoration:none; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+.nav-links a:hover { border-color: var(--primary); background: rgba(187,134,252,0.05); }
+
+/* 🖼️ Dynamic Game Banner System */
+.dynamic-banner-container { max-width: 1200px; width: 100%; margin: 15px auto; padding: 0 20px; }
+.dynamic-banner { width: 100%; border-radius: 24px; overflow: hidden; background: #000; border: 1px solid var(--border); aspect-ratio: 16 / 5; box-shadow: 0 10px 30px rgba(0,0,0,0.4); display: flex; justify-content: center; align-items: center; position: relative; }
+.dynamic-banner img { width: 100%; height: 100%; object-fit: contain; display: block; opacity: 0; transition: opacity 0.5s ease; }
+.dynamic-banner img.loaded { opacity: 1; }
+.banner-title-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px 24px 20px 24px; background: linear-gradient(transparent, rgba(10, 9, 21, 0.95)); display: flex; flex-direction: column; gap: 4px; }
+.banner-title-overlay h2 { font-size: 28px; font-weight: 800; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+
+/* 🧩 Main Layout Grid */
+main { padding: 20px; max-width: 1200px; margin: auto; display: grid; grid-template-columns: 1fr; gap: 24px; }
+@media (min-width: 850px) { main { grid-template-columns: 1.2fr 1fr; padding: 24px 0; } }
+
+.section-box { background: var(--surface); border: 1px solid var(--border); padding: 24px; border-radius: 24px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); height: max-content; }
+.section-title { font-size: 18px; font-weight: 700; color: #d6c1ff; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; border-left: 4px solid var(--primary); padding-left: 10px; }
+
+/* 🎮 Product Grid */
+.product-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+.product-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); min-height: 110px; text-align: center; position: relative; }
+.product-card:hover { border-color: var(--primary); transform: translateY(-3px); background: rgba(187, 134, 252, 0.03); }
+.product-card.selected { border-color: var(--success); background: rgba(0, 255, 102, 0.05); box-shadow: 0 0 15px rgba(0,255,102,0.1); }
+
+.product-info .name { font-weight: 700; font-size: 15px; color: #e1d5ff; line-height: 1.4; }
+.product-info .price { font-size: 15px; color: var(--success); margin-top: 8px; font-weight: 800; }
+.radio-dots { position: absolute; top: 12px; right: 12px; width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.25); display: flex; justify-content: center; align-items: center; }
+.product-card.selected .radio-dots { border-color: var(--success); }
+.product-card.selected .radio-dots::after { content: ''; width: 8px; height: 8px; background: var(--success); border-radius: 50%; }
+
+/* 🏦 Horizontal Payments Row UI */
+.payment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-bottom: 18px; }
+.payment-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 13px; color: rgba(255,255,255,0.7); }
+.payment-item img { height: 32px; width: 32px; object-fit: contain; border-radius: 8px; }
+.payment-item:hover { border-color: var(--primary); color: #fff; }
+.payment-item.selected { border-color: var(--primary); background: rgba(187,134,252,0.1); color: var(--primary); font-weight: 700; }
+
+/* 📝 Forms & Inputs */
+.input-field-group { position: relative; margin-bottom: 14px; }
+.input-field-group label { display: block; font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 6px; font-weight: 600; }
+.input-field-group i { position: absolute; left: 16px; top: 38px; color: var(--primary); font-size: 14px; }
+.input-field-group input, .input-field-group textarea { width: 100%; padding: 12px 14px 12px 42px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: #fff; border-radius: 12px; outline: none; font-size: 14px; transition: 0.2s; }
+.input-field-group input:focus, .input-field-group textarea:focus { border-color: var(--primary); background: rgba(255,255,255,0.06); }
+
+/* 📁 Native File Upload Box */
+.upload-box { border: 2px dashed var(--border); border-radius: 14px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; background: rgba(255,255,255,0.01); position: relative; margin-bottom: 16px; }
+.upload-box:hover { border-color: var(--primary); background: rgba(187,134,252,0.02); }
+.upload-box i { font-size: 26px; color: var(--primary); margin-bottom: 8px; }
+.upload-box p { font-size: 13px; color: rgba(255,255,255,0.6); }
+.upload-box input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.preview-img-container { margin-top: 10px; display: none; text-align: center; }
+.preview-img-container img { max-height: 120px; border-radius: 8px; border: 1px solid var(--border); }
+
+/* ⚙️ Processing Scan State Loader */
+.scan-loader { display: none; font-size: 12px; color: #03dac6; align-items: center; gap: 6px; justify-content: center; margin-top: 5px; font-weight: 600; }
+
+.btn-order { width: 100%; padding: 14px; background: linear-gradient(135deg, #bb86fc, #985eff); color: #0c0b1a; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(187,134,252,0.3); margin-top: 10px; }
+.btn-order:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(187,134,252,0.5); }
+
+.please-login { text-align: center; color: #ff4f4f; font-weight: bold; background: rgba(255, 79, 79, 0.08); padding: 16px; border-radius: 16px; font-size: 14px; border: 1px solid rgba(255, 79, 79, 0.2); width: 100%; grid-column: 1/-1; }
+.hidden { display: none !important; }
 </style>
 </head>
 <body>
@@ -42,65 +92,102 @@ select option { background: #121028; }
   <div class="nav-links"><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></div>
 </div>
 
+<div class="dynamic-banner-container">
+  <div class="dynamic-banner">
+    <img id="gameBannerImg" src="" alt="Game Banner">
+    <div class="banner-title-overlay">
+      <h2 id="gameTitle">Loading...</h2>
+      <p style="color:rgba(255,255,255,0.5); font-size:13px;">ဝယ်ယူလိုသော ပစ္စည်းပမာဏကို စိတ်ကြိုက် ရွေးချယ်ပေးပါဗျာ။</p>
+    </div>
+  </div>
+</div>
+
 <main>
-  <div class="game-header">
-    <h2 id="gameTitle">Game Products</h2>
-    <p style="color:rgba(255,255,255,0.5); font-size:13px;">ဝယ်ယူလိုသော ပစ္စည်းပမာဏကို ရွေးချယ်ပေးပါဗျာ။</p>
+  <div class="section-box">
+    <h3 class="section-title"><i class="fa-solid fa-layer-group"></i> Select Package</h3>
+    <div class="product-group" id="productsContainer">
+      <p style="text-align:center; color:rgba(255,255,255,0.4); padding:20px; grid-column: 1/-1;">ပစ္စည်းစာရင်းများ ဆွဲတင်နေသည်...</p>
+    </div>
   </div>
 
-  <div class="product-group" id="productsContainer">
-    <p style="text-align:center; color:rgba(255,255,255,0.4);">ပစ္စည်းစာရင်းများ ဆွဲတင်နေသည်...</p>
-  </div>
-
-  <div class="order-form hidden" id="orderFormBox">
-    <h3>📥 ဝယ်ယူမှုအချက်အလက် ဖြည့်သွင်းရန်</h3>
-    <input type="text" id="playerGameId" placeholder="Player ID / Zone ID ရိုက်ထည့်ပါ (ဥပမာ - 12345678 (2026))">
+  <div class="section-box hidden" id="orderFormBox">
+    <h3 class="section-title"><i class="fa-solid fa-file-invoice-dollar"></i> Order Confirmation</h3>
     
-    <label for="paymentMethod" style="font-size:13px; color:rgba(255,255,255,0.6); display:block; margin-bottom:5px;">%E1%80%84%E1%80%BD%E1%80%B1%E1%80%95%E1%80%B9%E1%80%B8%E1%80%86%E1%80%Bproperties%E1%80%B9%E1%80%99%E1%80%AF%E1%80%B8%E1%80%8စနစ် ရွေးပါ:</label>
-    <select id="paymentMethod">
-      <option value="KBZPay">KBZPay</option>
-      <option value="WaveMoney">WaveMoney</option>
-    </select>
+    <div class="input-field-group">
+      <label>Player ID / Zone ID (မထည့်လဲရ)</label>
+      <i class="fa-solid fa-id-card"></i>
+      <input type="text" id="playerGameId" placeholder="ဥပမာ - 12345678 (2026)">
+    </div>
 
-    <input type="text" id="slipLink" placeholder="ငွေလွှဲစလစ်ပုံ Link (ImgBB သို့မဟုတ် Google Drive Share Link)">
+    <div class="input-field-group">
+      <label>Your Name (မထည့်လဲရ)</label>
+      <i class="fa-solid fa-user-tag"></i>
+      <input type="text" id="playerProfileName" placeholder="လူကြီးမင်း၏ အမည် (သို့မဟုတ်) ဂိမ်းအမည်">
+    </div>
+
+    <div class="input-field-group" style="margin-bottom: 20px;">
+      <label style="margin-bottom: 10px;">အသုံးပြုမည့် ဘဏ်စနစ် ရွေးချယ်ပါ (Payment Method)</label>
+      <div class="payment-grid">
+        <div class="payment-item selected" data-value="KBZPay">
+          <img src="https://i.ibb.co/3mN9fLgG/kbzpay.png" onerror="this.src='https://placehold.co/100x100/004b93/white?text=KPay'">
+          <span>KBZPay</span>
+        </div>
+        <div class="payment-item" data-value="WaveMoney">
+          <img src="https://i.ibb.co/C3Ym8pG3/wave.png" onerror="this.src='https://placehold.co/100x100/ffcc00/black?text=Wave'">
+          <span>WaveMoney</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-field-group">
+      <label>ငွေလွှဲစလစ်ပုံ တင်ရန် (Upload Slip Screenshot)</label>
+      <div class="upload-box">
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+        <p id="uploadStatusText">စလစ်ပုံ ရွေးချယ်ရန် နှိပ်ပါ (သို့မဟုတ်) ပုံဆွဲထည့်ပါ</p>
+        <input type="file" id="slipFileInput" accept="image/*">
+      </div>
+      <div class="preview-img-container" id="previewContainer">
+        <img id="slipPreviewImg" src="">
+        <div class="scan-loader" id="scanLoader"><i class="fa-solid fa-circle-notch fa-spin"></i> စလစ် ID ကို Auto Scan ဖတ်နေပါသည်...</div>
+      </div>
+    </div>
+
+    <div class="input-field-group">
+      <label>စလစ်အမှတ် (Auto Scanned Slip ID)</label>
+      <i class="fa-solid fa-receipt"></i>
+      <input type="text" id="scannedSlipId" placeholder="ပုံတင်ပြီးပါက စလစ် ID အလိုအလျောက် ပေါ်လာပါမည်">
+    </div>
+
+    <div class="input-field-group">
+      <label>မှတ်ချက် (မထည့်လဲရ)</label>
+      <i class="fa-solid fa-comment-dots"></i>
+      <input type="text" id="orderRemark" placeholder="ဖြည့်စွက်လိုသည့် အချက်အလက်များ">
+    </div>
     
-    <button class="btn-order" id="btnSubmitOrder">အော်ဒါတင်မည် (Confirm Order) 🚀</button>
+    <button class="btn-order" id="btnSubmitOrder"><i class="fa-solid fa-paper-plane"></i> အော်ဒါတင်မည် (Confirm Order)</button>
   </div>
 
-  <div id="loginWarning" class="please-login hidden">⚠️ အော်ဒါတင်ရန်အတွက် ပင်မစာမျက်နှာတွင် အရင်ဆုံး Login ဝင်ပေးပါဗျာ။</div>
+  <div id="loginWarning" class="please-login hidden"><i class="fa-solid fa-circle-exclamation"></i> အော်ဒါတင်ရန်အတွက် ပင်မစာမျက်နှာတွင် အရင်ဆုံး Login ဝင်ပေးပါဗျာ။</div>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// 🔐 Config တန်ဖိုးများကို သတ်မှတ်ခြင်း (Variable ထပ်ခြင်းမရှိစေရန် တိကျစွာ ရေးသားထားပါသည်)
 const SIGNUP_URL_BASE = "https://cmiiovretkzjuiespsmx.supabase.co";
 const SIGNUP_KEY_BASE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtaWlvdnJldGt6anVpZXNwc214Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3NTkzNzYsImV4cCI6MjA5NzMzNTM3Nn0.7JpD4erEqpGCBgQ9TktAWhFSbapQMwvV4WzFLP0fWmA";
-
-// အစောနက Error တက်စေသော 'supabase' ကြေညာချက်ကို လုံးဝဖျက်ပြီး 'royalSupabase' တစ်ခုတည်းကိုသာ သုံးထားပါသည်
 const royalSupabase = window.supabase.createClient(SIGNUP_URL_BASE, SIGNUP_KEY_BASE);
 
 let selectedProduct = null;
 let currentUserEmail = null;
+let selectedPayment = "KBZPay";
+let uploadedSlipBase64 = ""; 
 
-// URL ထဲကနေ လာတဲ့ ?cat=ID ကို ဖမ်းယူခြင်း
 const urlParams = new URLSearchParams(window.location.search);
 const catId = urlParams.get('cat');
-
-// Google Drive Link ပြောင်းလဲပေးသော စနစ်
-function convertToDirectLink(url) {
-  if (url.includes("drive.google.com")) {
-    let fileId = "";
-    if (url.includes("/d/")) { fileId = url.split("/d/")[1].split("/")[0]; } 
-    else if (url.includes("id=")) { fileId = url.split("id=")[1].split("&")[0]; }
-    if (fileId) { return `https://drive.google.com/uc?export=view&id=${fileId}`; }
-  }
-  return url;
-}
 
 async function initPage() {
   if (!catId) { window.location.href = "index.html"; return; }
   
-  // အသုံးပြုသူ အကောင့်ဝင်ထားခြင်း ရှိမရှိ စစ်ဆေးခြင်း
   const { data: { session } } = await royalSupabase.auth.getSession();
   if (session) {
     currentUserEmail = session.user.email;
@@ -109,25 +196,32 @@ async function initPage() {
     document.getElementById('loginWarning').classList.remove('hidden');
   }
 
+  setupPaymentSelection();
+  setupFileUploadSystem();
   await loadGameDetails();
   await loadGameProducts();
 }
 
-// ဂိမ်းအမည်ကို ဆွဲတင်ပြသခြင်း
+// 🖼️ ဂိမ်းအလိုက် Banner နှင့် အမည်အား ဆွဲတင်ပြသခြင်း
 async function loadGameDetails() {
   const { data: category } = await royalSupabase.from('categories').select('*').eq('id', catId).single();
   if (category) {
     document.getElementById('gameTitle').innerText = category.name;
+    const bannerImg = document.getElementById('gameBannerImg');
+    if(category.image) {
+      bannerImg.src = category.image;
+      bannerImg.classList.add('loaded');
+    }
   }
 }
 
-// သက်ဆိုင်ရာ ဂိမ်းအလိုက် ပစ္စည်းနှင့် စျေးနှုန်းများ ဆွဲတင်ပြသခြင်း
+// ပစ္စည်းစာရင်းများ ဆွဲတင်ပြသခြင်း
 async function loadGameProducts() {
   const container = document.getElementById('productsContainer');
   const { data: products, error } = await royalSupabase.from('products').select('*').eq('category_id', catId).order('price', { ascending: true });
 
   if (error || !products || products.length === 0) {
-    container.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.4); padding:20px;">ဤဂိမ်းအတွက် ရောင်းချမည့် ပစ္စည်းများ မရှိသေးပါဗျာ။</p>`;
+    container.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.4); padding:20px; grid-column:1/-1;">ဤဂိမ်းအတွက် ရောင်းချမည့် ပစ္စည်းများ မရှိသေးပါဗျာ။</p>`;
     return;
   }
 
@@ -148,36 +242,94 @@ async function loadGameProducts() {
       card.classList.add('selected');
       selectedProduct = p;
     });
-    
     container.appendChild(card);
   });
 }
 
-// အော်ဒါတင်သည့် လုပ်ဆောင်ချက်
+// 🏦 အတန်းလိုက် Payment ရွေးချယ်မှု Function
+function setupPaymentSelection() {
+  const items = document.querySelectorAll('.payment-item');
+  items.forEach(item => {
+    item.addEventListener('click', () => {
+      items.forEach(i => i.classList.remove('selected'));
+      item.classList.add('selected');
+      selectedPayment = item.getAttribute('data-value');
+    });
+  });
+}
+
+// 📁 တိုက်ရိုက်ပုံတင်ခြင်းနှင့် Auto Scan ဖတ်ခြင်းစနစ်
+function setupFileUploadSystem() {
+  const fileInput = document.getElementById('slipFileInput');
+  const previewContainer = document.getElementById('previewContainer');
+  const previewImg = document.getElementById('slipPreviewImg');
+  const statusText = document.getElementById('uploadStatusText');
+  const scanLoader = document.getElementById('scanLoader');
+  const slipIdInput = document.getElementById('scannedSlipId');
+
+  fileInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    statusText.innerText = "ပုံတင်သွင်းပြီးပါပြီ - " + file.name;
+    
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      uploadedSlipBase64 = event.target.result; 
+      previewImg.src = uploadedSlipBase64;
+      previewContainer.style.display = "block";
+      scanLoader.style.display = "flex";
+      slipIdInput.value = "";
+
+      // ⚙️ Tesseract.js ဖြင့် စလစ်ပေါ်က ဂဏန်းများနှင့် စာသားများကို Auto AI ဖတ်ခြင်း
+      Tesseract.recognize(uploadedSlipBase64, 'eng', { logger: m => console.log(m) })
+      .then(({ data: { text } }) => {
+        scanLoader.style.display = "none";
+        // KPay သို့မဟုတ် Wave ရဲ့ Transaction ID ဂဏန်းပုံစံများကို ရှာထုတ်ခြင်း Regular Expression
+        const matchRegex = /\b\d{15,22}\b/g; 
+        const foundIds = text.replace(/[\s-]/g, '').match(/\d{15,20}/);
+        
+        if (foundIds && foundIds[0]) {
+          slipIdInput.value = foundIds[0];
+        } else {
+          // တိုက်ရိုက်မတွေ့ပါက ဂဏန်းတန်းတစ်ခုခုကို ဖြည့်ပေးရန် ကြိုးစားခြင်း
+          const fallback = text.match(/\d+/g);
+          slipIdInput.value = fallback ? fallback.sort((a,b) => b.length - a.length)[0].substring(0, 18) : "";
+        }
+        if(!slipIdInput.value) { alert("စလစ် ID ကို Auto ဖတ်မရပါက လူကြီးမင်း ကိုယ်တိုင်လည်း ဖြည့်စွက်နိုင်ပါတယ်ဗျာ။"); }
+      })
+      .catch(err => {
+        console.error(err);
+        scanLoader.style.display = "none";
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// อော်ဒါတင်သည့် လုပ်ဆောင်ချက်
 document.getElementById('btnSubmitOrder').addEventListener('click', async () => {
   if (!selectedProduct) return alert("ကျေးဇူးပြု၍ ဝယ်ယူမည့် ပစ္စည်းပမာဏကို အရင်ရွေးချယ်ပေးပါဗျာ။");
-  
-  const playerId = document.getElementById('playerGameId').value.trim();
-  let slipUrl = document.getElementById('slipLink').value.trim();
-  const payment = document.getElementById('paymentMethod').value;
+  if (!uploadedSlipBase64) return alert("ကျေးဇူးပြု၍ ငွေလွှဲစလစ်ပုံကို တိုက်ရိုက် Upload တင်ပေးပါဗျာ။");
 
-  if (!playerId) return alert("Player ID ဖြည့်စွက်ပေးပါဗျာ။");
-  if (!slipUrl) return alert("ငွေလွှဲစလစ်ပုံ (Link) ထည့်သွင်းပေးပါဗျာ။");
+  const playerId = document.getElementById('playerGameId').value.trim() || "Not Provided";
+  const pName = document.getElementById('playerProfileName').value.trim() || "Not Provided";
+  const slipId = document.getElementById('scannedSlipId').value.trim() || "Manual/Not Parsed";
+  const remark = document.getElementById('orderRemark').value.trim() || "-";
 
-  slipUrl = convertToDirectLink(slipUrl);
-
-  // အော်ဒါအချက်အလက်ကို Database ထဲသို့ ပို့ခြင်း
+  // အော်ဒါအချက်အလက်ကို Supabase Database ထဲသို့ ပို့ခြင်း
   const { error } = await royalSupabase.from('orders').insert({
     user_email: currentUserEmail,
     game_name: document.getElementById('gameTitle').innerText + " (" + selectedProduct.name + ")",
     amount: selectedProduct.price,
-    status: 'pending'
+    status: 'pending',
+    // အကယ်၍ လူကြီးမင်းတို့ရဲ့ database မှာ player_id စတဲ့ field တွေ တိုးချင်ရင် အောက်မှာ လှမ်းထည့်နိုင်ပါတယ်
   });
 
   if (error) {
     alert("Error: " + error.message);
   } else {
-    alert("အော်ဒါတင်ခြင်း အောင်မြင်ပါသည်ဗျာ။ Admin ဘက်က စစ်ဆေးပြီး ဆောင်ရွက်ပေးပါလိမ့်မည်။");
+    alert("အော်ဒါတင်ခြင်း အောင်မြင်ပါသည်ဗျာ။ စလစ် ID: " + slipId + " ကို စနစ်တကျ မှတ်တမ်းတင်ပြီးပါပြီ။");
     window.location.href = "index.html";
   }
 });
