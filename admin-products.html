@@ -4,50 +4,103 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Royal Game Shop - Manage Prices 👑</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-*{ margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
-body{ background:#0c0b1a; color:#fff; padding:20px; }
-.nav { display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 1px solid #00cc66; padding-bottom: 15px; align-items: center; }
-.nav a { color: #bb86fc; text-decoration: none; font-weight: bold; }
-.section { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05); }
-h3 { margin-bottom: 15px; color: #d6c1ff; font-size: 18px; }
-select, input { width: 100%; padding: 12px; margin-bottom: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px; outline: none; font-size: 14px; }
+:root {
+  --bg-dark: #070610;
+  --panel-bg: rgba(18, 16, 38, 0.7);
+  --primary: #bb86fc;
+  --accent: #03dac6;
+  --success: #00ff66;
+  --error: #ff4f4f;
+  --warning: #ffbb00;
+  --border: rgba(255, 255, 255, 0.08);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+body { background: var(--bg-dark); color:#fff; min-height: 100vh; padding: 30px 20px; }
+
+.container { max-width: 900px; margin: 0 auto; width: 100%; }
+
+/* 🌟 Premium Nav Header Styling */
+.nav { display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; align-items: center; }
+.nav h2 { font-size: 22px; font-weight: 800; }
+.nav h2 span { color: var(--primary); text-shadow: 0 0 10px rgba(187,134,252,0.3); }
+.nav a { color: rgba(255,255,255,0.6); text-decoration: none; font-weight: 600; font-size: 14px; background: rgba(255,255,255,0.04); padding: 10px 16px; border-radius: 12px; border: 1px solid var(--border); transition: 0.2s; }
+.nav a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+
+/* 📥 Box UI Sections */
+.section { background: var(--panel-bg); backdrop-filter: blur(10px); padding: 25px; border-radius: 22px; margin-bottom: 25px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+h3 { margin-bottom: 18px; color: #fff; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+h3 i { color: var(--primary); }
+
+label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: rgba(255,255,255,0.4); font-weight: 700; display: block; margin-bottom: 8px; }
+
+select, input { width: 100%; padding: 14px; margin-bottom: 16px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color:#fff; border-radius:12px; outline: none; font-size: 14px; transition: 0.2s; }
 select option { background: #121028; color: #fff; }
-input:focus, select:focus { border-color: #00cc66; }
-button { padding: 12px 20px; background: #00cc66; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000; transition: 0.2s; }
-button:hover { background: #33ff99; }
-.list-item { display: flex; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.03); margin-bottom: 5px; border-radius: 6px; align-items: center; }
-.btn-del { background:#ff4f4f; padding: 6px 12px; font-size:12px; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-.current-game-title { color: #ffbb00; font-weight: bold; margin-bottom: 10px; font-size: 15px; }
+input:focus, select:focus { border-color: var(--primary); background: rgba(255,255,255,0.07); }
+
+/* Buttons Controls */
+button { padding: 14px 24px; background: linear-gradient(135deg, #bb86fc, #985eff); border: none; border-radius: 12px; font-weight: 700; cursor: pointer; color: #0c0b1a; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; box-shadow: 0 4px 15px rgba(187,134,252,0.3); width: 100%; justify-content: center; }
+button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(187,134,252,0.5); }
+
+/* 🎯 Active Game Display Badge */
+.current-game-title { color: var(--warning); font-weight: 700; margin-bottom: 18px; font-size: 14px; background: rgba(255, 187, 0, 0.06); padding: 12px 16px; border-radius: 12px; border-left: 3px solid var(--warning); display: none; }
+
+/* 📊 Premium Lists Data Rows */
+.list-container { display: flex; flex-direction: column; gap: 8px; max-height: 50vh; overflow-y: auto; padding-right: 4px; }
+.list-item { display: flex; justify-content: space-between; padding: 14px 18px; background: rgba(255,255,255,0.02); border-radius: 14px; align-items: center; border: 1px solid var(--border); animation: itemFade 0.25s ease forwards; }
+
+@keyframes itemFade {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.list-item .item-info { display: flex; flex-direction: column; gap: 4px; }
+.list-item .item-info .item-name { font-weight: 600; font-size: 15px; color: #fff; }
+.list-item .item-info .item-price { font-weight: 700; font-size: 14px; color: var(--success); }
+
+.btn-del { background: rgba(255, 79, 79, 0.12); padding: 8px 14px; font-size:12px; color: var(--error); border: 1px solid rgba(255, 79, 79, 0.15); border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+.btn-del:hover { background: var(--error); color: #fff; }
+
+.placeholder-text { text-align: center; color: rgba(255,255,255,0.3); padding: 30px 10px; font-size: 14px; }
 </style>
 </head>
 <body>
 
-<div class="nav">
-  <h2>Royal Game Shop - စျေးနှုန်းများ သတ်မှတ်ရန် 💰</h2>
-  <div>
-    <a href="admin.html" style="margin-right:20px;">< Back to Control Panel</a>
+<div class="container">
+  <div class="nav">
+    <h2><span>Royal Game</span> - စျေးနှုန်းသတ်မှတ်ရန် 💰</h2>
+    <div>
+      <a href="admin.html"><i class="fa-solid fa-arrow-left"></i> Control Panel သို့ပြန်သွားရန်</a>
+    </div>
   </div>
-</div>
 
-<div class="section">
-  <h3>💎 ပစ္စည်းနှင့် စျေးနှုန်းအသစ်များ ထည့်သွင်းရန်</h3>
-  
-  <label for="productCategorySelect">Game အမျိုးအစား ရွေးချယ်ရန်:</label>
-  <select id="productCategorySelect" onchange="onCategoryChange()">
-    <option value="">-- ဂိမ်းရွေးချယ်ပါ --</option>
-  </select>
+  <div class="section">
+    <h3><i class="fa-solid fa-circle-plus"></i> ပစ္စည်းနှင့် စျေးနှုန်းအသစ်များ ထည့်သွင်းရန်</h3>
+    
+    <label for="productCategorySelect">ဂိမ်းအမျိုးအစား ရွေးချယ်ရန်</label>
+    <select id="productCategorySelect" onchange="onCategoryChange()">
+      <option value="">-- ကျေးဇူးပြု၍ ဂိမ်းရွေးချယ်ပါ --</option>
+    </select>
 
-  <div id="currentGameDisplay" class="current-game-title"></div>
+    <div id="currentGameDisplay" class="current-game-title"></div>
 
-  <input type="text" id="prodName" placeholder="ပစ္စည်းနာမည် (ဥပမာ - 56 Diamonds သို့မဟုတ် Weekly Pass)">
-  <input type="number" id="prodPrice" placeholder="ရောင်းစျေး Ks (ဥပမာ - 3200)">
-  <button id="btnAddProduct">စျေးနှုန်းအသစ် သိမ်းဆည်းမည်</button>
-</div>
+    <label for="prodName">ပစ္စည်း/ပက်ကေ့ချ် နာမည်</label>
+    <input type="text" id="prodName" placeholder="ဥပမာ - 60 UC သို့မဟုတ် Weekly Diamond Pass">
+    
+    <label for="prodPrice">ရောင်းစျေး (မြန်မာကျပ်ငွေ)</label>
+    <input type="number" id="prodPrice" placeholder="ဥပမာ - 3200">
+    
+    <button id="btnAddProduct"><i class="fa-solid fa-floppy-disk"></i> စျေးနှုန်းအသစ် သိမ်းဆည်းမည်</button>
+  </div>
 
-<div class="section">
-  <h3>📊 လက်ရှိ ထည့်သွင်းထားသော စျေးနှုန်းစာရင်းများ</h3>
-  <div id="adminProductsList"><p style="color:rgba(255,255,255,0.4);">ကျေးဇူးပြု၍ အထက်တွင် ဂိမ်းအမျိုးအစားတစ်ခု အရင်ရွေးချယ်ပေးပါဗျာ။</p></div>
+  <div class="section">
+    <h3><i class="fa-solid fa-list-check"></i> လက်ရှိ ထည့်သွင်းထားသော စျေးနှုန်းစာရင်းများ</h3>
+    <div class="list-container" id="adminProductsList">
+      <p class="placeholder-text"><i class="fa-solid fa-hand-pointer" style="margin-right:4px;"></i> ကျေးဇူးပြု၍ အထက်တွင် ဂိမ်းအမျိုးအစားတစ်ခု အရင်ရွေးချယ်ပေးပါဗျာ။</p>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -61,11 +114,8 @@ async function checkAdmin() {
   const { data: { session } } = await royalSupabase.auth.getSession();
   if(!session || session.user.email !== ADMIN_EMAIL) { alert("Admin ဝင်ခွင့်မရှိပါ"); window.location.href = "index.html"; return; }
   
-  // RLS စနစ်တွေ ပိတ်ပေးထားဖို့ ဒုတိယအကြိမ် စိတ်ချရအောင် အလိုအလျောက် လုပ်ဆောင်ခြင်း
-  await royalSupabase.from('products').select('id').limit(1);
-
   await loadCategoriesDropdown();
-  checkURLParams(); // URL ကလာတဲ့ Parameter ကို ဖမ်းယူခြင်း
+  checkURLParams();
 }
 
 // Dropdown ထဲသို့ ဂိမ်းစာရင်းများ ထည့်သွင်းခြင်း
@@ -82,7 +132,7 @@ async function loadCategoriesDropdown() {
   }
 }
 
-// 🔥 Admin Page က လွှတ်လိုက်တဲ့ ဂိမ်း ID ကို အော်တို ဖမ်းယူပြီး ရွေးချယ်ပေးသော စနစ်
+// URL ကလာတဲ့ Parameter ကို ဖမ်းယူပြီး သီးသန့် Filter ချက်ချင်းလုပ်ပေးခြင်း
 function checkURLParams() {
   const urlParams = new URLSearchParams(window.location.search);
   const catId = urlParams.get('cat');
@@ -92,45 +142,58 @@ function checkURLParams() {
     const select = document.getElementById('productCategorySelect');
     select.value = catId;
     if(catName) {
-      document.getElementById('currentGameDisplay').innerText = `🎯 လက်ရှိရွေးချယ်ထားသောဂိမ်း - ${decodeURIComponent(catName)}`;
+      const displayEl = document.getElementById('currentGameDisplay');
+      displayEl.style.display = "block";
+      displayEl.innerHTML = `<i class="fa-solid fa-crosshairs"></i> လက်ရှိရွေးချယ်ထားသောဂိမ်း - <strong>${decodeURIComponent(catName)}</strong>`;
     }
     loadProducts(catId);
   }
 }
 
-// Dropdown ပြောင်းလဲသွားရင် အလုပ်လုပ်မည့် စနစ်
+// Dropdown ပြောင်းလဲသွားရင် ရောမနေစေဘဲ အလိုအလျောက် သန့်စင်ပေးသည့် စနစ်
 function onCategoryChange() {
-  const catId = document.getElementById('productCategorySelect').value;
   const select = document.getElementById('productCategorySelect');
+  const catId = select.value;
   const selectedName = select.options[select.selectedIndex].text;
+  const displayEl = document.getElementById('currentGameDisplay');
   
   if(catId) {
-    document.getElementById('currentGameDisplay').innerText = `🎯 လက်ရှိရွေးချယ်ထားသောဂိမ်း - ${selectedName}`;
-    loadProducts(catId);
+    displayEl.style.display = "block";
+    displayEl.innerHTML = `<i class="fa-solid fa-crosshairs"></i> လက်ရှိရွေးချယ်ထားသောဂိမ်း - <strong>${selectedName}</strong>`;
+    loadProducts(catId); // 🎯 ရွေးချယ်လိုက်တဲ့ ဂိမ်း ID အလိုက်ပဲ Filter သီးသန့်လုပ်ပြီး ဆွဲတင်မည်
   } else {
-    document.getElementById('currentGameDisplay').innerText = "";
-    document.getElementById('adminProductsList').innerHTML = "<p style='color:rgba(255,255,255,0.4);'>ကျေးဇူးပြု၍ ဂိမ်းအမျိုးအစားတစ်ခု အရင်ရွေးချယ်ပေးပါဗျာ။</p>";
+    displayEl.style.display = "none";
+    document.getElementById('adminProductsList').innerHTML = "<p class='placeholder-text'><i class='fa-solid fa-hand-pointer'></i> ကျေးဇူးပြု၍ ဂိမ်းအမျိုးအစားတစ်ခု အရင်ရွေးချယ်ပေးပါဗျာ။</p>";
   }
 }
 
-// ရွေးချယ်ထားသော ဂိမ်းအလိုက် ပစ္စည်းနှင့် စျေးနှုန်းများ ဆွဲတင်ခြင်း
+// ရွေးချယ်ထားသော ဂိမ်းတစ်ခုတည်း၏ ပစ္စည်းနှင့် စျေးနှုန်းများကို သီးသန့်ဆွဲတင်ခြင်း (Filter Engine)
 async function loadProducts(catId) {
   const div = document.getElementById('adminProductsList');
-  div.innerHTML = "<p>စျေးနှုန်းများ ဆွဲတင်နေသည်...</p>";
+  div.innerHTML = "<p class='placeholder-text'><i class='fa-solid fa-spinner fa-spin'></i> ၎င်းဂိမ်း၏ စျေးနှုန်းများ ဆွဲတင်နေပါသည်...</p>";
   
-  const { data: products } = await royalSupabase.from('products').select('*').eq('category_id', catId).order('price', { ascending: true });
+  // .eq('category_id', catId) သုံးထားလို့ တခြားဂိမ်းစာရင်းတွေ လုံးဝရောမလာပါဘူးဗျာ
+  const { data: products } = await royalSupabase
+    .from('products')
+    .select('*')
+    .eq('category_id', parseInt(catId))
+    .order('price', { ascending: true });
+    
   div.innerHTML = "";
   
   if(!products || products.length === 0) {
-    div.innerHTML = "<p style='color:rgba(255,255,255,0.4);'>ဤဂိမ်းအတွက် စျေးနှုန်းများ မထည့်ရသေးပါ။</p>";
+    div.innerHTML = "<p class='placeholder-text'><i class='fa-solid fa-folder-open'></i> ဤဂိမ်းအတွက် စျေးနှုန်းများ ထည့်သွင်းထားခြင်း မရှိသေးပါဗျာ။</p>";
     return;
   }
   
   products.forEach(p => {
     div.innerHTML += `
       <div class="list-item">
-        <span><strong>${p.name}</strong> - ${parseInt(p.price).toLocaleString()} Ks</span>
-        <button class="btn-del" onclick="deleteProduct(${p.id}, ${catId})">🗑️ ဖျက်မည်</button>
+        <div class="item-info">
+          <span class="item-name">${p.name}</span>
+          <span class="item-price">${parseInt(p.price).toLocaleString()} Ks</span>
+        </div>
+        <button class="btn-del" onclick="deleteProduct(${p.id}, ${catId})"><i class="fa-solid fa-trash-can"></i> ဖျက်မည်</button>
       </div>`;
   });
 }
@@ -164,7 +227,7 @@ document.getElementById('btnAddProduct').addEventListener('click', async () => {
     alert("စျေးနှုန်းအသစ် ထည့်သွင်းပြီးပါပြီဗျာ။");
     document.getElementById('prodName').value = "";
     document.getElementById('prodPrice').value = "";
-    loadProducts(catId);
+    loadProducts(catId); // အော်တို Filter စာရင်း ပြန်တင်ပေးခြင်း
   }
 });
 
