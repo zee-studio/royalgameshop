@@ -202,12 +202,19 @@ const royalSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentOrderTab = "pending";
 
+// 🛠️ Google Drive Link အားလုံးကို အမှားအယွင်းမရှိ ကွက်တိ ID ဖြတ်ထုတ်ပေးမည့် စနစ်သစ်
 function convertToDirectLink(url) {
   if (url.includes("drive.google.com")) {
     let fileId = "";
-    if (url.includes("/d/")) { fileId = url.split("/d/")[1].split("/")[0]; } 
-    else if (url.includes("id=")) { fileId = url.split("id=")[1].split("&")[0]; }
-    if (fileId) { return `https://drive.google.com/uc?export=view&id=${fileId}`; }
+    if (url.includes("/d/")) { 
+      fileId = url.split("/d/")[1].split("/")[0].split("?")[0]; 
+    } else if (url.includes("id=")) { 
+      fileId = url.split("id=")[1].split("&")[0]; 
+    }
+    
+    if (fileId && fileId.trim() !== "") { 
+      return `https://drive.google.com/uc?export=view&id=${fileId.trim()}`; 
+    }
   }
   return url;
 }
@@ -216,42 +223,47 @@ async function checkAdmin() {
   const { data: { session } } = await royalSupabase.auth.getSession();
   if(!session || session.user.email !== ADMIN_EMAIL) { alert("Admin ဝင်ခွင့်မရှိပါ"); window.location.href = "index.html"; return; }
   
-  // အချက်အလက်များ တစ်ပါတည်း စတင်ဆွဲတင်ခြင်း
   loadUsersList();
   loadCategories(); 
   loadBanners(); 
   loadOrders();
 }
 
-// 👥 ၁။ ရောင်းဝယ်ရေးအဖွဲ့ဝင်များ စာရင်းဆွဲတင်ခြင်းစနစ် (Registered Users Database)
+// 👥 ၁။ Users စာရင်း ကော်ထုတ်ပြသခြင်းစနစ်
 async function loadUsersList() {
   const tbody = document.getElementById('userTableBody');
+  const { data: ordersData } = await royalSupabase.from('orders').select('user_email, phone_number').order('created_at', {ascending: false});
   
-  // မှတ်ချက်- Supabase Anon Key သည် လုံခြုံရေးအရ auth.users ကို တိုက်ရိုက်ဆွဲခွင့်မရှိသဖြင့် profiles table (သို့မဟုတ်) RPC သုံးလေ့ရှိသည်။
-  // သို့သော် User မှတ်တမ်းကို တိုက်ရိုက်သိရှိနိုင်ရန် ဤနေရာတွင် orders ထဲမှ unique user များ သို့မဟုတ် ကွက်တိစာရင်းကို သရုပ်ဖော်ပြသပေးထားပါသည်
-  const { data: ordersData } = await royalSupabase.from('orders').select('user_email').order('created_at', {ascending: false});
-  
-  // ထပ်နေသော email များကို သန့်စင်ခြင်း
-  let uniqueEmails = [];
+  let uniqueUsers = [];
+  let checkedEmails = new Set();
+
   if(ordersData) {
-    uniqueEmails = [...new Set(ordersData.map(o => o.user_email))];
+    ordersData.forEach(o => {
+      if(!checkedEmails.has(o.user_email)) {
+        checkedEmails.add(o.user_email);
+        uniqueUsers.push({
+          email: o.user_email,
+          phone: o.phone_number || "မဖော်ပြထားပါ"
+        });
+      }
+    });
   }
   
-  document.getElementById('txtTotalUsers').innerText = uniqueEmails.length;
+  document.getElementById('txtTotalUsers').innerText = uniqueUsers.length;
   tbody.innerHTML = "";
   
-  if(uniqueEmails.length === 0) {
+  if(uniqueUsers.length === 0) {
     tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:rgba(255,255,255,0.4);">အဖွဲ့ဝင်မှတ်တမ်း မရှိသေးပါ။</td></tr>`;
     return;
   }
   
-  uniqueEmails.forEach(email => {
-    const fallbackUsername = email.split('@')[0];
+  uniqueUsers.forEach(user => {
+    const fallbackUsername = user.email.split('@')[0];
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><strong>${fallbackUsername}</strong></td>
-      <td>+95 9xxxxxxxxx</td>
-      <td>${email}</td>
+      <td>${user.phone}</td>
+      <td>${user.email}</td>
       <td><span style="color:var(--success); font-size:12px;"><i class="fa-solid fa-shield-halved"></i> Encrypted</span></td>
     `;
     tbody.appendChild(tr);
@@ -291,22 +303,30 @@ document.getElementById('btnAddCat').addEventListener('click', async () => {
 
 // 🖼️ ၃။ Banner ကဏ္ဍ
 async function loadBanners() {
-  const { data } = await royalSupabase.from('banners').select('*');
+  const { data } = await royalSupabase.from('banners').select('*').order('created_at', { ascending: false });
   const div = document.getElementById('bannerAdminList'); div.innerHTML = "";
   if(!data || data.length === 0) { div.innerHTML = "<p style='color:rgba(255,255,255,0.4); font-size:13px;'>Banner ပုံမရှိသေးပါ။</p>"; return; }
   data.forEach(b => {
-    div.innerHTML += `<div class="list-item"><span style="font-size:11px; overflow:hidden; max-width:180px; text-overflow:ellipsis; white-space:nowrap;">${b.image}</span><button class="btn-del" onclick="deleteBanner(${b.id})">ဖျက်မည်</button></div>`;
+    const displayLink = b.image || "No Link Found";
+    div.innerHTML += `
+      <div class="list-item">
+        <span style="font-size:11px; overflow:hidden; max-width:180px; text-overflow:ellipsis; white-space:nowrap;">${displayLink}</span>
+        <button class="btn-del" onclick="deleteBanner(${b.id})">ဖျက်မည်</button>
+      </div>`;
   });
 }
-window.deleteBanner = async (id) => { await royalSupabase.from('banners').delete().eq('id', id); loadBanners(); }
+window.deleteBanner = async (id) => { if(confirm("ဤ Banner ပုံကို ဖျက်ရန် သေချာပါသလား?")) { await royalSupabase.from('banners').delete().eq('id', id); loadBanners(); } }
 
 document.getElementById('btnAddBanner').addEventListener('click', async () => {
   let image = document.getElementById('bannerImage').value.trim(); if(!image) return alert("Link ဖြည့်ပါ");
   image = convertToDirectLink(image);
-  await royalSupabase.from('banners').insert({ image }); window.location.reload();
+  
+  const { error } = await royalSupabase.from('banners').insert({ image }); 
+  if(error) alert("Error: " + error.message);
+  else { alert("Banner ပုံအသစ် သိမ်းဆည်းပြီးပါပြီဗျာ။"); window.location.reload(); }
 });
 
-// 🛒 ၄။ အော်ဒါစီမံခန့်ခွဲခြင်း ကဏ္ဍ (အဆင့်မြင့် Tab စနစ်အသစ်)
+// 🛒 ၄။ အော်ဒါစီမံခန့်ခွဲခြင်း ကဏ္ဍ
 function switchOrderTab(tabName) {
   currentOrderTab = tabName;
   document.querySelectorAll('.order-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -315,16 +335,14 @@ function switchOrderTab(tabName) {
 }
 
 async function loadOrders() {
-  // Pending Counter အတွက် သီးသန့်စစ်ဆေးခြင်း
   const { data: pCount } = await royalSupabase.from('orders').select('id').eq('status', 'pending');
   document.getElementById('txtPendingCount').innerText = pCount ? pCount.length : 0;
 
-  // လက်ရှိ Tab အလိုက် Order များကို ဆွဲတင်ပြသခြင်း
   const { data, error } = await royalSupabase.from('orders').select('*').eq('status', currentOrderTab).order('created_at', { ascending: false });
   const div = document.getElementById('adminOrdersList'); div.innerHTML = "";
   
   if(error || !data || data.length === 0) { 
-    div.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.4); padding:20px;">ဤနေရာတွင် ${currentOrderTab} အော်ဒါမှတ်တမ်းများ လုံးဝမရှိသေးပါဗျာ။</p>`; 
+    div.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.4); padding:20px;">ဤနေရာတွင် ${currentOrderTab} အော်ဒါမှတ်တမ်းများ မရှိသေးပါဗျာ။</p>`; 
     return; 
   }
   
