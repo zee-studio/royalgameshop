@@ -75,8 +75,8 @@ main { padding: 20px; max-width: 1200px; margin: auto; display: grid; grid-templ
 .preview-img-container { margin-top: 10px; display: none; text-align: center; }
 .preview-img-container img { max-height: 120px; border-radius: 8px; border: 1px solid var(--border); }
 
-/* ⚙️ Processing Scan State Loader */
-.scan-loader { display: none; font-size: 12px; color: #03dac6; align-items: center; gap: 6px; justify-content: center; margin-top: 5px; font-weight: 600; }
+/* ⚙️ Processing Scan State Status text */
+.scan-status-info { display: none; font-size: 12px; color: #03dac6; align-items: center; gap: 6px; justify-content: flex-start; margin-top: 6px; font-weight: 600; padding-left: 5px; }
 
 .btn-order { width: 100%; padding: 14px; background: linear-gradient(135deg, #bb86fc, #985eff); color: #0c0b1a; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(187,134,252,0.3); margin-top: 10px; }
 .btn-order:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(187,134,252,0.5); }
@@ -148,14 +148,14 @@ main { padding: 20px; max-width: 1200px; margin: auto; display: grid; grid-templ
       </div>
       <div class="preview-img-container" id="previewContainer">
         <img id="slipPreviewImg" src="">
-        <div class="scan-loader" id="scanLoader"><i class="fa-solid fa-circle-notch fa-spin"></i> စလစ် ID ကို Auto Scan ဖတ်နေပါသည်...</div>
+        <div class="scan-status-info" id="scanStatusInfo"><i class="fa-solid fa-circle-notch fa-spin"></i> စလစ် ID ကို Background တွင် Auto Scan ဖတ်နေပါသည်...</div>
       </div>
     </div>
 
     <div class="input-field-group">
-      <label>စလစ်အမှတ် (Auto Scanned Slip ID)</label>
+      <label>စလစ်အမှတ် (Slip Transaction ID)</label>
       <i class="fa-solid fa-receipt"></i>
-      <input type="text" id="scannedSlipId" placeholder="ပုံတင်ပြီးပါက စလစ် ID အလိုအလျောက် ပေါ်လာပါမည်">
+      <input type="text" id="scannedSlipId" placeholder="စလစ် ID ကို ဤနေရာတွင် ကိုယ်တိုင်ရိုက်ထည့်နိုင်ပါသည်">
     </div>
 
     <div class="input-field-group">
@@ -258,13 +258,13 @@ function setupPaymentSelection() {
   });
 }
 
-// 📁 တိုက်ရိုက်ပုံတင်ခြင်းနှင့် Auto Scan ဖတ်ခြင်းစနစ်
+// 📁 Background Hybrid Fast Scan စနစ်သစ်
 function setupFileUploadSystem() {
   const fileInput = document.getElementById('slipFileInput');
   const previewContainer = document.getElementById('previewContainer');
   const previewImg = document.getElementById('slipPreviewImg');
   const statusText = document.getElementById('uploadStatusText');
-  const scanLoader = document.getElementById('scanLoader');
+  const scanStatusInfo = document.getElementById('scanStatusInfo');
   const slipIdInput = document.getElementById('scannedSlipId');
 
   fileInput.addEventListener('change', function(e) {
@@ -278,36 +278,37 @@ function setupFileUploadSystem() {
       uploadedSlipBase64 = event.target.result; 
       previewImg.src = uploadedSlipBase64;
       previewContainer.style.display = "block";
-      scanLoader.style.display = "flex";
-      slipIdInput.value = "";
+      
+      // 💡 Loading ဖြင့် ပိတ်မထားတော့ဘဲ User ကို ချက်ချင်း အော်ဒါတင်ခွင့် ပေးထားမည်
+      scanStatusInfo.style.display = "flex";
+      scanStatusInfo.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> စလစ် ID ကို နောက်ကွယ်ကနေ Auto Scan ဖတ်နေဆဲ... (ကိုယ်တိုင်လည်း ရိုက်ထည့်နိုင်ပါသည်)`;
 
-      // ⚙️ Tesseract.js ဖြင့် စလစ်ပေါ်က ဂဏန်းများနှင့် စာသားများကို Auto AI ဖတ်ခြင်း
-      Tesseract.recognize(uploadedSlipBase64, 'eng', { logger: m => console.log(m) })
+      // Background AI Execution
+      Tesseract.recognize(uploadedSlipBase64, 'eng')
       .then(({ data: { text } }) => {
-        scanLoader.style.display = "none";
-        // KPay သို့မဟုတ် Wave ရဲ့ Transaction ID ဂဏန်းပုံစံများကို ရှာထုတ်ခြင်း Regular Expression
-        const matchRegex = /\b\d{15,22}\b/g; 
-        const foundIds = text.replace(/[\s-]/g, '').match(/\d{15,20}/);
+        // KPay / Wave ရဲ့ Trans ID ပုံစံများကို တိကျစွာ Filter ဖြတ်ခြင်း
+        const cleanText = text.replace(/[\s-]/g, '');
+        const foundIds = cleanText.match(/\d{15,20}/);
         
         if (foundIds && foundIds[0]) {
-          slipIdInput.value = foundIds[0];
+          if(!slipIdInput.value) { 
+            slipIdInput.value = foundIds[0]; 
+          }
+          scanStatusInfo.innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--success);"></i> စလစ် ID အလိုအလျောက် ဖတ်ရှုပြီးပါပြီ။`;
         } else {
-          // တိုက်ရိုက်မတွေ့ပါက ဂဏန်းတန်းတစ်ခုခုကို ဖြည့်ပေးရန် ကြိုးစားခြင်း
-          const fallback = text.match(/\d+/g);
-          slipIdInput.value = fallback ? fallback.sort((a,b) => b.length - a.length)[0].substring(0, 18) : "";
+          scanStatusInfo.innerHTML = `<i class="fa-solid fa-circle-info" style="color:#ffbb00;"></i> Scan ဖတ်ရမရပါ။ ကျေးဇူးပြု၍ Trans ID ကို ကိုယ်တိုင် ဖြည့်ပေးပါဗျာ။`;
         }
-        if(!slipIdInput.value) { alert("စလစ် ID ကို Auto ဖတ်မရပါက လူကြီးမင်း ကိုယ်တိုင်လည်း ဖြည့်စွက်နိုင်ပါတယ်ဗျာ။"); }
       })
       .catch(err => {
-        console.error(err);
-        scanLoader.style.display = "none";
+        console.error("Background Scan Error: ", err);
+        scanStatusInfo.style.display = "none";
       });
     };
     reader.readAsDataURL(file);
   });
 }
 
-// อော်ဒါတင်သည့် လုပ်ဆောင်ချက်
+// အော်ဒါတင်သည့် လုပ်ဆောင်ချက်
 document.getElementById('btnSubmitOrder').addEventListener('click', async () => {
   if (!selectedProduct) return alert("ကျေးဇူးပြု၍ ဝယ်ယူမည့် ပစ္စည်းပမာဏကို အရင်ရွေးချယ်ပေးပါဗျာ။");
   if (!uploadedSlipBase64) return alert("ကျေးဇူးပြု၍ ငွေလွှဲစလစ်ပုံကို တိုက်ရိုက် Upload တင်ပေးပါဗျာ။");
@@ -322,14 +323,13 @@ document.getElementById('btnSubmitOrder').addEventListener('click', async () => 
     user_email: currentUserEmail,
     game_name: document.getElementById('gameTitle').innerText + " (" + selectedProduct.name + ")",
     amount: selectedProduct.price,
-    status: 'pending',
-    // အကယ်၍ လူကြီးမင်းတို့ရဲ့ database မှာ player_id စတဲ့ field တွေ တိုးချင်ရင် အောက်မှာ လှမ်းထည့်နိုင်ပါတယ်
+    status: 'pending'
   });
 
   if (error) {
     alert("Error: " + error.message);
   } else {
-    alert("အော်ဒါတင်ခြင်း အောင်မြင်ပါသည်ဗျာ။ စလစ် ID: " + slipId + " ကို စနစ်တကျ မှတ်တမ်းတင်ပြီးပါပြီ။");
+    alert("အော်ဒါတင်ခြင်း အောင်မြင်ပါသည်ဗျာ။ စလစ် ID: " + slipId + " ဖြင့် စနစ်တကျ မှတ်တမ်းတင်ပြီးပါပြီ။");
     window.location.href = "index.html";
   }
 });
